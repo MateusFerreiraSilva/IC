@@ -64,16 +64,23 @@ CompressedBitVector::CompressedBitVector(int b, int n, unsigned *B) : Compressed
 CompressedBitVector::CompressedBitVector(int b, int n, vector<bool>& bitvector) : CompressedBitVector(b, n)
 {
     // first we need to convert all the bitvector in a array int with size of b bits
-    unsigned *B = (unsigned*) malloc(ceil(bitvector.size()/ b)  * sizeof(unsigned));
+    cout << n << endl;
+    for (int i = 0; i < bitvector.size(); i++)
+    {
+        cout << bitvector[i];
+    }
+    cout << endl;
+    
+    unsigned *B = (unsigned*) calloc(n, sizeof(unsigned));
     if(B) {
-
-        int j = 0, x = 0;
-        for(int i = 1; i <= bitvector.size(); i++, x++) {
+        int j = 0, x = b - 1;
+        for(int i = 1; i <= bitvector.size(); i++, x--) {
             if(bitvector[i-1])
                 B[j] |= 1 << x;
-            if(i % b == 0) {
+            if (i % b == 0)
+            {
                 j++;
-                x = 0;
+                x = b;
             }
         }
 
@@ -146,7 +153,7 @@ unsigned CompressedBitVector::decode(int i)
 void CompressedBitVector::precompR()
 {
     memset(R, 0, sizeof(R));
-    printf("R[0] = %d\n", R[0]);
+    // printf("R[0] = %d\n", R[0]);
     P[0] = 0;
     for (int i = 1; i < ceil(n / (float)k); i++)
     {
@@ -154,7 +161,7 @@ void CompressedBitVector::precompR()
         R[i] = R[i - 1];
         for (int j = 0; j < b; j++)
             R[i] += C->read((i - 1) * k + j);
-        printf("R[%d] = %d\n", i, R[i]);
+        // printf("R[%d] = %d\n", i, R[i]);
     }
 }
 
@@ -189,7 +196,7 @@ void CompressedBitVector::compress(CompArray B)
 int CompressedBitVector::access(int i)
 {
     unsigned B1 = decode(i / b);
-    printf("B[%d] =  %d\n", i / b, B1);
+    // printf("B[%d] =  %d\n", i / b, B1);
     return B1 & (1 << (b - 1 - (i % b)));
 }
 

@@ -9,7 +9,7 @@ pair<int, int> findLimits(int* seq, unsigned seq_size) {
         seqMin = seqMax = seq[0];
     for(int i = 1; i < seq_size; i++) {
         seqMin = min(seqMin, seq[i]);
-        seqMax = min(seqMax, seq[i]);
+        seqMax = max(seqMax, seq[i]);
     }
     return make_pair(seqMin, seqMax);
 }
@@ -17,7 +17,9 @@ pair<int, int> findLimits(int* seq, unsigned seq_size) {
 Node::Node(int *from, int*to, int lo, int hi, Node *parent) {
     if(from >= to)
         return;
-    
+
+    this->p = parent;
+
     if(lo == hi) // homogeneous array
         return;
 
@@ -31,7 +33,9 @@ Node::Node(int *from, int*to, int lo, int hi, Node *parent) {
     for(auto it = from; it != to; it++)
         b[idx++] = !lessThanMid(*it);
 
-    this->bitvector = new CompressedBitVector(4, ceil(b.size()/ 4), b); // the real bitvector
+    cout << "sizes\n";
+    this->bitvector = new CompressedBitVector(4, ceil(b.size()/ (float)4), b); // the real bitvector
+    this->bitvector->print();
 
     auto pivot = stable_partition(from, to, lessThanMid);
 
@@ -63,10 +67,15 @@ int WaveletTree::access(int i) {
     int a = p.first, b = p.second;
 
     while(a != b) {
-        // if(v->bitvector[i] == 0) {
-            // i = rank0(v->b, i);
-        // }
+        if(v->bitvector->access(i) == 0) {
+            i = v->bitvector->rank0(i);
+            v = v->l;
+            b = floor(a + b) / 2;
+        } else {
+            i = v->bitvector->rank1(i);
+            v = v->r;
+            a = floor(a + b) / 2 + 1;
+        }
     }
-    return 0;
-
+    return a;
 }
