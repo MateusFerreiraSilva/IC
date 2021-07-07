@@ -16,7 +16,7 @@ CompArray::CompArray(int l, int n)
     }
 }
 
-CompArray::CompArray(int l, int n, unsigned *arr) : CompArray(l, n)
+CompArray::CompArray(int l, int n, unsigned *arr) : CompArray::CompArray(l, n)
 {
     compress(arr);
 }

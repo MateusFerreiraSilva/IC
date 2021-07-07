@@ -44,6 +44,54 @@ int **precompComb(int **K, int x)
 
 // END Combination
 
+CompressedBitVector::CompressedBitVector(int b, int n)
+{
+    this->b = b; // block size in bits
+    this->n = n;
+    this->K = precompComb(K, b);
+    this->R = (int *)malloc(ceil(n / (float)k) * sizeof(int));
+    this->P = (int *)malloc(ceil(n / (float)k) * sizeof(int));
+    this->S = new CompArray(n + 1, n + 1);
+    this->m = 0;
+    this->sz = ((b + 1) * (b + 1) + ceil(n / (float)k) * 2) * sizeof(int);
+}
+
+CompressedBitVector::CompressedBitVector(int b, int n, unsigned *B) : CompressedBitVector(b, n)
+{
+    compress(CompArray(b, n, B));
+}
+
+CompressedBitVector::CompressedBitVector(int b, int n, vector<bool>& bitvector) : CompressedBitVector(b, n)
+{
+    // first we need to convert all the bitvector in a array int with size of b bits
+    unsigned *B = (unsigned*) malloc(ceil(bitvector.size()/ b)  * sizeof(unsigned));
+    if(B) {
+
+        int j = 0, x = 0;
+        for(int i = 1; i <= bitvector.size(); i++, x++) {
+            if(bitvector[i-1])
+                B[j] |= 1 << x;
+            if(i % b == 0) {
+                j++;
+                x = 0;
+            }
+        }
+
+        compress(CompArray(b, n, B));
+        free(B);
+    }
+}
+
+CompressedBitVector::~CompressedBitVector()
+{
+    delete C;
+    delete O;
+    delete S;
+    free(K);
+    free(R);
+    free(P);
+}
+
 pair<unsigned, unsigned> CompressedBitVector::encode(CompArray &B, int i)
 {
     unsigned B1 = B.read(i);
@@ -108,33 +156,6 @@ void CompressedBitVector::precompR()
             R[i] += C->read((i - 1) * k + j);
         printf("R[%d] = %d\n", i, R[i]);
     }
-}
-
-CompressedBitVector::CompressedBitVector(int b, int n)
-{
-    this->b = b;
-    this->n = n;
-    this->K = precompComb(K, b);
-    this->R = (int *)malloc(ceil(n / (float)k) * sizeof(int));
-    this->P = (int *)malloc(ceil(n / (float)k) * sizeof(int));
-    this->S = new CompArray(n + 1, n + 1);
-    this->m = 0;
-    this->sz = ((b + 1) * (b + 1) + ceil(n / (float)k) * 2) * sizeof(int);
-}
-
-CompressedBitVector::CompressedBitVector(int b, int n, unsigned *B) : CompressedBitVector(b, n)
-{
-    compress(CompArray(b, n, B));
-}
-
-CompressedBitVector::~CompressedBitVector()
-{
-    delete C;
-    delete O;
-    delete S;
-    free(K);
-    free(R);
-    free(P);
 }
 
 void CompressedBitVector::compress(CompArray B)

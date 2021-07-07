@@ -28,6 +28,7 @@ private:
 public:
     CompressedBitVector(int b, int n);
     CompressedBitVector(int b, int n, unsigned *B);
+    CompressedBitVector(int b, int n, vector<bool>& bitvector);
     ~CompressedBitVector();
     void compress(CompArray B);
     int access(int i);
