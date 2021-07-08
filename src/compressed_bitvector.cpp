@@ -64,13 +64,6 @@ CompressedBitVector::CompressedBitVector(int b, int n, unsigned *B) : Compressed
 CompressedBitVector::CompressedBitVector(int b, int n, vector<bool>& bitvector) : CompressedBitVector(b, n)
 {
     // first we need to convert all the bitvector in a array int with size of b bits
-    cout << n << endl;
-    for (int i = 0; i < bitvector.size(); i++)
-    {
-        cout << bitvector[i];
-    }
-    cout << endl;
-    
     unsigned *B = (unsigned*) calloc(n, sizeof(unsigned));
     if(B) {
         int j = 0, x = b - 1;

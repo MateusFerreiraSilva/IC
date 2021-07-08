@@ -9,14 +9,16 @@ using namespace std;
 
 int main() {
 
-    int arr[10] = {2, 1, 9, 1, 7, 9, 1, 5, 9, 1};
+    int arr[10] = {2, 1, 9, 3, 8, 4, 7, 5, 9, 6};
     WaveletTree wt(arr, 10);
 
-    // int n;
-    // while(1) {
-    //     scanf("%d", &n);
-    //     printf("%d\n", wt.access(n));
-    // }
+    int n;
+    for (int i = 0; i < 10; i++)
+    {
+        wt.access(i);
+        cout << wt.access(i) << " ";
+    }
+    cout << endl;
 
     return 0;
 }
