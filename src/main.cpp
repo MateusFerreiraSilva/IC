@@ -7,13 +7,14 @@
 
 using namespace std;
 
-int main() {
+#define sz 9
 
-    int arr[10] = {2, 1, 9, 3, 8, 4, 7, 5, 9, 6};
-    WaveletTree wt(arr, 10);
+int main() {
+    int arr[sz] = {2, 1, 9, 3, 8, 4, 7, 5, 6};
+    WaveletTree wt(arr, sz);
 
     int n;
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < sz; i++)
     {
         wt.access(i);
         cout << wt.access(i) << " ";

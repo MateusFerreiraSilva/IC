@@ -216,12 +216,12 @@ int main()
         cout << c.first << " " << c.second << endl;
     }
 
-    // while (1)
-    // {
-    //     int x;
-    //     scanf("%d", &x);
-    //     printf("%u\n", wt.access(x));
-    // }
+    while (1)
+    {
+        int x;
+        scanf("%d", &x);
+        printf("%u\n", wt.access(x));
+    }
 
     // while (1)
     // {

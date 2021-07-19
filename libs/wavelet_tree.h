@@ -5,13 +5,26 @@ using namespace std;
 #ifndef WAVELET_TREE
 #define WAVELET_TREE
 
+class Bitvectorr {
+    public:
+        vector<bool> b;
+
+        Bitvectorr(int n);
+        int access(int i);
+        int rank1(int i);
+        int rank0(int i);
+        int select1(int i);
+        int select0(int i);
+};
+
 
 class Node
 {
 private:
-    CompressedBitVector *bitvector;
-    Node *l, *r, *p;
+    // CompressedBitVector *bitvector;
 public:
+    Node *l, *r, *p;
+    Bitvectorr *bitvector;
     Node();
     Node(int *from, int*to, int lo, int hi, Node *parent);
     ~Node();
