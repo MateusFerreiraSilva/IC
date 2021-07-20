@@ -5,56 +5,55 @@ map<string, unsigned> cods;
 map<unsigned, string> codsI;
 map<unsigned, void *> leaf;
 
+bool _access(vector<bool> &bitvector, int i)
+{
+    if(i <= 0 || i > bitvector.size()) return -1;
+    return bitvector[i - 1];
+}
+
 int rank1(vector<bool> &bitvector, int i)
 {
-    if (i >= bitvector.size()) return -1;
+    if (i > bitvector.size()) return -1;
 
     int r = 0;
-    for (int j = 0; j <= i; j++)
-        if(bitvector[j]) r++;
+    for (int j = 1; j <= i; j++)
+        if(_access(bitvector, j)) r++;
     
     return r;
 }
 
 int rank0(vector<bool> &bitvector, int i)
 {
-    if (i >= bitvector.size()) return -1;
+    if (i > bitvector.size()) return -1;
 
     int r = 0;
-    for (int j = 0; j <= i; j++)
-        if (bitvector[j] == 0)
-            r++;
+    for (int j = 1; j <= i; j++)
+        if (_access(bitvector, j) == 0) r++;
 
     return r;
 }
 
 int select1(vector<bool> &bitvector, int i)
 {
-    if (i >= bitvector.size())
-        return -1;
+    if (i > bitvector.size()) return -1;
 
     int r = 0;
-    for (int j = 0; j < bitvector.size(); j++)
+    for (int j = 1; j <= bitvector.size(); j++)
     {
-        if (bitvector[j])
-            r++;
-        if (r == i)
-            return j;
+        if (_access(bitvector, j)) r++;
+        if (r == i) return j;
     }
 }
 
 int select0(vector<bool> &bitvector, int i)
 {
-    if (i >= bitvector.size())
-        return -1;
+    if (i > bitvector.size()) return -1;
 
     int r = 0;
-    for (int j = 0; j < bitvector.size(); j++)
+    for (int j = 1; j <= bitvector.size(); j++)
     {
-        if (bitvector[j] == 0)
-            r++;
-        if (r == i)
-            return j;
+        if (_access(bitvector, j) == 0) r++;
+        if (r == i) return j;
     }
 }
 
@@ -115,16 +114,15 @@ public:
 
     unsigned access(int i)
     {
-        if(i >= this->bitvector.size()) return -1;
+        if(i > this->bitvector.size()) return -1;
 
         WaveletTree *wt = this;
         vector<bool> bitvector;
         unsigned b;
         string cod;
-        while (wt->l || wt->r)
-        { // while is not the leaf
+        while (wt->l || wt->r) { // while is not the leaf
             bitvector = wt->bitvector;
-            b = bitvector[i];
+            b = _access(bitvector, i);
             cod.push_back(b + '0');
             if (b)
             {
@@ -136,15 +134,15 @@ public:
                 wt = wt->l;
                 i = rank0(bitvector, i);
             }
-
-            i--; // desloca para base 0
         }
+
         return cods[cod];
     }
 
     int rank(unsigned c, int i)
     {
-        // bugs em alguns acessos como rank(5, 9), rank(7, 5)
+        if(i > this->bitvector.size()) return -1;
+
         WaveletTree *wt = this;
         vector<bool> bitvector;
         unsigned b;
@@ -163,13 +161,14 @@ public:
                 wt = wt->l;
                 i = rank0(bitvector, i);
             }
-            // i--; // converte para base 0
         }
         return i;
     }
 
     int select(unsigned c, int i)
     {
+        if (i > this->bitvector.size()) return -1;
+
         WaveletTree *wt = (WaveletTree *)leaf[c];
         vector<bool> bitvector;
         unsigned b;
@@ -194,8 +193,8 @@ public:
     void printBitvector()
     {
         puts("");
-        for (int i = 0; i < bitvector.size(); i++)
-            printf("%u", (unsigned)bitvector[i]);
+        for (int i = 1; i <= bitvector.size(); i++)
+            printf("%u", (unsigned)_access(bitvector, i));
         puts("");
     }
 };
@@ -216,18 +215,18 @@ int main()
     printf("Cods:\n");
     for (auto c : cods) cout << c.first << " " << c.second << endl;
     puts("");
-    for(int i = 0; i < arrSize; i++) printf("access(%d): %u\n", i, wt.access(i));
-    while (1)
-    {
-        int c, x;
-        scanf("%d%d", &c, &x);
-        printf("%u\n", wt.rank(c, x));
-    }
-
+    for(int i = 1; i <= arrSize; i++) printf("access(%d): %u\n", i, wt.access(i));
     // while (1)
     // {
     //     int c, x;
     //     scanf("%d%d", &c, &x);
-    //     printf("%u\n", wt.select(c, x));
+    //     printf("%u\n", wt.rank(c, x));
     // }
+
+    while (1)
+    {
+        int c, x;
+        scanf("%d%d", &c, &x);
+        printf("%u\n", wt.select(c, x));
+    }
 }
