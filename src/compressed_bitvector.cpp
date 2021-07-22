@@ -263,3 +263,8 @@ long unsigned CompressedBitVector::size()
 {
     return sz;
 }
+
+long unsigned CompressedBitVector::count() // return the number of elements
+{
+    return this->n;
+}

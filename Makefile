@@ -23,8 +23,7 @@ clean:
 	rm ./resources/*.o	
 	rm prog
 
-# all: compressed_array.o sample_pointers.o compressed_bitvector.o wavelet_tree.o main.o
-all: compressed_array.o sample_pointers.o compressed_bitvector.o main.o
+all: compressed_array.o sample_pointers.o compressed_bitvector.o wavelet_tree.o main.o
 
 build: all
 	g++ -o prog ./resources/*.o

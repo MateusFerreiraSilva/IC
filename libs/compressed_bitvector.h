@@ -39,6 +39,7 @@ public:
     int select0(int i);
     void print();
     long unsigned size();
+    long unsigned count();
 };
 
 #endif
