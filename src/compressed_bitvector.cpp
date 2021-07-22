@@ -51,8 +51,10 @@ CompressedBitVector::CompressedBitVector(int b, int n)
     this->K = precompComb(K, b);
     this->R = (int *)malloc(ceil(n / (float)k) * sizeof(int));
     this->P = (int *)malloc(ceil(n / (float)k) * sizeof(int));
-    this->S = new CompArray(n + 1, n + 1);
-    this->m = 0;
+    // this->S1 = new CompArray(n + 1, n + 1);
+    // this->S0 = new CompArray(n + 1, n + 1);
+    this->m1 = 0;
+    this->m0 = 0;
     this->sz = ((b + 1) * (b + 1) + ceil(n / (float)k) * 2) * sizeof(int);
 }
 
@@ -86,7 +88,9 @@ CompressedBitVector::~CompressedBitVector()
 {
     delete C;
     delete O;
-    delete S;
+    // bug, double free ao desalocar S's
+    // delete S1;
+    // delete S0;
     free(K);
     free(R);
     free(P);
@@ -101,8 +105,12 @@ pair<unsigned, unsigned> CompressedBitVector::encode(CompArray &B, int i)
         if (B1 & (1 << (b - j)))
         {
             c++;
-            m++;
-            S->write(m, i * b + j - 1);
+            m1++;
+            // S1->write(m1, i * b + j - 1);
+            
+        } else {
+            m0++;
+            // S0->write(m0, i * b + j - 1);
         }
     }
 
@@ -188,6 +196,9 @@ void CompressedBitVector::compress(CompArray B)
 
 int CompressedBitVector::access(int i)
 {
+    if(i <= 0 || i > b * n) return -1;
+
+    i--;
     unsigned B1 = decode(i / b);
     // printf("B[%d] =  %d\n", i / b, B1);
     return B1 & (1 << (b - 1 - (i % b)));
@@ -195,12 +206,13 @@ int CompressedBitVector::access(int i)
 
 int CompressedBitVector::rank1(int i)
 {
-    if (i == 0)                                    // gambiarra
-        return decode(0) & (1 << (b - 1)) ? 1 : 0; // in case of the first bit be 1
+    if (i <= 0 || i > b * n) return -1;
+
+    i--;
+    if (i == 0) return decode(0) & (1 << (b - 1)) ? 1 : 0; // in case of the first bit be 1
 
     int is = ceil(i / ((float)k * b));
-    if (i % (k * b) == 0)
-        return R[is];
+    if (i % (k * b) == 0) return R[is];
 
     int r = R[is - 1];
     int p = ceil(i / (float)b) - 1;
@@ -209,22 +221,33 @@ int CompressedBitVector::rank1(int i)
 
     unsigned B1 = decode(p);
     for (int j = 0; j <= i % b; j++)
-        if (B1 & (1 << (b - 1 - (j % b))))
-            r++;
+        if (B1 & (1 << (b - 1 - (j % b)))) r++;
 
     return r;
 }
 
 int CompressedBitVector::rank0(int i)
 {
+    if (i <= 0 || i > b * n) return -1;
     return i - rank1(i);
 }
 
-int CompressedBitVector::select(int i)
+int CompressedBitVector::select1(int i)
 {
-    if (i > m || i <= 0)
-        return -1;
-    return S->read(i);
+    if (i > m1 || i < 0) return -1;
+    // return S1->read(i);
+
+    for (int j = 1; j <= b * n; j++)
+        if (rank1(j) == i) return j;
+}
+
+int CompressedBitVector::select0(int i)
+{
+    if (i > m0 || i < 0) return -1;
+    // return S0->read(i);
+
+    for (int j = 1; j <= b * n; j++)
+        if(rank0(j) == i) return j;
 }
 
 void CompressedBitVector::print()

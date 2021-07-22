@@ -17,8 +17,9 @@ private:
     int **K;
     int *R;
     int *P;
-    CompArray *S;
-    int m; // number of 1's
+    CompArray *S1, *S0; // select arrays
+    int m1; // number of 1's
+    int m0; // number of 0's
     long unsigned sz = 0;
 
     pair<unsigned, unsigned> encode(CompArray &B, int i);
@@ -34,7 +35,8 @@ public:
     int access(int i);
     int rank1(int i);
     int rank0(int i);
-    int select(int i);
+    int select1(int i);
+    int select0(int i);
     void print();
     long unsigned size();
 };
