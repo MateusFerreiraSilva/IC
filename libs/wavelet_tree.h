@@ -6,8 +6,12 @@ using namespace std;
 #define WAVELET_TREE
 
 class WaveletTree {
-private:
 public:
+    static map<string, unsigned> cods;
+    static map<unsigned, string> codsI;
+    static map<unsigned, WaveletTree*> leaf;
+    static const unsigned BITVECTOR_BLOCK_SIZE = 4;
+    
     WaveletTree *l = NULL, *r = NULL, *p = NULL;
     CompressedBitVector *bitvector = NULL;
     unsigned bitvector_size = 0;

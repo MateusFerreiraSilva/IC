@@ -210,6 +210,7 @@ bool CompressedBitVector::access(int i)
 
 int CompressedBitVector::rank1(int i)
 {
+    //TODO trocar b * n pelo tamanho preciso do bitarray
     if (i <= 0 || i > b * n) return -1;
 
     i--;
@@ -218,6 +219,7 @@ int CompressedBitVector::rank1(int i)
     int is = ceil(i / ((float)k * b));
     if (i % (k * b) == 0) return R[is];
 
+    // no caso rank 4 5 R[0] não está correto, deveria ser 1 e nao 0 e isso gera erro nos proximos
     int r = R[is - 1];
     int p = ceil(i / (float)b) - 1;
     for (int j = P[is - 1]; j < p; j++)
