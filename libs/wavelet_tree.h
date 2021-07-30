@@ -10,6 +10,7 @@ private:
 public:
     WaveletTree *l = NULL, *r = NULL, *p = NULL;
     CompressedBitVector *bitvector = NULL;
+    unsigned bitvector_size = 0;
     WaveletTree(unsigned *from, unsigned *to, unsigned lo, unsigned hi, string cod, WaveletTree *parent);
     ~WaveletTree();
     int access(int i);

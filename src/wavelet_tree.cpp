@@ -3,6 +3,8 @@
 #include "../libs/wavelet_tree.h"
 using namespace std;
 
+#define BITVECTOR_BLOCK_SIZE 4
+
 map<string, unsigned> cods;
 map<unsigned, string> codsI;
 map<unsigned, void *> leaf;
@@ -22,15 +24,15 @@ WaveletTree::WaveletTree(unsigned *from, unsigned *to, unsigned lo, unsigned hi,
         return;
     }
 
-    int sz = to - from;
-    vector<bool> b(sz); // dummy bitvector
+    this->bitvector_size = to - from;
+    vector<bool> b(bitvector_size); // dummy bitvector
     unsigned mid = lo + (hi - lo) / 2;
     auto lessThanMid = [mid](unsigned x)
     { return x <= mid; };
 
     int idx = 0;
     for (auto it = from; it != to; it++) b[idx++] = !lessThanMid(*it);
-    this->bitvector = new CompressedBitVector(4, ceil(b.size() / (float)4), b); // the real bitvector
+    this->bitvector = new CompressedBitVector(BITVECTOR_BLOCK_SIZE, ceil(b.size() / (float)BITVECTOR_BLOCK_SIZE), b); // the real bitvector
 
     // printBitvector();
 
@@ -50,7 +52,7 @@ WaveletTree::~WaveletTree()
 
 int WaveletTree::access(int i)
 {
-    if(i > this->bitvector->size()) return -1;
+    if(i > bitvector_size) return -1;
 
     WaveletTree *wt = this;
     CompressedBitVector *bitvector;
@@ -77,7 +79,7 @@ int WaveletTree::access(int i)
 
 int WaveletTree::rank(unsigned c, int i)
 {
-    if(i > this->bitvector->count()) return -1;
+    if(i > bitvector_size) return -1;
 
     WaveletTree *wt = this;
     CompressedBitVector *bitvector;
@@ -103,7 +105,7 @@ int WaveletTree::rank(unsigned c, int i)
 
 int WaveletTree::select(unsigned c, int i)
 {
-    if (i > this->bitvector->count()) return -1;
+    if (i > bitvector_size) return -1;
 
     WaveletTree *wt = (WaveletTree *)leaf[c];
     CompressedBitVector *bitvector;

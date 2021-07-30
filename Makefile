@@ -1,22 +1,22 @@
 compressed_array.o:
-	g++ -c ./src/compressed_array.cpp
+	g++ -c -g ./src/compressed_array.cpp
 	mv compressed_array.o ./resources
 
 sample_pointers.o:
-	g++ -c ./src/sample_pointers.cpp
+	g++ -c -g ./src/sample_pointers.cpp
 	mv sample_pointers.o ./resources
 
 
 compressed_bitvector.o:
-	g++ -c ./src/compressed_bitvector.cpp
+	g++ -c -g ./src/compressed_bitvector.cpp
 	mv compressed_bitvector.o ./resources
 
 wavelet_tree.o:
-	g++ -c ./src/wavelet_tree.cpp
+	g++ -c -g ./src/wavelet_tree.cpp
 	mv wavelet_tree.o ./resources
 
 main.o:
-	g++ -c ./src/main.cpp
+	g++ -c -g ./src/main.cpp
 	mv main.o ./resources
 
 clean:

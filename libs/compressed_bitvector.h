@@ -32,7 +32,7 @@ public:
     CompressedBitVector(int b, int n, vector<bool>& bitvector);
     ~CompressedBitVector();
     void compress(CompArray B);
-    int access(int i);
+    bool access(int i);
     int rank1(int i);
     int rank0(int i);
     int select1(int i);

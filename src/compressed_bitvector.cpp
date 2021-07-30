@@ -63,6 +63,10 @@ CompressedBitVector::CompressedBitVector(int b, int n, unsigned *B) : Compressed
     compress(CompArray(b, n, B));
 }
 
+/*
+ * b = size of the block
+ * n = number of blocks
+*/
 CompressedBitVector::CompressedBitVector(int b, int n, vector<bool>& bitvector) : CompressedBitVector(b, n)
 {
     // first we need to convert all the bitvector in a array int with size of b bits
@@ -75,7 +79,7 @@ CompressedBitVector::CompressedBitVector(int b, int n, vector<bool>& bitvector) 
             if (i % b == 0)
             {
                 j++;
-                x = b;
+                x = b; // x will be decremented in the end of the loop, so x = b - 1
             }
         }
 
@@ -194,7 +198,7 @@ void CompressedBitVector::compress(CompArray B)
     precompR();
 }
 
-int CompressedBitVector::access(int i)
+bool CompressedBitVector::access(int i)
 {
     if(i <= 0 || i > b * n) return -1;
 
@@ -261,7 +265,7 @@ void CompressedBitVector::print()
 
 long unsigned CompressedBitVector::size()
 {
-    return sz;
+    return n;
 }
 
 long unsigned CompressedBitVector::count() // return the number of elements
