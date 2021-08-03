@@ -11,7 +11,8 @@ using namespace std;
 class CompressedBitVector
 {
 private:
-    int n, b;
+    int block_size, block_num;
+    unsigned long length;
     CompArray *C;
     SamplePointers *O;
     int **K;
@@ -27,16 +28,16 @@ private:
     void precompR();
 
 public:
-    CompressedBitVector(int b, int n);
-    CompressedBitVector(int b, int n, unsigned *B);
-    CompressedBitVector(int b, int n, vector<bool>& bitvector);
+    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length);
+    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, unsigned *B);
+    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, vector<bool> &bitvector);
     ~CompressedBitVector();
     void compress(CompArray B);
-    bool access(int i);
-    int rank1(int i);
-    int rank0(int i);
-    int select1(int i);
-    int select0(int i);
+    bool access(unsigned i);
+    unsigned rank1(unsigned i);
+    unsigned rank0(unsigned i);
+    unsigned select1(unsigned i);
+    unsigned select0(unsigned i);
     void print();
     long unsigned size();
     long unsigned count();

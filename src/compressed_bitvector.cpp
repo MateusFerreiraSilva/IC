@@ -44,47 +44,56 @@ int **precompComb(int **K, int x)
 
 // END Combination
 
-CompressedBitVector::CompressedBitVector(int b, int n)
+CompressedBitVector::CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length)
 {
-    this->b = b; // block size in bits
-    this->n = n;
-    this->K = precompComb(K, b);
-    this->R = (int *)malloc(ceil(n / (float)k) * sizeof(int));
-    this->P = (int *)malloc(ceil(n / (float)k) * sizeof(int));
-    // this->S1 = new CompArray(n + 1, n + 1);
-    // this->S0 = new CompArray(n + 1, n + 1);
+    this->block_size = block_size; // block size in bits
+    this->block_num = block_num; // number of bits;
+    this->length = length;
+
+    // TODO testes nos construtores
+    // try { if(length > block_num * block_size) error }
+
+    this->K = precompComb(K, block_size);
+    this->R = (int *)malloc(ceil(block_num / (float)k) * sizeof(int));
+    this->P = (int *)malloc(ceil(block_num / (float)k) * sizeof(int));
+    // this->S1 = new CompArray(block_num + 1, block_num + 1);
+    // this->S0 = new CompArray(block_num + 1, block_num + 1);
     this->m1 = 0;
     this->m0 = 0;
-    this->sz = ((b + 1) * (b + 1) + ceil(n / (float)k) * 2) * sizeof(int);
+    this->sz = ((block_size + 1) * (block_size + 1) + ceil(block_num / (float)k) * 2) * sizeof(int);
 }
 
-CompressedBitVector::CompressedBitVector(int b, int n, unsigned *B) : CompressedBitVector(b, n)
+CompressedBitVector::CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, unsigned *B) : CompressedBitVector(block_size, block_num, length)
 {
-    compress(CompArray(b, n, B));
+    compress(CompArray(block_size, block_num, B));
 }
 
 /*
- * b = size of the block
- * n = number of blocks
+ * block_size = size of the block
+ * block_num = number of blocks
 */
-CompressedBitVector::CompressedBitVector(int b, int n, vector<bool>& bitvector) : CompressedBitVector(b, n)
+CompressedBitVector::CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, vector<bool> &bitvector) : CompressedBitVector(block_size, block_num, length)
 {
-    // first we need to convert all the bitvector in a array int with size of b bits
-    unsigned *B = (unsigned*) calloc(n, sizeof(unsigned));
+    // first we need to convert all the bitvector in a array int with size of block_size bits
+    unsigned *B = (unsigned*) calloc(block_num, sizeof(unsigned));
     if(B) {
-        int j = 0, x = b - 1;
+        int j = 0, x = block_size - 1;
         for(int i = 1; i <= bitvector.size(); i++, x--) {
             if(bitvector[i-1])
                 B[j] |= 1 << x;
-            if (i % b == 0)
+            if (i % block_size == 0)
             {
                 j++;
-                x = b; // x will be decremented in the end of the loop, so x = b - 1
+                x = block_size; // x will be decremented in the end of the loop, so x = block_size - 1
             }
         }
 
-        compress(CompArray(b, n, B));
+        compress(CompArray(block_size, block_num, B));
         free(B);
+        vector<bool> aux(bitvector.size(), 0);
+        for (int i = 0; i < bitvector.size(); i++)
+            aux[i] = access(i + 1);
+        assert(aux.size() == bitvector.size());
     }
 }
 
@@ -104,28 +113,28 @@ pair<unsigned, unsigned> CompressedBitVector::encode(CompArray &B, int i)
 {
     unsigned B1 = B.read(i);
     unsigned c = 0;
-    for (int j = 1; j <= b; j++)
+    for (int j = 1; j <= block_size; j++)
     {
-        if (B1 & (1 << (b - j)))
+        if (B1 & (1 << (block_size - j)))
         {
             c++;
             m1++;
-            // S1->write(m1, i * b + j - 1);
+            // S1->write(m1, i * block_size + j - 1);
             
         } else {
             m0++;
-            // S0->write(m0, i * b + j - 1);
+            // S0->write(m0, i * block_size + j - 1);
         }
     }
 
     unsigned o = 0;
     unsigned c1 = c;
     int j = 1;
-    while (c1 > 0 && c1 <= b - j)
+    while (c1 > 0 && c1 <= block_size - j)
     {
-        if (B1 & (1 << (b - j)))
+        if (B1 & (1 << (block_size - j)))
         {
-            o += K[b - j][c1];
+            o += K[block_size - j][c1];
             c1--;
         }
         j++;
@@ -143,10 +152,10 @@ unsigned CompressedBitVector::decode(int i)
     int j = 1;
     while (c > 0)
     {
-        if (o >= K[b - j][c])
+        if (o >= K[block_size - j][c])
         {
-            B1 |= (1 << (b - j)); // bitset
-            o -= K[b - j][c];
+            B1 |= (1 << (block_size - j)); // bitset
+            o -= K[block_size - j][c];
             c--;
         }
         j++;
@@ -160,11 +169,11 @@ void CompressedBitVector::precompR()
     memset(R, 0, sizeof(R));
     // printf("R[0] = %d\n", R[0]);
     P[0] = 0;
-    for (int i = 1; i < ceil(n / (float)k); i++)
+    for (int i = 1; i < ceil(block_num / (float)k); i++)
     {
         P[i] = i * k;
         R[i] = R[i - 1];
-        for (int j = 0; j < b; j++)
+        for (int j = 0; j < block_size; j++)
             R[i] += C->read((i - 1) * k + j);
         // printf("R[%d] = %d\n", i, R[i]);
     }
@@ -172,8 +181,8 @@ void CompressedBitVector::precompR()
 
 void CompressedBitVector::compress(CompArray B)
 {
-    unsigned *C = (unsigned *)malloc(n * sizeof(unsigned));
-    unsigned *O = (unsigned *)malloc(n * sizeof(unsigned));
+    unsigned *C = (unsigned *)malloc(block_num * sizeof(unsigned));
+    unsigned *O = (unsigned *)malloc(block_num * sizeof(unsigned));
 
     if (C == NULL || O == NULL)
     {
@@ -182,7 +191,7 @@ void CompressedBitVector::compress(CompArray B)
     }
 
     unsigned maxO = 0;
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < block_num; i++)
     {
         pair<unsigned, unsigned> aux = encode(B, i);
         C[i] = aux.first;
@@ -190,75 +199,74 @@ void CompressedBitVector::compress(CompArray B)
         maxO = max(maxO, O[i]);
     }
 
-    this->C = new CompArray(b, n, C);
-    this->O = new SamplePointers(n, k, maxO, O);
+    this->C = new CompArray(block_size, block_num, C);
+    this->O = new SamplePointers(block_num, k, maxO, O);
     this->sz = this->sz + this->C->size() + this->O->size();
     free(C);
     free(O);
     precompR();
 }
 
-bool CompressedBitVector::access(int i)
+bool CompressedBitVector::access(unsigned i)
 {
-    if(i <= 0 || i > b * n) return -1;
+    if(i == 0 || i > length) return -1;
 
     i--;
-    unsigned B1 = decode(i / b);
-    // printf("B[%d] =  %d\n", i / b, B1);
-    return B1 & (1 << (b - 1 - (i % b)));
+    unsigned B1 = decode(i / block_size);
+    // printf("B[%d] =  %d\n", i / block_size, B1);
+    return B1 & (1 << (block_size - 1 - (i % block_size)));
 }
 
-int CompressedBitVector::rank1(int i)
+unsigned CompressedBitVector::rank1(unsigned i)
 {
-    //TODO trocar b * n pelo tamanho preciso do bitarray
-    if (i <= 0 || i > b * n) return -1;
+    if (i == 0 || i > length) return -1;
 
     i--;
-    if (i == 0) return decode(0) & (1 << (b - 1)) ? 1 : 0; // in case of the first bit be 1
+    if (i == 0) return decode(0) & (1 << (block_size - 1)) ? 1 : 0; // in case of the first bit be 1
 
-    int is = ceil(i / ((float)k * b));
-    if (i % (k * b) == 0) return R[is];
+    int is = ceil(i / ((float)k * block_size));
+    if (i % (k * block_size) == 0) return R[is];
 
-    // no caso rank 4 5 R[0] não está correto, deveria ser 1 e nao 0 e isso gera erro nos proximos
+    // no caso rank 4 5 R[0] block_num não está correto, deveria ser 1 e nao 0 e isso gera erro nos proximos
     int r = R[is - 1];
-    int p = ceil(i / (float)b) - 1;
+    int p = ceil(i / (float)block_size) - 1;
     for (int j = P[is - 1]; j < p; j++)
         r += C->read(j);
 
     unsigned B1 = decode(p);
-    for (int j = 0; j <= i % b; j++)
-        if (B1 & (1 << (b - 1 - (j % b)))) r++;
+    for (int j = 0; j <= i % block_size; j++)
+        if (B1 & (1 << (block_size - 1 - (j % block_size)))) r++;
 
     return r;
 }
 
-int CompressedBitVector::rank0(int i)
+unsigned CompressedBitVector::rank0(unsigned i)
 {
-    if (i <= 0 || i > b * n) return -1;
+    if (i == 0 || i > length) return -1;
     return i - rank1(i);
 }
 
-int CompressedBitVector::select1(int i)
+unsigned CompressedBitVector::select1(unsigned i)
 {
-    if (i > m1 || i < 0) return -1;
+    if (i > m1) return -1;
     // return S1->read(i);
 
-    for (int j = 1; j <= b * n; j++)
+    for (int j = 1; j <= length; j++)
         if (rank1(j) == i) return j;
 }
 
-int CompressedBitVector::select0(int i)
+unsigned CompressedBitVector::select0(unsigned i)
 {
-    if (i > m0 || i < 0) return -1;
+    if (i > m0) return -1;
     // return S0->read(i);
 
-    for (int j = 1; j <= b * n; j++)
+    for (int j = 1; j <= length; j++)
         if(rank0(j) == i) return j;
 }
 
 void CompressedBitVector::print()
 {
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < block_num; i++)
     {
         printf("%u ", decode(i));
     }
@@ -267,10 +275,10 @@ void CompressedBitVector::print()
 
 long unsigned CompressedBitVector::size()
 {
-    return n;
+    return block_num;
 }
 
 long unsigned CompressedBitVector::count() // return the number of elements
 {
-    return this->n;
+    return this->block_num;
 }
