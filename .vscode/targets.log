@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug  5 16:13:02 2021
+# Make data base, printed on Thu Aug  5 20:31:21 2021
 
 # Variables
 
@@ -269,9 +269,9 @@ VSCODE_PID = 17878
 
 # Directories
 
-# . (device 2053, inode 6571790): 12 files, no impossibilities.
+# . (device 2053, inode 6571790): 13 files, no impossibilities.
 
-# 12 files, no impossibilities in 1 directories.
+# 13 files, no impossibilities in 1 directories.
 
 # Implicit Rules
 
@@ -283,12 +283,27 @@ sample_pointers.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
- 
-#  recipe to execute (from 'Makefile', line 6):
+#  recipe to execute (from 'Makefile', line 8):
 	g++ -c -g ./src/sample_pointers.cpp
 	mv sample_pointers.o ./resources
 
-all: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o main.o
+build-main: main
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+ 
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 44):
+	g++ -o prog ./resources/*.o
+
+core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o main.o
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/3=0%
+
+all: core tests
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
@@ -296,6 +311,18 @@ all: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_t
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/3=0%
+
+build-tests: tests
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 47):
+	g++ -o prog ./resources/*.o
+
+tests: wavelet_tree_test.o
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 .SUFFIXES:
@@ -307,14 +334,14 @@ combination.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 10):
+#  recipe to execute (from 'Makefile', line 12):
 	g++ -c -g ./src/combination.cpp
 	mv combination.o ./resources
 
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-08-04 23:15:56.771259266
+#  Last modified 2021-08-05 20:29:49.981168951
 #  File has been updated.
 #  Successfully updated.
 
@@ -322,8 +349,16 @@ build: all
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 32):
+#  recipe to execute (from 'Makefile', line 50):
 	g++ -o prog ./resources/*.o
+
+wavelet_tree_test.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 34):
+	g++ -c -g ./src/structures_test/wavelet_tree_test.cpp
+	mv wavelet_tree_test.o ./resources
 
 bitarray.o:
 #  Implicit rule search has not been done.
@@ -349,7 +384,7 @@ bitarray.o:
 # ? := 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=1/11=9%
-#  recipe to execute (from 'Makefile', line 2):
+#  recipe to execute (from 'Makefile', line 4):
 	g++ -c -g ./src/bitarray.cpp
 	mv bitarray.o ./resources
 
@@ -363,14 +398,14 @@ run: build
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 35):
+#  recipe to execute (from 'Makefile', line 53):
 	./prog
 
 clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 26):
+#  recipe to execute (from 'Makefile', line 56):
 	rm ./resources/*.o	
 	rm prog
 
@@ -378,7 +413,7 @@ wavelet_tree.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 18):
+#  recipe to execute (from 'Makefile', line 20):
 	g++ -c -g ./src/wavelet_tree.cpp
 	mv wavelet_tree.o ./resources
 
@@ -386,32 +421,38 @@ compressed_bitvector.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 14):
+#  recipe to execute (from 'Makefile', line 16):
 	g++ -c -g ./src/compressed_bitvector.cpp
 	mv compressed_bitvector.o ./resources
+
+# Not a target:
+main:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 main.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 22):
+#  recipe to execute (from 'Makefile', line 24):
 	g++ -c -g ./src/main.cpp
 	mv main.o ./resources
 
 # files hash-table stats:
-# Load=13/1024=1%, Rehash=0, Collisions=0/33=0%
+# Load=19/1024=2%, Rehash=0, Collisions=0/44=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 26 / storage = 231 B / avg = 8 B
-# current buf: size = 8162 B / used = 231 B / count = 26 / avg = 8 B
+# strcache buffers: 1 (0) / strings = 33 / storage = 297 B / avg = 9 B
+# current buf: size = 8162 B / used = 297 B / count = 33 / avg = 9 B
 
-# strcache performance: lookups = 50 / hit rate = 48%
+# strcache performance: lookups = 66 / hit rate = 50%
 # hash-table stats:
-# Load=26/8192=0%, Rehash=0, Collisions=1/50=2%
-# Finished Make data base on Thu Aug  5 16:13:02 2021
+# Load=33/8192=0%, Rehash=0, Collisions=1/66=2%
+# Finished Make data base on Thu Aug  5 20:31:21 2021
 
  

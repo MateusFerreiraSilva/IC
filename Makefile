@@ -1,3 +1,5 @@
+### CORE ###
+
 bitarray.o:
 	g++ -c -g ./src/bitarray.cpp
 	mv bitarray.o ./resources
@@ -22,14 +24,34 @@ main.o:
 	g++ -c -g ./src/main.cpp
 	mv main.o ./resources
 
-clean:
-	rm ./resources/*.o	
-	rm prog
+core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o main.o
 
-all: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o main.o
+### END CORE ###
+
+### TESTS ###
+
+wavelet_tree_test.o:
+	g++ -c -g ./src/structures_test/wavelet_tree_test.cpp
+	mv wavelet_tree_test.o ./resources
+
+tests: wavelet_tree_test.o
+
+### END TESTS ###
+
+all: core tests
+
+build-main: main
+	g++ -o prog ./resources/*.o
+
+build-tests: tests
+	g++ -o prog ./resources/*.o
 
 build: all
 	g++ -o prog ./resources/*.o
 
 run: build
 	./prog
+
+clean:
+	rm ./resources/*.o	
+	rm prog
