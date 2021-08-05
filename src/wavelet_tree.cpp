@@ -4,7 +4,7 @@
 using namespace std;
 
 map<string, unsigned>WaveletTree::cods;
-map<unsigned, string>WaveletTree::codsI;
+map<unsigned, string>WaveletTree::codsInverted;
 map<unsigned, WaveletTree *>WaveletTree::leaf;
 
 WaveletTree::WaveletTree(unsigned *from, unsigned *to, unsigned lo, unsigned hi, string cod, WaveletTree *parent)
@@ -17,20 +17,24 @@ WaveletTree::WaveletTree(unsigned *from, unsigned *to, unsigned lo, unsigned hi,
     if (lo == hi)
     { // homogeneous array
         WaveletTree::cods[cod] = lo;
-        WaveletTree::codsI[lo] = cod;
+        WaveletTree::codsInverted[lo] = cod;
         WaveletTree::leaf[lo] = this;
         return;
     }
 
     this->bitvector_size = to - from;
-    vector<bool> b(bitvector_size); // dummy bitvector
+    // TODO substituir por bitset
+    vector<bool> dummy_bitvector(bitvector_size); // dummy bitvector
     unsigned mid = lo + (hi - lo) / 2;
+    // TODO substituir por funcao estatica
     auto lessThanMid = [mid](unsigned x)
     { return x <= mid; };
 
     int idx = 0;
-    for (auto it = from; it != to; it++) b[idx++] = !lessThanMid(*it);
-    this->bitvector = new CompressedBitvector(WaveletTree::BITVECTOR_BLOCK_SIZE, b.size(), b); // the real bitvector
+    for (auto it = from; it != to; it++) dummy_bitvector[idx++] = !lessThanMid(*it);
+    this->bitvector = new CompressedBitvector(
+        WaveletTree::BITVECTOR_BLOCK_SIZE, dummy_bitvector.size(), dummy_bitvector
+    ); // the real bitvector
 
     auto pivot = stable_partition(from, to, lessThanMid);
 
@@ -79,13 +83,13 @@ int WaveletTree::rank(unsigned c, int i)
 
     WaveletTree *wt = this;
     CompressedBitvector *bitvector;
-    unsigned b;
+    unsigned bit;
     int K = 0;
-    while ((wt->l || wt->r) && K < WaveletTree::codsI[c].size())
+    while ((wt->l || wt->r) && K < WaveletTree::codsInverted[c].size())
     { // while is not the leaf
         bitvector = wt->bitvector;
-        b = WaveletTree::codsI[c][K++] - '0';
-        if (b)
+        bit = WaveletTree::codsInverted[c][K++] - '0';
+        if (bit == 1)
         {
             wt = wt->r;
             i = bitvector->rank1(i);
@@ -108,14 +112,14 @@ int WaveletTree::select(unsigned c, int i)
 
     WaveletTree *wt = WaveletTree::leaf[c];
     CompressedBitvector *bitvector;
-    unsigned b;
-    int K = WaveletTree::codsI[c].size() - 1;
+    unsigned bit;
+    int K = WaveletTree::codsInverted[c].size() - 1;
     while (wt != this)
     { // while is not the root
         wt = wt->p;
         bitvector = wt->bitvector;
-        b = WaveletTree::codsI[c][K--] - '0';
-        if (b)
+        bit = WaveletTree::codsInverted[c][K--] - '0';
+        if (bit == 1)
         {
             i = bitvector->select1(i);
         }

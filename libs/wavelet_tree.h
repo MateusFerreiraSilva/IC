@@ -8,7 +8,7 @@ using namespace std;
 class WaveletTree {
 public:
     static map<string, unsigned> cods;
-    static map<unsigned, string> codsI;
+    static map<unsigned, string> codsInverted;
     static map<unsigned, WaveletTree*> leaf;
     static const unsigned BITVECTOR_BLOCK_SIZE = 4;
     

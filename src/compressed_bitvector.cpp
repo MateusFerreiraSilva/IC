@@ -15,28 +15,30 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
     // try { if(length > block_num * block_size) error }
 
     this->K = precompComb(K, block_size);
-    this->R = (int *)malloc(ceil(block_num / (float)k) * sizeof(int));
-    this->P = (int *)malloc(ceil(block_num / (float)k) * sizeof(int));
-    // this->S1 = new Bitarray(block_num + 1, block_num + 1);
-    // this->S0 = new Bitarray(block_num + 1, block_num + 1);
+
+    unsigned SIZE_AUX = ceil(length / (float)k) * sizeof(int);
+    this->R = (int *)malloc(SIZE_AUX);
+    this->P = (int *)malloc(SIZE_AUX);
+    // this->S1 = new Bitarray(length + 1, length + 1);
+    // this->S0 = new Bitarray(length + 1, length + 1);
     this->m1 = 0;
     this->m0 = 0;
-    this->sz = ((block_size + 1) * (block_size + 1) + ceil(block_num / (float)k) * 2) * sizeof(int);
+    this->sz = ((block_size + 1) * (block_size + 1) + SIZE_AUX * 2) * sizeof(int);
 }
 
 CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long length, unsigned *B) : CompressedBitvector(block_size, length)
 {
-    compress(Bitarray(block_size, block_num, B));
+    compress(Bitarray(block_size, length, B));
 }
 
 /*
  * block_size = size of the block
- * block_num = number of blocks
+ * length = quantity of elements
 */
 CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long length, vector<bool> &bitvector) : CompressedBitvector(block_size,length)
 {
     // first we need to convert all the bitvector in a array int with size of block_size bits
-    unsigned *B = (unsigned*) calloc(block_num, sizeof(unsigned));
+    unsigned *B = (unsigned*) calloc(length, sizeof(unsigned));
     if(B) {
         int j = 0, x = block_size - 1;
         for(int i = 1; i <= bitvector.size(); i++, x--) {
@@ -49,7 +51,7 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
             }
         }
 
-        compress(Bitarray(block_size, block_num, B));
+        compress(Bitarray(block_size, length, B));
         free(B);
         vector<bool> aux(bitvector.size(), 0);
         for (int i = 0; i < bitvector.size(); i++)
@@ -128,9 +130,9 @@ unsigned CompressedBitvector::decode(int i)
 void CompressedBitvector::precompR()
 {
     memset(R, 0, sizeof(R));
-    // printf("R[0] = %d\n", R[0]);
     P[0] = 0;
-    for (int i = 1; i < ceil(block_num / (float)k); i++)
+    // TODO trocar por SIZEAUX
+    for (int i = 1; i < ceil(length / (float)k); i++)
     {
         P[i] = i * k;
         R[i] = R[i - 1];
@@ -142,8 +144,8 @@ void CompressedBitvector::precompR()
 
 void CompressedBitvector::compress(Bitarray B)
 {
-    unsigned *C = (unsigned *)malloc(block_num * sizeof(unsigned));
-    unsigned *O = (unsigned *)malloc(block_num * sizeof(unsigned));
+    unsigned *C = (unsigned *)malloc(length * sizeof(unsigned));
+    unsigned *O = (unsigned *)malloc(length * sizeof(unsigned));
 
     if (C == NULL || O == NULL)
     {
@@ -151,13 +153,8 @@ void CompressedBitvector::compress(Bitarray B)
         return;
     }
 
-    // B.bitsPrint();
-    int x; // TODO X soh funciona para os 3 primeiros valores
-    for(int i = 0; i < B.length(); i++)
-        x = B.read(i);
-
     unsigned maxO = 0;
-    for (int i = 0; i < block_num; i++)
+    for (int i = 0; i < length; i++)
     {
         pair<unsigned, unsigned> aux = encode(B, i);
         C[i] = aux.first;
@@ -165,8 +162,8 @@ void CompressedBitvector::compress(Bitarray B)
         maxO = max(maxO, O[i]);
     }
 
-    this->C = new Bitarray(block_size, block_num, C);
-    this->O = new SamplePointers(block_num, k, maxO, O);
+    this->C = new Bitarray(block_size, length, C);
+    this->O = new SamplePointers(length, k, maxO, O);
     this->sz = this->sz + this->C->size() + this->O->size();
     free(C);
     free(O);
@@ -232,7 +229,7 @@ unsigned CompressedBitvector::select0(unsigned i)
 
 void CompressedBitvector::print()
 {
-    for (int i = 0; i < block_num; i++)
+    for (int i = 0; i < length; i++)
     {
         printf("%u ", decode(i));
     }
@@ -241,10 +238,10 @@ void CompressedBitvector::print()
 
 long unsigned CompressedBitvector::size()
 {
-    return block_num;
+    return this->sz + this->C->size() + this->O->size();
 }
 
 long unsigned CompressedBitvector::count() // return the number of elements
 {
-    return this->block_num;
+    return this->length;
 }
