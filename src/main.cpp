@@ -9,26 +9,12 @@ using namespace std;
 
 #define sz 9
 
-pair<unsigned, unsigned> findLimits(unsigned *seq, unsigned seq_size)
-{
-    unsigned seqMin, seqMax;
-    if (seq_size >= 1)
-        seqMin = seqMax = seq[0];
-    for (int i = 1; i < seq_size; i++)
-    {
-        seqMin = min(seqMin, seq[i]);
-        seqMax = max(seqMax, seq[i]);
-    }
-    return make_pair(seqMin, seqMax);
-}
-
 int main()
 {
-    unsigned arr[] = {2, 1, 4, 1, 2, 4, 1, 5, 2, 1};
+    unsigned arr[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
     unsigned arrCopy[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
     int arrSize = sizeof(arr) / sizeof(unsigned);
-    pair<unsigned, unsigned> limits = findLimits(arr, arrSize);
-    WaveletTree wt(arr, arr + arrSize, limits.first, limits.second, "", NULL);
+    WaveletTree wt(arr, arr + arrSize, "", NULL);
 
     int count = 0;
     for (int i = 1; i <= arrSize; i++) {

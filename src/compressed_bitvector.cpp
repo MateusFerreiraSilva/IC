@@ -180,6 +180,7 @@ bool CompressedBitvector::access(unsigned i)
     return B1 & (1 << (block_size - 1 - (i % block_size)));
 }
 
+// problema esta aqui
 unsigned CompressedBitvector::rank1(unsigned i)
 {
     if (i == 0 || i > length) return -1;
@@ -205,7 +206,9 @@ unsigned CompressedBitvector::rank1(unsigned i)
 
 unsigned CompressedBitvector::rank0(unsigned i)
 {
+    // rank0(5) retorna 5 mas deveria retornar 4 pq rank1(5) esta retornado 0
     if (i == 0 || i > length) return -1;
+    // return i - rank1(i) ? rank1(i) : 1; // QUICK FIX
     return i - rank1(i);
 }
 
