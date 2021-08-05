@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../libs/compressed_array.h"
+#include "../libs/bitarray.h"
 #include "../libs/sample_pointers.h"
 using namespace std;
 
@@ -8,31 +8,31 @@ using namespace std;
 
 #define k 4
 
-class CompressedBitVector
+class CompressedBitvector
 {
 private:
     int block_size, block_num;
     unsigned long length;
-    CompArray *C;
+    Bitarray *C;
     SamplePointers *O;
     int **K;
     int *R;
     int *P;
-    CompArray *S1, *S0; // select arrays
+    Bitarray *S1, *S0; // select arrays
     int m1; // number of 1's
     int m0; // number of 0's
     long unsigned sz = 0;
 
-    pair<unsigned, unsigned> encode(CompArray &B, int i);
+    pair<unsigned, unsigned> encode(Bitarray &B, int i);
     unsigned decode(int i);
     void precompR();
 
 public:
-    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length);
-    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, unsigned *B);
-    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, vector<bool> &bitvector);
-    ~CompressedBitVector();
-    void compress(CompArray B);
+    CompressedBitvector(unsigned block_size, unsigned long length);
+    CompressedBitvector(unsigned block_size, unsigned long length, unsigned *B);
+    CompressedBitvector(unsigned block_size, unsigned long length, vector<bool> &bitvector);
+    ~CompressedBitvector();
+    void compress(Bitarray B);
     bool access(unsigned i);
     unsigned rank1(unsigned i);
     unsigned rank0(unsigned i);

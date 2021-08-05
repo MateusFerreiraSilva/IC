@@ -13,7 +13,7 @@ public:
     static const unsigned BITVECTOR_BLOCK_SIZE = 4;
     
     WaveletTree *l = NULL, *r = NULL, *p = NULL;
-    CompressedBitVector *bitvector = NULL;
+    CompressedBitvector *bitvector = NULL;
     unsigned bitvector_size = 0;
     WaveletTree(unsigned *from, unsigned *to, unsigned lo, unsigned hi, string cod, WaveletTree *parent);
     ~WaveletTree();

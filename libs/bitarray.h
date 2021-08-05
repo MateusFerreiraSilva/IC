@@ -4,7 +4,7 @@ using namespace std;
 #ifndef COMPRESSED_ARRAY
 #define COMPRESSED_ARRAY
 
-class CompArray
+class Bitarray
 {
 private:
     const unsigned w = 32; // amount of bits in a unsigned
@@ -15,9 +15,9 @@ private:
 
 public:
     // mudar parametros para aceitar int ou unsigned
-    CompArray(int l, int n);
-    CompArray(int l, int n, unsigned *arr);
-    ~CompArray();
+    Bitarray(int l, int n);
+    Bitarray(int l, int n, unsigned *arr);
+    ~Bitarray();
     void compress(unsigned *arr);
     bool bitread(int j);
     unsigned bitsread(int j0, int j);
@@ -29,6 +29,7 @@ public:
     int bitsPrint();
     void printW();
     long unsigned size();
+    long unsigned length();
     // void printWbits()
     // {
     //     for (int i = 1; i <= l * n; i++)

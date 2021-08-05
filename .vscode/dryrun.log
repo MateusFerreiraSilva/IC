@@ -1,6 +1,9 @@
-make --dry-run --always-make --keep-going --print-directory
+make --dry-run --keep-going --print-directory
 make: Entering directory '/home/mateus/Projects/IC'
-g++ -c -g ./src/compressed_array.cpp
-mv compressed_array.o ./resources
+ 
+g++ -c -g ./src/bitarray.cpp
+ 
+mv bitarray.o ./resources
+ 
 make: Leaving directory '/home/mateus/Projects/IC'
  

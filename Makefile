@@ -1,11 +1,14 @@
-compressed_array.o:
-	g++ -c -g ./src/compressed_array.cpp
-	mv compressed_array.o ./resources
+bitarray.o:
+	g++ -c -g ./src/bitarray.cpp
+	mv bitarray.o ./resources
 
 sample_pointers.o:
 	g++ -c -g ./src/sample_pointers.cpp
 	mv sample_pointers.o ./resources
 
+combination.o:
+	g++ -c -g ./src/combination.cpp
+	mv combination.o ./resources
 
 compressed_bitvector.o:
 	g++ -c -g ./src/compressed_bitvector.cpp
@@ -23,7 +26,7 @@ clean:
 	rm ./resources/*.o	
 	rm prog
 
-all: compressed_array.o sample_pointers.o compressed_bitvector.o wavelet_tree.o main.o
+all: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o main.o
 
 build: all
 	g++ -o prog ./resources/*.o

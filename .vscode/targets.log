@@ -1,36 +1,67 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # GNU Make 4.1
+ 
 # Built for x86_64-pc-linux-gnu
+ 
 # Copyright (C) 1988-2014 Free Software Foundation, Inc.
+ 
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+ 
 # This is free software: you are free to change and redistribute it.
+ 
 # There is NO WARRANTY, to the extent permitted by law.
+ 
 
-# Make data base, printed on Tue Aug  3 00:17:41 2021
+ 
+# Make data base, printed on Wed Aug  4 23:17:30 2021
+ 
 
 # Variables
+ 
 
+ 
 # 'override' directive
+ 
 GNUMAKEFLAGS := 
+ 
 # automatic
+ 
 <D = $(patsubst %/,%,$(dir $<))
+ 
 # automatic
+ 
 ?F = $(notdir $?)
+ 
 # environment
+ 
 PAPERSIZE = a4
+ 
 # environment
+ 
 DESKTOP_SESSION = ubuntu
+ 
 # default
+ 
 .SHELLFLAGS := -c
+ 
 # environment
+ 
 XDG_SESSION_TYPE = x11
+ 
 # environment
+ 
 VSCODE_LOG_NATIVE = false
+ 
 # automatic
+ 
 ?D = $(patsubst %/,%,$(dir $?))
+ 
 # environment
+ 
 IM_CONFIG_PHASE = 2
+ 
 # automatic
+ 
 @D = $(patsubst %/,%,$(dir $@))
 # environment
 XAUTHORITY = /run/user/1000/gdm/Xauthority
@@ -65,6 +96,7 @@ MANDATORY_PATH = /usr/share/gconf/ubuntu.mandatory.path
 # environment
 XDG_DATA_DIRS = /usr/share/ubuntu:/home/mateus/.local/share/flatpak/exports/share/:/var/lib/flatpak/exports/share/:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
 # environment
+ 
 DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
 # environment
 VSCODE_VERBOSE_LOGGING = true
@@ -73,21 +105,27 @@ LC_CTYPE = pt_BR.UTF-8
 # environment
 CLUTTER_IM_MODULE = xim
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-68810280-a250-4148-9073-bbb10eb2c0a4.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-2c4ce7a0-61c2-41df-81bd-67f440e92541.sock
+# environment
+GIT_USER = MateusFerreiraSilva
 # environment
 LC_NAME = pt_BR.UTF-8
+# environment
+USER_EMAIL = ferreiramateus201306@gmail.com
 # environment
 VSCODE_CWD = /home/mateus
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /opt/apache-maven-3.8.1/bin:/opt/apache-maven-3.8.1/bin:/home/mateus/.local/bin:/opt/apache-maven-3.8.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/mateus/Development/flutter/bin:/home/mateus/.nvm/versions/node/v14.4.0/bin/:/opt/apache-maven-3.8.1/bin:/opt/apache-maven-3.8.1/bin:/home/mateus/.local/bin:/opt/apache-maven-3.8.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:.
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/2321,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/2321
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/25533,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/25533
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -101,11 +139,13 @@ VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
+LS_COLORS = 
+# environment
 XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 17437
+GIO_LAUNCHED_DESKTOP_FILE_PID = 14311
 # automatic
 %F = $(notdir $%)
 # environment
@@ -119,7 +159,7 @@ PWD = /home/mateus/Projects/IC
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 2407
+SSH_AGENT_PID = 25619
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -137,6 +177,8 @@ APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 +F = $(notdir $+)
 # environment
+ZSH = /home/mateus/.oh-my-zsh
+# environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
 MAKE_VERSION := 4.1
@@ -147,6 +189,8 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 # environment
 XDG_VTNR = 2
 # environment
+GIT_TOKEN = 6ad50d5252f3d093ef28820ba2be42c78636b8a1
+# environment
 LC_TIME = pt_BR.UTF-8
 # default
 MAKE = $(MAKE_COMMAND)
@@ -155,25 +199,29 @@ MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
 # environment
-SHLVL = 1
+SHLVL = 0
 # environment
 GNOME_SHELL_SESSION_MODE = ubuntu
 # environment
-XDG_SESSION_ID = 2
+XDG_SESSION_ID = 90
 # environment
 USER = mateus
 # environment
 LC_MONETARY = pt_BR.UTF-8
 # makefile
-.DEFAULT_GOAL := compressed_array.o
+.DEFAULT_GOAL := bitarray.o
 # environment
 XDG_CURRENT_DESKTOP = Unity
+# environment
+LESS = -R
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
 LC_TELEPHONE = pt_BR.UTF-8
 # default
 MAKE_COMMAND := make
+# environment
+OLDPWD = /home/mateus
 # default
 .VARIABLES := 
 # automatic
@@ -217,6 +265,8 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 LC_MEASUREMENT = pt_BR.UTF-8
 # environment
+PAGER = less
+# environment
 LC_ALL = C
 # environment
 QT4_IM_MODULE = xim
@@ -241,9 +291,9 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 17437
+VSCODE_PID = 14311
 # variable set hash-table stats:
-# Load=116/1024=11%, Rehash=0, Collisions=22/144=15%
+# Load=125/1024=12%, Rehash=0, Collisions=22/153=14%
 
 # Pattern-specific Variable Values
 
@@ -269,7 +319,7 @@ sample_pointers.o:
 	g++ -c -g ./src/sample_pointers.cpp
 	mv sample_pointers.o ./resources
 
-all: compressed_array.o sample_pointers.o compressed_bitvector.o wavelet_tree.o main.o
+all: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o main.o
 #  Command line target.
 #  Implicit rule search has been done.
 #  File does not exist.
@@ -277,7 +327,6 @@ all: compressed_array.o sample_pointers.o compressed_bitvector.o wavelet_tree.o 
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/3=0%
- 
 
 # Not a target:
 .SUFFIXES:
@@ -285,10 +334,18 @@ all: compressed_array.o sample_pointers.o compressed_bitvector.o wavelet_tree.o 
 #  Modification time never checked.
 #  File has not been updated.
 
+combination.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 10):
+	g++ -c -g ./src/combination.cpp
+	mv combination.o ./resources
+
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-07-30 18:47:31.332094087
+#  Last modified 2021-08-04 23:15:56.771259266
 #  File has been updated.
 #  Successfully updated.
 
@@ -296,8 +353,37 @@ build: all
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 29):
+#  recipe to execute (from 'Makefile', line 32):
 	g++ -o prog ./resources/*.o
+
+bitarray.o:
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := bitarray.o
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := 
+# automatic
+# | := 
+# automatic
+# < := 
+ 
+# automatic
+# ^ := 
+# automatic
+# ? := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/11=9%
+#  recipe to execute (from 'Makefile', line 2):
+	g++ -c -g ./src/bitarray.cpp
+	mv bitarray.o ./resources
 
 # Not a target:
 .DEFAULT:
@@ -309,14 +395,14 @@ run: build
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 32):
+#  recipe to execute (from 'Makefile', line 35):
 	./prog
 
 clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 23):
+#  recipe to execute (from 'Makefile', line 26):
 	rm ./resources/*.o	
 	rm prog
 
@@ -324,7 +410,7 @@ wavelet_tree.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 15):
+#  recipe to execute (from 'Makefile', line 18):
 	g++ -c -g ./src/wavelet_tree.cpp
 	mv wavelet_tree.o ./resources
 
@@ -332,60 +418,32 @@ compressed_bitvector.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 11):
+#  recipe to execute (from 'Makefile', line 14):
 	g++ -c -g ./src/compressed_bitvector.cpp
 	mv compressed_bitvector.o ./resources
-
-compressed_array.o:
-#  Implicit rule search has not been done.
-#  Implicit/static pattern stem: ''
-#  File does not exist.
-#  File has been updated.
-#  Needs to be updated (-q is set).
-# automatic
-# @ := compressed_array.o
-# automatic
-# % := 
-# automatic
-# * := 
-# automatic
-# + := 
-# automatic
-# | := 
-# automatic
-# < := 
-# automatic
-# ^ := 
-# automatic
-# ? := 
-# variable set hash-table stats:
-# Load=8/32=25%, Rehash=0, Collisions=1/11=9%
-#  recipe to execute (from 'Makefile', line 2):
-	g++ -c -g ./src/compressed_array.cpp
-	mv compressed_array.o ./resources
 
 main.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  recipe to execute (from 'Makefile', line 19):
+#  recipe to execute (from 'Makefile', line 22):
 	g++ -c -g ./src/main.cpp
 	mv main.o ./resources
 
 # files hash-table stats:
-# Load=12/1024=1%, Rehash=0, Collisions=0/31=0%
+# Load=13/1024=1%, Rehash=0, Collisions=0/33=0%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 25 / storage = 225 B / avg = 9 B
-# current buf: size = 8162 B / used = 225 B / count = 25 / avg = 9 B
+# strcache buffers: 1 (0) / strings = 26 / storage = 231 B / avg = 8 B
+# current buf: size = 8162 B / used = 231 B / count = 26 / avg = 8 B
 
-# strcache performance: lookups = 47 / hit rate = 46%
+# strcache performance: lookups = 50 / hit rate = 48%
 # hash-table stats:
-# Load=25/8192=0%, Rehash=0, Collisions=1/47=2%
-# Finished Make data base on Tue Aug  3 00:17:41 2021
+# Load=26/8192=0%, Rehash=0, Collisions=1/50=2%
+# Finished Make data base on Wed Aug  4 23:17:30 2021
 
  
