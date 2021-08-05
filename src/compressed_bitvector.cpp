@@ -183,23 +183,35 @@ bool CompressedBitvector::access(unsigned i)
 // problema esta aqui
 unsigned CompressedBitvector::rank1(unsigned i)
 {
-    if (i == 0 || i > length) return -1;
+    if (i == 0 || i > length * block_size) return -1;
 
     i--;
-    if (i == 0) return decode(0) & (1 << (block_size - 1)) ? 1 : 0; // in case of the first bit be 1
+    // if (i == 0) return decode(0) & (1 << (block_size - 1)) ? 1 : 0; // in case of the first bit be 1
 
-    int is = ceil(i / ((float)k * block_size));
-    if (i % (k * block_size) == 0) return R[is];
+    // int is = ceil(i / ((float)k * block_size));
+    // if (i % (k * block_size) == 0) return R[is];
 
-    // no caso rank 4 5 R[0] block_num não está correto, deveria ser 1 e nao 0 e isso gera erro nos proximos
-    int r = R[is - 1];
-    int p = ceil(i / (float)block_size) - 1;
-    for (int j = P[is - 1]; j < p; j++)
-        r += C->read(j);
+    // // no caso rank 4 5 R[0] block_num não está correto, deveria ser 1 e nao 0 e isso gera erro nos proximos
+    // int r = R[is - 1];
+    // int p = ceil(i / (float)block_size) - 1;
+    // for (int j = P[is - 1]; j < p; j++)
+    //     r += C->read(j);
 
-    unsigned B1 = decode(p);
-    for (int j = 0; j <= i % block_size; j++)
-        if (B1 & (1 << (block_size - 1 - (j % block_size)))) r++;
+    // unsigned B1 = decode(p);
+    // for (int j = 0; j <= i % block_size; j++)
+    //     if (B1 & (1 << (block_size - 1 - (j % block_size)))) r++;
+
+    int r = 0;
+    int j = 0;
+    int pos = 0;
+    while(j <= i) {
+        int x = decode(pos);
+        if (x & (1 << (block_size - 1 - (j % block_size))))
+            r++;
+        if((j + 1) % block_size == 0)
+            pos++;
+        j++;
+    }
 
     return r;
 }
@@ -207,7 +219,7 @@ unsigned CompressedBitvector::rank1(unsigned i)
 unsigned CompressedBitvector::rank0(unsigned i)
 {
     // rank0(5) retorna 5 mas deveria retornar 4 pq rank1(5) esta retornado 0
-    if (i == 0 || i > length) return -1;
+    if (i == 0 || i > length * block_size) return -1;
     // return i - rank1(i) ? rank1(i) : 1; // QUICK FIX
     return i - rank1(i);
 }
