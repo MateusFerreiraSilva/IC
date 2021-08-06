@@ -2,13 +2,14 @@
 
 #define sz 9
 
-unsigned rank_test[10][10];
+unsigned rank_test[10][10], select_test[10][10];
 set<int> s;
 
-void calc_ranks_test(unsigned arr[], unsigned arrSize) {
-    for(int i = 0; i < arrSize; i++)
-        s.insert(arr[i]);
+void OK_TEST(int OK, int size) {
+    if (OK == size) printf("OK\n");
+}
 
+void calc_rank_test(unsigned arr[], unsigned arrSize) {
     for(auto it : s) {
         rank_test[it][0] = arr[0] == it;
         for(int i = 1; i < arrSize; i++)
@@ -21,41 +22,81 @@ void calc_ranks_test(unsigned arr[], unsigned arrSize) {
 
 }
 
+void calc_select_test(unsigned arr[], unsigned arrSize)
+{
+    memset(select_test, 0, sizeof(select_test));
+    for (auto it : s)
+    {
+        int rank = 0;
+        for (int i = 1; i <= arrSize; i++)
+            if(arr[i] == it) select_test[it][++rank] = i;
+        
+
+        printf("select_test %d: ", it);
+        for(int i = 0; i < arrSize; i++)
+            if (select_test[it][i])
+                printf("%d ", select_test[it][i]);
+        puts("");
+    }
+}
+
 void wavelet_tree_test()
 {
     unsigned arr[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
     unsigned arrCopy[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
     int arrSize = sizeof(arr) / sizeof(unsigned);
-    WaveletTree wt(arr, arr + arrSize, "", NULL);
+    WaveletTree wt(arrCopy, arrCopy + arrSize, "", NULL);
 
-    int count = 0;
+    int c = 0, OK;
+    for (int i = 0; i < arrSize; i++) s.insert(arr[i]); // set to know the element in the wavelet tree
+
+    printf("----TEST ACCESS----\n\n");
+    OK = 0;
     for (int i = 1; i <= arrSize; i++) {
         unsigned x = wt.access(i);
-        printf("%u ", x);
-        if(x == arrCopy[i - 1]) count++;
+        // printf("%u ", x);
+        if(x == arr[i - 1]) {
+            OK++;
+            // printf("access_test(%u) OK\n", i);
+        }
     }
-    if(count == arrSize) puts("OK");
-    else puts("");
+    OK_TEST(OK, arrSize);
 
-    calc_ranks_test(arrCopy, arrSize);
-    printf("----TEST RANK----\n\n");
-    int c;
+    printf("\n----TEST RANK----\n\n");
+    calc_rank_test(arr, arrSize);
+    OK = 0;
     for (auto it : s)
     {
         c = 0;
-        for (int i = 0; i <= arrSize; i++)
-            if (wt.rank(it, i + 1) == rank_test[it][i])
+        for (int i = 0; i < arrSize; i++)
+            if (wt.rank(it, i + 1) == rank_test[it][i + 1])
                 c++;
-        if (c == arrSize)
+        if (c == arrSize) {
             printf("rank_test(%u) OK\n", it);
+            OK++;
+        }
     }
+    OK_TEST(OK, arrSize);
 
-    while (1)
-    {
-        int c, i;
-        scanf("%d%d", &c, &i);
-        printf("rank-%u(%u) = %d\n", c, i, wt.rank(c, i));
-    }
+    // printf("----TEST SELECT----\n\n");
+    // calc_select_test(arr, arrSize);
+    // OK = 0;
+    // bool flag = true;
+    // for (auto it : s)
+    // {
+    //     c = 0;
+    //     for (int i = 0; i < arrSize; i++)
+    //         if(arr[i] == it)
+    //         if (wt.select(it, i + 1) == select_test[it][i + 1])
+    //             c++;
+    //     if (c == arrSize) {
+    //         if (select_test)
+    //             printf("select_test(%u) OK\n", it);
+    //         else flag = false;
+    //     }
+    // }
+    // if(flag) OK = arrSize;
+    // OK_TEST(OK, arrSize);
 
     // while (1)
     // {
