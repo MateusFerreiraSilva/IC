@@ -9,7 +9,7 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
 {
     this->block_size = block_size; // block size in bits
     this->length = length;
-    this->block_num = ceil(length / (float) block_size);
+    this->block_num = ceil(length * (float) block_size);
 
     // TODO testes nos construtores
     // try { if(length > block_num * block_size) error }
@@ -129,17 +129,19 @@ unsigned CompressedBitvector::decode(int i)
 
 void CompressedBitvector::precompR()
 {
-    memset(R, 0, sizeof(R));
-    P[0] = 0;
-    // TODO trocar por SIZEAUX
-    for (int i = 1; i < ceil(length / (float)k); i++)
+
+    unsigned r = 0, r_idx = 1;
+    R[0] = r;
+    for (int i = 1; i <= length; i++)
     {
-        P[i] = i * k;
-        R[i] = R[i - 1];
-        for (int j = 0; j < block_size; j++)
-            R[i] += C->read((i - 1) * k + j);
-        // printf("R[%d] = %d\n", i, R[i]);
+        r += C->read(i - 1);
+        if(i % block_size == 0)
+            R[r_idx++] = r;
     }
+
+    // TODO
+    // when there is no more R block to be filled break the loop
+
 }
 
 void CompressedBitvector::compress(Bitarray B)
@@ -185,35 +187,24 @@ unsigned CompressedBitvector::rank1(unsigned i)
 {
     if (i == 0 || i > length * block_size) return -1;
 
-    i--;
-    // if (i == 0) return decode(0) & (1 << (block_size - 1)) ? 1 : 0; // in case of the first bit be 1
 
-    // int is = ceil(i / ((float)k * block_size));
-    // if (i % (k * block_size) == 0) return R[is];
+    unsigned is = ceil(i / (float)(block_size * k));
+    if(is % (block_size * k) == 0) return R[is]; // allready know rank
 
-    // // no caso rank 4 5 R[0] block_num não está correto, deveria ser 1 e nao 0 e isso gera erro nos proximos
-    // int r = R[is - 1];
-    // int p = ceil(i / (float)block_size) - 1;
-    // for (int j = P[is - 1]; j < p; j++)
-    //     r += C->read(j);
+    unsigned r = R[is - 1];
+    // for (int t = (is - 1) * k + 1; t < block_num?; t++) // walk in block
+    for (int t = (is - 1) * k; t < floor(i / (float)block_size); t++) // walk in blocks
+        r += C->read(t);
 
-    // unsigned B1 = decode(p);
-    // for (int j = 0; j <= i % block_size; j++)
-    //     if (B1 & (1 << (block_size - 1 - (j % block_size)))) r++;
+    unsigned aux = i % block_size;
+    if(aux == 0) return r; // aux is in the end of block the block
+    // else aux = number of bit to be readed for the next block
 
-    int r = 0;
-    int j = 0;
-    int pos = 0;
-    while(j <= i) {
-        int x = decode(pos);
-        if (x & (1 << (block_size - 1 - (j % block_size))))
-            r++;
-        if((j + 1) % block_size == 0)
-            pos++;
-        j++;
-    }
-
-    return r;
+    unsigned x = decode(ceil(i / (float)block_size) - 1);
+    unsigned b = 0;
+    for (int j = 0; j < aux; j++)
+        b += x & (1 << (block_size - 1) - j) ? 1 : 0;
+    return r + b;
 }
 
 unsigned CompressedBitvector::rank0(unsigned i)

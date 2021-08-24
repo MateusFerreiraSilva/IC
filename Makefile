@@ -30,11 +30,15 @@ core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_
 
 ### TESTS ###
 
+compressed_bitvector_test.o:
+	g++ -c -g ./src/structures_test/compressed_bitvector_test.cpp
+	mv compressed_bitvector_test.o ./resources
+
 wavelet_tree_test.o:
 	g++ -c -g ./src/structures_test/wavelet_tree_test.cpp
 	mv wavelet_tree_test.o ./resources
 
-tests: wavelet_tree_test.o
+tests: wavelet_tree_test.o compressed_bitvector_test.o
 
 ### END TESTS ###
 

@@ -12,5 +12,6 @@ using namespace std;
 
 int main()
 {
-    wavelet_tree_test();
+    compressed_bitvector_test();
+    // wavelet_tree_test();
 }
