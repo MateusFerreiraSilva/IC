@@ -19,10 +19,8 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
     unsigned SIZE_AUX = ceil(length / (float)k) * sizeof(int);
     this->R = (int *)malloc(SIZE_AUX);
     this->P = (int *)malloc(SIZE_AUX);
-    // this->S1 = new Bitarray(length + 1, length + 1);
-    // this->S0 = new Bitarray(length + 1, length + 1);
-    this->m1 = 0;
-    this->m0 = 0;
+    this->ones = 0;
+    this->zeros = 0;
     this->sz = ((block_size + 1) * (block_size + 1) + SIZE_AUX * 2) * sizeof(int);
 }
 
@@ -64,9 +62,6 @@ CompressedBitvector::~CompressedBitvector()
 {
     delete C;
     delete O;
-    // bug, double free ao desalocar S's
-    // delete S1;
-    // delete S0;
     free(K);
     free(R);
     free(P);
@@ -81,12 +76,10 @@ pair<unsigned, unsigned> CompressedBitvector::encode(Bitarray &B, int i)
         if (B1 & (1 << (block_size - j)))
         {
             c++;
-            m1++;
-            // S1->write(m1, i * block_size + j - 1);
+            ones++;
             
         } else {
-            m0++;
-            // S0->write(m0, i * block_size + j - 1);
+            zeros++;
         }
     }
 
@@ -178,7 +171,6 @@ bool CompressedBitvector::access(unsigned i)
 
     i--;
     unsigned B1 = decode(i / block_size);
-    // printf("B[%d] =  %d\n", i / block_size, B1);
     return B1 & (1 << (block_size - 1 - (i % block_size)));
 }
 
@@ -187,12 +179,13 @@ unsigned CompressedBitvector::rank1(unsigned i)
 {
     if (i == 0 || i > length * block_size) return -1;
 
-
     unsigned is = ceil(i / (float)(block_size * k));
     if(is % (block_size * k) == 0) return R[is]; // allready know rank
+    /* ?? testar se o certo seria o i no lugar do is no if
+        if(i % (block_size * k) == 0) return R[is]; // allready know rank
+    */
 
     unsigned r = R[is - 1];
-    // for (int t = (is - 1) * k + 1; t < block_num?; t++) // walk in block
     for (int t = (is - 1) * k; t < floor(i / (float)block_size); t++) // walk in blocks
         r += C->read(t);
 
@@ -209,25 +202,28 @@ unsigned CompressedBitvector::rank1(unsigned i)
 
 unsigned CompressedBitvector::rank0(unsigned i)
 {
-    // rank0(5) retorna 5 mas deveria retornar 4 pq rank1(5) esta retornado 0
     if (i == 0 || i > length * block_size) return -1;
-    // return i - rank1(i) ? rank1(i) : 1; // QUICK FIX
     return i - rank1(i);
 }
 
 unsigned CompressedBitvector::select1(unsigned i)
 {
-    if (i > m1) return -1;
-    // return S1->read(i);
+    if (i > ones) return -1;
 
-    for (int j = 1; j <= length; j++)
-        if (rank1(j) == i) return j;
+    unsigned R_SIZE = ceil(length / (float)k);
+
+    /*
+        > binary search in R
+        > walk counting C
+        > when near to the rank decode te blocks an check
+    */
+
+    for (int j = 1; j <= length; j++) if (rank1(j) == i) return j;
 }
 
 unsigned CompressedBitvector::select0(unsigned i)
 {
-    if (i > m0) return -1;
-    // return S0->read(i);
+    if (i > zeros) return -1;
 
     for (int j = 1; j <= length; j++)
         if(rank0(j) == i) return j;

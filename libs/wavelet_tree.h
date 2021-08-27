@@ -23,6 +23,7 @@ public:
     int rank(unsigned c, int i);
     int select(unsigned c, int i);
     void printBitvector();
+    unsigned long size();
 };
 
 #endif

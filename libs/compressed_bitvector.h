@@ -19,8 +19,8 @@ private:
     int *R;
     int *P;
     Bitarray *S1, *S0; // select arrays
-    int m1; // number of 1's
-    int m0; // number of 0's
+    unsigned ones; // number of 1's
+    unsigned zeros; // number of 0's
     long unsigned sz = 0;
 
     pair<unsigned, unsigned> encode(Bitarray &B, int i);

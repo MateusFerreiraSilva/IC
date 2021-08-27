@@ -1,13 +1,12 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # GNU Make 4.1
- 
 # Built for x86_64-pc-linux-gnu
 # Copyright (C) 1988-2014 Free Software Foundation, Inc.
 # License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Tue Aug 24 17:21:40 2021
+# Make data base, printed on Thu Aug 26 23:32:20 2021
 
 # Variables
 
@@ -35,10 +34,10 @@ IM_CONFIG_PHASE = 2
 @D = $(patsubst %/,%,$(dir $@))
 # environment
 XAUTHORITY = /run/user/1000/gdm/Xauthority
+ 
 # environment
 GDMSESSION = ubuntu
 # environment
- 
 XMODIFIERS = @im=ibus
 # makefile
 CURDIR := /home/mateus/Projects/IC
@@ -73,7 +72,7 @@ LC_CTYPE = pt_BR.UTF-8
 # environment
 CLUTTER_IM_MODULE = xim
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-d4779db2-45d2-4f2f-9fd1-d661d800e266.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-8f533508-ab3a-4083-8dcb-26afeb9e313d.sock
 # environment
 LC_NAME = pt_BR.UTF-8
 # environment
@@ -87,7 +86,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/4834,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/4834
+SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/2402,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/2402
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -105,7 +104,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 30267
+GIO_LAUNCHED_DESKTOP_FILE_PID = 12914
 # automatic
 %F = $(notdir $%)
 # environment
@@ -119,7 +118,7 @@ PWD = /home/mateus/Projects/IC
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 4936
+SSH_AGENT_PID = 2488
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -241,7 +240,7 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 30267
+VSCODE_PID = 12914
 # variable set hash-table stats:
 # Load=115/1024=11%, Rehash=0, Collisions=22/143=15%
 
@@ -314,10 +313,10 @@ tests: wavelet_tree_test.o compressed_bitvector_test.o
 combination.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 12):
 	g++ -c -g ./src/combination.cpp
- 
 	mv combination.o ./resources
 
 # Not a target:
@@ -443,6 +442,6 @@ main.o:
 # strcache performance: lookups = 69 / hit rate = 50%
 # hash-table stats:
 # Load=34/8192=0%, Rehash=0, Collisions=1/69=1%
-# Finished Make data base on Tue Aug 24 17:21:40 2021
+# Finished Make data base on Thu Aug 26 23:32:20 2021
 
  

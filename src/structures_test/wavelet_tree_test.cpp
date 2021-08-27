@@ -104,6 +104,8 @@ void wavelet_tree_test()
     //     scanf("%d%d", &c, &x);
     //     printf("%u\n", wt.select(c, x));
     // }
+
+    printf("Size: %lu bytes\n", wt.size());
 }
 
 // #define N 10

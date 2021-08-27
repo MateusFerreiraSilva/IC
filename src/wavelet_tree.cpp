@@ -156,34 +156,38 @@ void WaveletTree::printBitvector()
     puts("");
 }
 
-// int main()
-// {
-//     unsigned arr[10] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
-//     int arrSize = sizeof(arr) / sizeof(unsigned);
-//     unsigned arrMin = arr[0], arrMax = arr[0];
-//     for (int i = 1; i < arrSize; i++)
-//     {
-//         arrMin = min(arrMin, arr[i]);
-//         arrMax = max(arrMax, arr[i]);
-//     }
+unsigned long treeSize(WaveletTree *tree)
+{
+    unsigned long leftSize = 0, rightSize = 0, bitvectorSize = 0;
+    
+    if(tree->bitvector)
+        bitvectorSize = tree->bitvector->size();
+    if (tree->l)
+        leftSize = treeSize(tree->l);
+    if (tree->r)
+        rightSize = treeSize(tree->r);
 
-//     WaveletTree wt(arr, arr + arrSize, arrMin, arrMax, "", NULL);
+    return bitvectorSize + leftSize + rightSize + sizeof(WaveletTree*) * 2 + sizeof(CompressedBitvector*);
+}
 
-//     printf("Cods:\n");
-//     for (auto c : WaveletTree::cods) cout << c.first << " " << c.second << endl;
-//     puts("");
-//     for(int i = 1; i <= arrSize; i++) printf("access(%d): %u\n", i, wt.access(i));
-//     // while (1)
-//     // {
-//     //     int c, x;
-//     //     scanf("%d%d", &c, &x);
-//     //     printf("%u\n", wt.rank(c, x));
-//     // }
+unsigned long WaveletTree::size()
+{
+    long unsigned codsSize = 0;
+    long unsigned codsInvertedSize = 0;
+    long unsigned leafSize = 0;
 
-//     while (1)
-//     {
-//         int c, x;
-//         scanf("%d%d", &c, &x);
-//         printf("%u\n", wt.select(c, x));
-//     }
-// }
+    for (auto it : WaveletTree::cods)
+    {
+        codsSize += it.first.size() + 1; // plus one because of the \0
+        codsSize += sizeof(unsigned);
+    }
+    
+    codsInvertedSize = codsSize;
+
+    for(auto it : WaveletTree::leaf) {
+        leafSize += sizeof(unsigned);
+        leafSize += sizeof(WaveletTree*);
+    }
+
+    return treeSize(this) + codsSize + codsInvertedSize + leafSize;
+}
