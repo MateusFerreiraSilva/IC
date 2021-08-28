@@ -11,16 +11,13 @@ using namespace std;
 class CompressedBitvector
 {
 private:
-    int block_size, block_num;
+    unsigned block_size, block_num;
     unsigned long length;
     Bitarray *C;
     SamplePointers *O;
-    int **K;
-    int *R;
-    int *P;
-    Bitarray *S1, *S0; // select arrays
-    unsigned ones; // number of 1's
-    unsigned zeros; // number of 0's
+    unsigned **Comb; // represents variable K
+    unsigned SUPER_BLOCK_SIZE, *R, *P;
+    unsigned ones, zeros; // number of 1's or 0's
     long unsigned sz = 0;
 
     pair<unsigned, unsigned> encode(Bitarray &B, int i);
@@ -36,6 +33,7 @@ public:
     bool access(unsigned i);
     unsigned rank1(unsigned i);
     unsigned rank0(unsigned i);
+    int rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
     unsigned select1(unsigned i);
     unsigned select0(unsigned i);
     void print();

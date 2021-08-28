@@ -14,14 +14,13 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
     // TODO testes nos construtores
     // try { if(length > block_num * block_size) error }
 
-    this->K = precompComb(K, block_size);
-
-    unsigned SIZE_AUX = ceil(length / (float)k) * sizeof(int);
-    this->R = (int *)malloc(SIZE_AUX);
-    this->P = (int *)malloc(SIZE_AUX);
+    this->Comb = precompComb(Comb, block_size); // represents variable K
+    this->SUPER_BLOCK_SIZE = ceil(length / (float)k) * sizeof(unsigned);
+    this->R = (unsigned *)malloc(SUPER_BLOCK_SIZE);
+    this->P = (unsigned *)malloc(SUPER_BLOCK_SIZE);
     this->ones = 0;
     this->zeros = 0;
-    this->sz = ((block_size + 1) * (block_size + 1) + SIZE_AUX * 2) * sizeof(int);
+    this->sz = ((block_size + 1) * (block_size + 1) + SUPER_BLOCK_SIZE * 2) * sizeof(int);
 }
 
 CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long length, unsigned *B) : CompressedBitvector(block_size, length)
@@ -62,7 +61,7 @@ CompressedBitvector::~CompressedBitvector()
 {
     delete C;
     delete O;
-    free(K);
+    free(Comb);
     free(R);
     free(P);
 }
@@ -90,7 +89,7 @@ pair<unsigned, unsigned> CompressedBitvector::encode(Bitarray &B, int i)
     {
         if (B1 & (1 << (block_size - j)))
         {
-            o += K[block_size - j][c1];
+            o += Comb[block_size - j][c1];
             c1--;
         }
         j++;
@@ -108,10 +107,10 @@ unsigned CompressedBitvector::decode(int i)
     int j = 1;
     while (c > 0)
     {
-        if (o >= K[block_size - j][c])
+        if (o >= Comb[block_size - j][c])
         {
             B1 |= (1 << (block_size - j)); // bitset
-            o -= K[block_size - j][c];
+            o -= Comb[block_size - j][c];
             c--;
         }
         j++;
@@ -180,10 +179,7 @@ unsigned CompressedBitvector::rank1(unsigned i)
     if (i == 0 || i > length * block_size) return -1;
 
     unsigned is = ceil(i / (float)(block_size * k));
-    if(is % (block_size * k) == 0) return R[is]; // allready know rank
-    /* ?? testar se o certo seria o i no lugar do is no if
-        if(i % (block_size * k) == 0) return R[is]; // allready know rank
-    */
+    if(i % (block_size * k) == 0) return R[is]; // allready know rank
 
     unsigned r = R[is - 1];
     for (int t = (is - 1) * k; t < floor(i / (float)block_size); t++) // walk in blocks
@@ -206,18 +202,51 @@ unsigned CompressedBitvector::rank0(unsigned i)
     return i - rank1(i);
 }
 
+/*
+    do a binary search in R then return smallest closest idx of the searched rank
+*/
+int CompressedBitvector::rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank)
+{
+    if(lo_idx <= 0 || hi_idx >= SUPER_BLOCK_SIZE) return 1;
+    if(lo_idx >= hi_idx) return max(lo_idx, hi_idx);
+
+    unsigned mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
+    if (rank < R[mid_idx]) return rank_binary_search(lo_idx, mid_idx - 1, rank);
+    else if (rank > R[mid_idx]) return rank_binary_search(mid_idx + 1, hi_idx, rank);
+    else if(rank == R[mid_idx]) return mid_idx;
+}
+
 unsigned CompressedBitvector::select1(unsigned i)
 {
     if (i > ones) return -1;
 
-    unsigned R_SIZE = ceil(length / (float)k);
-
     /*
-        > binary search in R
+        > binary search in R *** check, but confirm later
         > walk counting C
         > when near to the rank decode te blocks an check
     */
 
+    unsigned *R_INDEXES = (unsigned *)malloc(SUPER_BLOCK_SIZE * sizeof(unsigned));
+    for (int j = 0; j < SUPER_BLOCK_SIZE; j++)
+        R_INDEXES[j] = j * (block_size * k);
+
+    unsigned idx = rank_binary_search(1, SUPER_BLOCK_SIZE - 1, i);
+    idx = idx != -1 ? idx - 1 : 0;
+    unsigned c, r = R[idx], j = idx;
+
+    while(c = C->read(j), r + c <= i) { // walk in C blocks
+        r += c;
+        idx += block_size;
+        j++;
+    }
+
+    unsigned x = decode(ceil(i / (float)block_size) - 1);
+    for (int j = 0; j < i % block_size; j++)
+        if(x & (1 << (block_size - 1) - j)) idx++;
+
+    return idx;
+
+    // antigo
     for (int j = 1; j <= length; j++) if (rank1(j) == i) return j;
 }
 

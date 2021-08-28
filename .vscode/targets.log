@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Aug 26 23:32:20 2021
+# Make data base, printed on Sat Aug 28 15:33:24 2021
 
 # Variables
 
@@ -26,6 +26,8 @@ DESKTOP_SESSION = ubuntu
 XDG_SESSION_TYPE = x11
 # environment
 VSCODE_LOG_NATIVE = false
+# environment
+NVM_INC = /home/mateus/.nvm/versions/node/v14.4.0/include/node
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
@@ -34,7 +36,6 @@ IM_CONFIG_PHASE = 2
 @D = $(patsubst %/,%,$(dir $@))
 # environment
 XAUTHORITY = /run/user/1000/gdm/Xauthority
- 
 # environment
 GDMSESSION = ubuntu
 # environment
@@ -45,6 +46,8 @@ CURDIR := /home/mateus/Projects/IC
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
+# environment
+_ = /usr/share/code/code
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'Makefile', line 1)
@@ -72,25 +75,35 @@ LC_CTYPE = pt_BR.UTF-8
 # environment
 CLUTTER_IM_MODULE = xim
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-8f533508-ab3a-4083-8dcb-26afeb9e313d.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-3ee1c318-1e2f-4176-813f-66c5eed32a66.sock
+# environment
+GIT_USER = MateusFerreiraSilva
 # environment
 LC_NAME = pt_BR.UTF-8
+# environment
+USER_EMAIL = ferreiramateus201306@gmail.com
 # environment
 VSCODE_CWD = /home/mateus
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /opt/apache-maven-3.8.1/bin:/home/mateus/.local/bin:/opt/apache-maven-3.8.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PATH = /home/mateus/.nvm/versions/node/v14.4.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/mateus/Development/flutter/bin:/home/mateus/.nvm/versions/node/v14.4.0/bin/:/opt/apache-maven-3.8.1/bin:/opt/apache-maven-3.8.1/bin:/home/mateus/.local/bin:/opt/apache-maven-3.8.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:.
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/2402,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/2402
+LSCOLORS = Gxfxcxdxbxegedabagacad
+# environment
+SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/4907,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/4907
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 TEXTDOMAIN = im-config
+# environment
+NVM_BIN = /home/mateus/.nvm/versions/node/v14.4.0/bin
+# environment
+BREAKPAD_DUMP_LOCATION = /home/mateus/.config/Code/exthost Crash Reports
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -100,11 +113,13 @@ VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
+LS_COLORS = 
+# environment
 XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 12914
+GIO_LAUNCHED_DESKTOP_FILE_PID = 14315
 # automatic
 %F = $(notdir $%)
 # environment
@@ -118,7 +133,7 @@ PWD = /home/mateus/Projects/IC
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 2488
+SSH_AGENT_PID = 4999
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -133,8 +148,12 @@ VSCODE_CODE_CACHE_PATH = /home/mateus/.config/Code/CachedData/3866c3553be8b268c8
 LOGNAME = mateus
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# environment
+NVM_CD_FLAGS = -q
 # automatic
 +F = $(notdir $+)
+# environment
+ZSH = /home/mateus/.oh-my-zsh
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -145,6 +164,8 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 XDG_VTNR = 2
+# environment
+GIT_TOKEN = 6ad50d5252f3d093ef28820ba2be42c78636b8a1
 # environment
 LC_TIME = pt_BR.UTF-8
 # default
@@ -167,12 +188,16 @@ LC_MONETARY = pt_BR.UTF-8
 .DEFAULT_GOAL := bitarray.o
 # environment
 XDG_CURRENT_DESKTOP = Unity
+# environment
+LESS = -R
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
 LC_TELEPHONE = pt_BR.UTF-8
 # default
 MAKE_COMMAND := make
+# environment
+OLDPWD = /home/mateus
 # default
 .VARIABLES := 
 # automatic
@@ -188,7 +213,7 @@ MFLAGS = -pqrR
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-BREAKPAD_DUMP_LOCATION = /home/mateus/.config/Code/exthost Crash Reports
+NVM_DIR = /home/mateus/.nvm
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -216,6 +241,8 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 LC_MEASUREMENT = pt_BR.UTF-8
 # environment
+PAGER = less
+# environment
 LC_ALL = C
 # environment
 QT4_IM_MODULE = xim
@@ -240,9 +267,9 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 12914
+VSCODE_PID = 14315
 # variable set hash-table stats:
-# Load=115/1024=11%, Rehash=0, Collisions=22/143=15%
+# Load=129/1024=13%, Rehash=0, Collisions=23/157=15%
 
 # Pattern-specific Variable Values
 
@@ -263,6 +290,7 @@ VSCODE_PID = 12914
 sample_pointers.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
+ 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 8):
 	g++ -c -g ./src/sample_pointers.cpp
@@ -313,7 +341,6 @@ tests: wavelet_tree_test.o compressed_bitvector_test.o
 combination.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
- 
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 12):
 	g++ -c -g ./src/combination.cpp
@@ -442,6 +469,6 @@ main.o:
 # strcache performance: lookups = 69 / hit rate = 50%
 # hash-table stats:
 # Load=34/8192=0%, Rehash=0, Collisions=1/69=1%
-# Finished Make data base on Thu Aug 26 23:32:20 2021
+# Finished Make data base on Sat Aug 28 15:33:24 2021
 
  
