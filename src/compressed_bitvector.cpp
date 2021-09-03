@@ -211,7 +211,7 @@ unsigned CompressedBitvector::rank0(unsigned i)
 /*
     do a binary search in R then return smallest closest idx of the searched rank
 */
-unsigned CompressedBitvector::rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank)
+unsigned CompressedBitvector::rank1_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank)
 {
     if(lo_idx < 0 || hi_idx >= SUPER_BLOCK_NUM) return 0;
     
@@ -224,12 +224,12 @@ unsigned CompressedBitvector::rank_binary_search(unsigned lo_idx, unsigned hi_id
         return idx;
     }
 
-    unsigned mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
+    uint mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
 
     if (rank < R[mid_idx])
-        return rank_binary_search(lo_idx, mid_idx - 1, rank);
+        return rank1_binary_search(lo_idx, mid_idx - 1, rank);
     else if (rank > R[mid_idx])
-        return rank_binary_search(mid_idx + 1, hi_idx, rank);
+        return rank1_binary_search(mid_idx + 1, hi_idx, rank);
     else if (rank == R[mid_idx])
         return mid_idx - 1;
 }
@@ -238,13 +238,7 @@ unsigned CompressedBitvector::select1(unsigned i)
 {
     if (i > ones) return -1;
 
-    /*
-        > binary search in R *** check, but confirm later
-        > walk counting C
-        > when near to the rank decode te blocks an check
-    */
-
-    unsigned idx = rank_binary_search(0, SUPER_BLOCK_NUM - 1, i);
+    unsigned idx = rank1_binary_search(0, SUPER_BLOCK_NUM - 1, i);
     unsigned c, r = R[idx];
     idx = idx * SUPER_BLOCK_SIZE;
 
@@ -265,13 +259,69 @@ unsigned CompressedBitvector::select1(unsigned i)
     return idx;
 }
 
+unsigned CompressedBitvector::rank0_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank)
+{
+    if (lo_idx < 0 || hi_idx >= SUPER_BLOCK_NUM)
+        return 0;
+
+    if (lo_idx >= hi_idx)
+    {
+        uint idx = min(lo_idx, hi_idx);
+        uint offset = idx * SUPER_BLOCK_SIZE;
+        if (rank <= offset - R[idx])
+            return idx ? idx - 1 : 0;
+        return idx;
+    }
+
+    uint mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
+    uint offset = mid_idx * SUPER_BLOCK_SIZE;
+
+    if (rank < offset - R[mid_idx])
+        return rank0_binary_search(lo_idx, mid_idx - 1, rank);
+    else if (rank > offset - R[mid_idx])
+        return rank0_binary_search(mid_idx + 1, hi_idx, rank);
+    else if (rank == offset - R[mid_idx])
+        return mid_idx - 1;
+}
+
 unsigned CompressedBitvector::select0(unsigned i)
 {
-    if (i > zeros) return -1;
+    if (i > zeros)
+        return -1;
 
-    for (int j = 1; j <= length; j++)
-        if(rank0(j) == i) return j;
+    uint idx = rank0_binary_search(0, SUPER_BLOCK_NUM - 1, i);
+    uint c, r = idx * SUPER_BLOCK_SIZE - R[idx];
+    idx = idx * SUPER_BLOCK_SIZE;
+
+    while (true)
+    {
+        c = block_size - C->read(idx / block_size); // walk in C blocks
+        if (r + c >= i)
+            break;
+        r += c;
+        idx += block_size;
+    }
+
+    unsigned x = decode(idx / block_size);
+    for (int j = 0; j < block_size; j++)
+    {
+        idx++;
+        if (!(x & (1 << (block_size - 1) - j)))
+            r++;
+        if (r == i)
+            break;
+    }
+
+    return idx;
 }
+
+// unsigned CompressedBitvector::select0(unsigned i)
+// {
+//     if (i > zeros) return -1;
+
+//     for (int j = 1; j <= length; j++)
+//         if(rank0(j) == i) return j;
+// }
 
 void CompressedBitvector::print()
 {

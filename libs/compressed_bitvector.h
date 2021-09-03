@@ -34,7 +34,8 @@ public:
     unsigned rank1(unsigned i);
     unsigned rank0(unsigned i);
     unsigned caclMidIdx(unsigned lo_idx, unsigned hi_idx);
-    unsigned rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
+    unsigned rank1_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
+    unsigned rank0_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
     unsigned select1(unsigned i);
     unsigned select0(unsigned i);
     void print();
