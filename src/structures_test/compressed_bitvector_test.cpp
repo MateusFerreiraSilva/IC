@@ -36,4 +36,11 @@ void compressed_bitvector_test() {
     }
     if (c == n * b)
         printf("OK\n");
+
+    for (int i = 0; i < 40; i++)
+    {
+        printf("select(%d) =  %d\n", i + 1 , cb.select1(i + 1));
+    }
+    
+
 }

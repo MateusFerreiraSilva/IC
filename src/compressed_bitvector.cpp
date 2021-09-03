@@ -9,18 +9,19 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
 {
     this->block_size = block_size; // block size in bits
     this->length = length;
-    this->block_num = ceil(length * (float) block_size);
+    this->block_num = ceil(length * (float) block_size); // number of bits in the bitvector
 
     // TODO testes nos construtores
     // try { if(length > block_num * block_size) error }
 
     this->Comb = precompComb(Comb, block_size); // represents variable K
-    this->SUPER_BLOCK_SIZE = ceil(length / (float)k) * sizeof(unsigned);
-    this->R = (unsigned *)malloc(SUPER_BLOCK_SIZE);
-    this->P = (unsigned *)malloc(SUPER_BLOCK_SIZE);
+    this->SUPER_BLOCK_SIZE = block_size * k;
+    this->SUPER_BLOCK_NUM = (block_num / SUPER_BLOCK_SIZE + 1);
+    this->R = (unsigned *)malloc(SUPER_BLOCK_NUM * sizeof(unsigned));
+    this->P = (unsigned *)malloc(SUPER_BLOCK_NUM * sizeof(unsigned));
     this->ones = 0;
     this->zeros = 0;
-    this->sz = ((block_size + 1) * (block_size + 1) + SUPER_BLOCK_SIZE * 2) * sizeof(int);
+    this->sz = ((block_size + 1) * (block_size + 1) + SUPER_BLOCK_NUM * 2) * sizeof(int);
 }
 
 CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long length, unsigned *B) : CompressedBitvector(block_size, length)
@@ -203,17 +204,34 @@ unsigned CompressedBitvector::rank0(unsigned i)
 }
 
 /*
+    return idx o mid position closer of a R stored value return allways the greather
+*/
+
+
+/*
     do a binary search in R then return smallest closest idx of the searched rank
 */
-int CompressedBitvector::rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank)
+unsigned CompressedBitvector::rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank)
 {
-    if(lo_idx <= 0 || hi_idx >= SUPER_BLOCK_SIZE) return 1;
-    if(lo_idx >= hi_idx) return max(lo_idx, hi_idx);
+    if(lo_idx < 0 || hi_idx >= SUPER_BLOCK_NUM) return 0;
+    
+
+    if (lo_idx >= hi_idx)
+    {
+        uint idx = min(lo_idx, hi_idx);
+        if (rank <= R[idx])
+            return idx ? idx - 1 : 0;
+        return idx;
+    }
 
     unsigned mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
-    if (rank < R[mid_idx]) return rank_binary_search(lo_idx, mid_idx - 1, rank);
-    else if (rank > R[mid_idx]) return rank_binary_search(mid_idx + 1, hi_idx, rank);
-    else if(rank == R[mid_idx]) return mid_idx;
+
+    if (rank < R[mid_idx])
+        return rank_binary_search(lo_idx, mid_idx - 1, rank);
+    else if (rank > R[mid_idx])
+        return rank_binary_search(mid_idx + 1, hi_idx, rank);
+    else if (rank == R[mid_idx])
+        return mid_idx - 1;
 }
 
 unsigned CompressedBitvector::select1(unsigned i)
@@ -226,28 +244,25 @@ unsigned CompressedBitvector::select1(unsigned i)
         > when near to the rank decode te blocks an check
     */
 
-    unsigned *R_INDEXES = (unsigned *)malloc(SUPER_BLOCK_SIZE * sizeof(unsigned));
-    for (int j = 0; j < SUPER_BLOCK_SIZE; j++)
-        R_INDEXES[j] = j * (block_size * k);
+    unsigned idx = rank_binary_search(0, SUPER_BLOCK_NUM - 1, i);
+    unsigned c, r = R[idx];
+    idx = idx * SUPER_BLOCK_SIZE;
 
-    unsigned idx = rank_binary_search(1, SUPER_BLOCK_SIZE - 1, i);
-    idx = idx != -1 ? idx - 1 : 0;
-    unsigned c, r = R[idx], j = idx;
-
-    while(c = C->read(j), r + c <= i) { // walk in C blocks
+    while(true) {
+        c = C->read(idx / block_size); // walk in C blocks
+        if (r + c >= i) break;
         r += c;
         idx += block_size;
-        j++;
     }
 
-    unsigned x = decode(ceil(i / (float)block_size) - 1);
-    for (int j = 0; j < i % block_size; j++)
-        if(x & (1 << (block_size - 1) - j)) idx++;
+    unsigned x = decode(idx / block_size);
+    for (int j = 0; j < block_size; j++) {
+        idx++;
+        if(x & (1 << (block_size - 1) - j)) r++;
+        if (r == i) break;
+    }
 
     return idx;
-
-    // antigo
-    for (int j = 1; j <= length; j++) if (rank1(j) == i) return j;
 }
 
 unsigned CompressedBitvector::select0(unsigned i)

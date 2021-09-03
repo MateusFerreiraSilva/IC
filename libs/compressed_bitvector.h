@@ -16,7 +16,7 @@ private:
     Bitarray *C;
     SamplePointers *O;
     unsigned **Comb; // represents variable K
-    unsigned SUPER_BLOCK_SIZE, *R, *P;
+    unsigned SUPER_BLOCK_SIZE, SUPER_BLOCK_NUM, *R, *P;
     unsigned ones, zeros; // number of 1's or 0's
     long unsigned sz = 0;
 
@@ -33,7 +33,8 @@ public:
     bool access(unsigned i);
     unsigned rank1(unsigned i);
     unsigned rank0(unsigned i);
-    int rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
+    unsigned caclMidIdx(unsigned lo_idx, unsigned hi_idx);
+    unsigned rank_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
     unsigned select1(unsigned i);
     unsigned select0(unsigned i);
     void print();
