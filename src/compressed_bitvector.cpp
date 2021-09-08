@@ -165,19 +165,18 @@ void CompressedBitvector::compress(Bitarray B)
     precompR();
 }
 
-bool CompressedBitvector::access(unsigned i)
+bool CompressedBitvector::access(uint i)
 {
     if(i == 0 || i > length) return -1;
 
     i--;
-    unsigned B1 = decode(i / block_size);
-    return B1 & (1 << (block_size - 1 - (i % block_size)));
+    uint block = decode(i / block_size);
+    return block & (1 << (block_size - 1 - (i % block_size)));
 }
 
-// problema esta aqui
-unsigned CompressedBitvector::rank1(unsigned i)
+uint CompressedBitvector::rank1(uint i)
 {
-    if (i == 0 || i > length * block_size) return -1;
+    if (i == 0 || i > length * block_size) return 0;
 
     unsigned is = ceil(i / (float)(block_size * k));
     if(i % (block_size * k) == 0) return R[is]; // allready know rank
@@ -197,9 +196,9 @@ unsigned CompressedBitvector::rank1(unsigned i)
     return r + b;
 }
 
-unsigned CompressedBitvector::rank0(unsigned i)
+uint CompressedBitvector::rank0(uint i)
 {
-    if (i == 0 || i > length * block_size) return -1;
+    if (i == 0 || i > length * block_size) return 0;
     return i - rank1(i);
 }
 
@@ -287,7 +286,7 @@ unsigned CompressedBitvector::rank0_binary_search(unsigned lo_idx, unsigned hi_i
 unsigned CompressedBitvector::select0(unsigned i)
 {
     if (i > zeros)
-        return -1;
+        return 0;
 
     uint idx = rank0_binary_search(0, SUPER_BLOCK_NUM - 1, i);
     uint c, r = idx * SUPER_BLOCK_SIZE - R[idx];

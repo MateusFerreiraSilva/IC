@@ -1,62 +1,36 @@
 #include <bits/stdc++.h>
-#include "../libs/compressed_bitvector.h"
 #include "../libs/wavelet_tree.h"
 using namespace std;
 
-map<string, unsigned>WaveletTree::cods;
-map<unsigned, string>WaveletTree::codsInverted;
-map<unsigned, WaveletTree *>WaveletTree::leaf;
-
-pair<unsigned, unsigned> findLimits(unsigned *seq, unsigned seq_size)
+uint get_mid(uint lo, uint hi)
 {
-    unsigned seqMin, seqMax;
-    if (seq_size >= 1)
-        seqMin = seqMax = seq[0];
-    for (int i = 1; i < seq_size; i++)
-    {
-        seqMin = min(seqMin, seq[i]);
-        seqMax = max(seqMax, seq[i]);
-    }
-    return make_pair(seqMin, seqMax);
+    return lo + (hi - lo) / 2;
 }
 
-WaveletTree::WaveletTree(unsigned *from, unsigned *to, string cod, WaveletTree *parent)
+WaveletTree::WaveletTree(uint *from, uint *to, uint lo, uint hi)
 {
-    if (from > to) return;
+    if (lo >= hi) return;
 
-    this->p = parent; // not using
+    uint seqSize = to - from;
 
-    unsigned lo, hi, arr_size = to - from;;
-    auto limits = findLimits(from, arr_size);
-    lo = limits.first;
-    hi = limits.second;
-
-    if (lo == hi)
-    { // homogeneous array
-        WaveletTree::cods[cod] = lo;
-        WaveletTree::codsInverted[lo] = cod;
-        WaveletTree::leaf[lo] = this;
-        return;
-    }
-
-    this->bitvector_size = arr_size;
+    this->bitvector_size = seqSize;
     // TODO substituir por bitset
     vector<bool> dummy_bitvector(bitvector_size); // dummy bitvector
-    unsigned mid = lo + (hi - lo) / 2;
+    unsigned mid = get_mid(lo, hi);
     // TODO substituir por funcao estatica
     auto lessThanMid = [mid](unsigned x)
     { return x <= mid; };
 
     int idx = 0;
-    for (auto it = from; it != to; it++) dummy_bitvector[idx++] = !lessThanMid(*it);
+    for (auto it = from; it != to; it++)
+        dummy_bitvector[idx++] = !lessThanMid(*it);
     this->bitvector = new CompressedBitvector(
-        WaveletTree::BITVECTOR_BLOCK_SIZE, dummy_bitvector.size(), dummy_bitvector
-    ); // the real bitvector
+        WaveletTree::BITVECTOR_BLOCK_SIZE, dummy_bitvector.size(), dummy_bitvector); // the real bitvector
 
     auto pivot = stable_partition(from, to, lessThanMid);
 
-    l = new WaveletTree(from, pivot, cod + '0', this);
-    r = new WaveletTree(pivot, to, cod + '1', this);
+    l = new WaveletTree(from, pivot, lo, mid);
+    r = new WaveletTree(pivot, to, mid + 1, hi);
 }
 
 WaveletTree::~WaveletTree()
@@ -67,127 +41,130 @@ WaveletTree::~WaveletTree()
         r->~WaveletTree();
 }
 
-int WaveletTree::access(int i)
+uint WaveletTree::access(uint i, uint lo, uint hi)
 {
-    if(i > bitvector_size || i <= 0) return -1;
+    if (i > bitvector_size || i <= 0)
+        return -1;
 
     WaveletTree *wt = this;
     CompressedBitvector *bitvector;
+    uint mid;
     bool bit;
-    string cod;
-    while (wt->l || wt->r) { // while is not the leaf
-        bitvector = wt->bitvector;
-        bit = bitvector->access(i);
-        cod.push_back(bit + '0');
-        if (bit == 1)
-        {
-            wt = wt->r;
-            i = bitvector->rank1(i);
-        }
-        else
-        {
-            wt = wt->l;
-            i = bitvector->rank0(i);
-        }
-    }
-
-    return WaveletTree::cods[cod];
-}
-
-int WaveletTree::rank(unsigned c, int i)
-{
-    if(i > bitvector_size || i <= 0) return -1;
-
-    WaveletTree *wt = this;
-    CompressedBitvector *bitvector;
-    bool bit;
-    int K = 0;
-    while ((wt->l || wt->r) && K < WaveletTree::codsInverted[c].size())
-    { // while is not the leaf
-        bitvector = wt->bitvector;
-        bit = WaveletTree::codsInverted[c][K++] - '0';
-        if (bit == 1)
-        {
-            wt = wt->r;
-            i = bitvector->rank1(i);
-        }
-        else
-        {
-            wt = wt->l;
-            i = bitvector->rank0(i);
-        }
-
-        // in case of the element is not present in the range or not exist
-        if(i <= 0) return 0;
-    }
-    return i;
-}
-
-int WaveletTree::select(unsigned c, int i)
-{
-    if (i > bitvector_size || i <= 0) return -1;
-
-    WaveletTree *wt = WaveletTree::leaf[c];
-    CompressedBitvector *bitvector;
-    bool bit;
-    int K = WaveletTree::codsInverted[c].size() - 1;
-    while (wt != this)
-    { // while is not the root
-        wt = wt->p;
-        bitvector = wt->bitvector;
-        bit = WaveletTree::codsInverted[c][K--] - '0';
-        if (bit == 1)
-        {
-            i = bitvector->select1(i);
-        }
-        else
-        {
-            i = bitvector->select0(i);
-        }
-    }
-    return i;
-}
-
-void WaveletTree::printBitvector()
-{
-    puts("");
-    for (int i = 1; i <= bitvector->count(); i++)
-        printf("%u", (unsigned)bitvector->access(i));
-    puts("");
-}
-
-unsigned long treeSize(WaveletTree *tree)
-{
-    unsigned long leftSize = 0, rightSize = 0, bitvectorSize = 0;
-    
-    if(tree->bitvector)
-        bitvectorSize = tree->bitvector->size();
-    if (tree->l)
-        leftSize = treeSize(tree->l);
-    if (tree->r)
-        rightSize = treeSize(tree->r);
-
-    return bitvectorSize + leftSize + rightSize + sizeof(WaveletTree*) * 2 + sizeof(CompressedBitvector*);
-}
-
-unsigned long WaveletTree::size()
-{
-    long unsigned codsSize = 0;
-    long unsigned codsInvertedSize = 0;
-    long unsigned leafSize = 0;
-
-    for (auto it : WaveletTree::cods)
+    while (lo < hi)
     {
-        codsSize += it.first.size() + 1; // plus one because of the \0
-        codsSize += sizeof(unsigned);
+        bitvector = wt->bitvector;
+        mid = get_mid(lo, hi);
+        bit = bitvector->access(i);
+        if (bit == 1)
+        {
+            wt = wt->r;
+            i = bitvector->rank1(i);
+            lo = mid + 1;
+        } else {
+            wt = wt->l;
+            i = bitvector->rank0(i);
+            hi = mid;
+        }
     }
-    
-    codsInvertedSize = codsSize;
 
-    for(auto it : WaveletTree::leaf) {
-        leafSize += sizeof(unsigned);
-        leafSize += sizeof(WaveletTree*);
+    return lo;
+}
+
+/*
+    This function is recursive because c != lo we have to know the rank(c, i - 1)
+    otherwise the rank will be 0 for every query wich the seq[i] != c
+*/
+uint WaveletTree::rank(uint c, uint i, uint lo, uint hi)
+{
+    if (i <= 0 || i > bitvector_size)
+        return 0;
+
+    WaveletTree *wt = this;
+    CompressedBitvector *bitvector;
+    uint mid;
+    uint iAux = i, loAux = lo, hiAux = hi;
+    while (lo < hi)
+    {
+        bitvector = wt->bitvector;
+        mid = get_mid(lo, hi);
+        if (c <= mid)
+        {
+            wt = wt->l;
+            i = bitvector->rank0(i);
+            hi = mid;
+        }
+        else
+        {
+            wt = wt->r;
+            i = bitvector->rank1(i);
+            lo = mid + 1;
+        }
     }
 
-    return treeSize(this) + codsSize + codsInvertedSize + leafSize;
+    return c == lo ? i : rank(c, iAux - 1, loAux, hiAux);
+}
+
+/*
+    Desça até o final da arvore depois retorne o valores do selects encadeados até o topo
+*/
+uint WaveletTree::select(uint c, uint i, uint lo, uint hi)
+{
+    if (i <= 0 || i > bitvector_size)
+        return 0;
+
+    WaveletTree *wt = this;
+    CompressedBitvector *bitvector = wt->bitvector;
+    uint mid;
+    while (lo < hi)
+    {
+        mid = get_mid(lo, hi);
+        if (c <= mid)
+        {
+            wt = wt->l;
+            i = wt->bitvector->select0(i);
+            hi = mid;
+        }
+        else
+        {
+            wt = wt->r;
+            i = wt->bitvector->select1(i);
+            lo = mid + 1;
+        }
+    }
+
+    if(c <= mid)
+        return bitvector->select0(i);
+    return bitvector->select1(i);
+}
+
+// ################## Interface ##################
+
+WaveletTreeInterface::WaveletTreeInterface(uint *from, uint *to) {
+    uint seqSize = to - from;
+    if(seqSize > 0) {
+        uint lo, hi;
+        lo = hi = from[0];
+        for (int i = 1; i < seqSize; i++)
+        {
+            lo = min(lo, from[i]);
+            hi = max(hi, from[i]);
+        }
+        this->lo = lo;
+        this->hi = hi;
+        this->waveletTree = new WaveletTree(from, to, lo, hi);
+    }
+}
+
+uint WaveletTreeInterface::access(uint i) {
+    return this->waveletTree->access(i, this->lo, this->hi);
+}
+
+uint WaveletTreeInterface::rank(uint c, uint i)
+{
+    return this->waveletTree->rank(c, i, this->lo, this->hi);
+}
+
+uint WaveletTreeInterface::select(uint c, uint i)
+{
+    return this->waveletTree->select(c, i, this->lo, this->hi);
 }

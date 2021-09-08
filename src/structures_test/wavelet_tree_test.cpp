@@ -45,7 +45,7 @@ void wavelet_tree_test()
     unsigned arr[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
     unsigned arrCopy[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
     int arrSize = sizeof(arr) / sizeof(unsigned);
-    WaveletTree wt(arrCopy, arrCopy + arrSize, "", NULL);
+    WaveletTreeInterface wt(arrCopy, arrCopy + arrSize);
 
     int c = 0, OK;
     for (int i = 0; i < arrSize; i++) s.insert(arr[i]); // set to know the element in the wavelet tree
@@ -54,7 +54,7 @@ void wavelet_tree_test()
     OK = 0;
     for (int i = 1; i <= arrSize; i++) {
         unsigned x = wt.access(i);
-        // printf("%u ", x);
+        printf("%u%c", x, i == arrSize ? '\n': ' ');
         if(x == arr[i - 1]) {
             OK++;
             // printf("access_test(%u) OK\n", i);
@@ -62,23 +62,29 @@ void wavelet_tree_test()
     }
     OK_TEST(OK, arrSize);
 
-    printf("\n----TEST RANK----\n\n");
-    calc_rank_test(arr, arrSize);
-    OK = 0;
-    for (auto it : s)
-    {
-        c = 0;
-        for (int i = 0; i < arrSize; i++)
-            if (wt.rank(it, i + 1) == rank_test[it][i + 1])
-                c++;
-        if (c == arrSize) {
-            printf("rank_test(%u) OK\n", it);
-            OK++;
-        }
-    }
-    OK_TEST(OK, arrSize);
+    // testes precisam corrigidos
+    // os testes utilizam arrSize e arrCopy, nao faz sentido para o rank
 
-    // printf("----TEST SELECT----\n\n");
+    // printf("\n----TEST RANK----\n\n");
+    // calc_rank_test(arr, arrSize);
+    // OK = 0;
+    // for (auto it : s)
+    // {
+    //     c = 0;
+    //     for (int i = 0; i < arrSize; i++) {
+    //         uint x = wt.rank(it, i + 1);
+    //         printf("rank(%u, %u): %u\n", it, i + 1, x);
+    //         if (x == rank_test[it][i + 1])
+    //             c++;
+    //     }
+    //     if (c == arrSize) {
+    //         printf("rank_test(%u) OK\n", it);
+    //         OK++;
+    //     }
+    // }
+    // OK_TEST(OK, arrSize);
+
+    printf("----TEST SELECT----\n\n");
     // calc_select_test(arr, arrSize);
     // OK = 0;
     // bool flag = true;
@@ -98,14 +104,14 @@ void wavelet_tree_test()
     // if(flag) OK = arrSize;
     // OK_TEST(OK, arrSize);
 
-    // while (1)
-    // {
-    //     int c, x;
-    //     scanf("%d%d", &c, &x);
-    //     printf("%u\n", wt.select(c, x));
-    // }
+    while (1)
+    {
+        int c, x;
+        scanf("%d%d", &c, &x);
+        printf("%u\n", wt.select(c, x));
+    }
 
-    printf("Size: %lu bytes\n", wt.size());
+    // printf("Size: %lu bytes\n", wt.size());
 }
 
 // #define N 10

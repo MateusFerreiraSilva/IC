@@ -1,29 +1,39 @@
 #include <bits/stdc++.h>
+#include "../libs/compressed_bitvector.h"
 
 using namespace std;
 
 #ifndef WAVELET_TREE
 #define WAVELET_TREE
 
-pair<unsigned, unsigned> findLimits(unsigned *seq, unsigned seq_size);
+pair<uint, uint> findLimits(uint *seq, uint seq_size);
 
 class WaveletTree {
 public:
-    static map<string, unsigned> cods;
-    static map<unsigned, string> codsInverted;
-    static map<unsigned, WaveletTree*> leaf;
-    static const unsigned BITVECTOR_BLOCK_SIZE = 4;
+    static const uint BITVECTOR_BLOCK_SIZE = 4;
     
-    WaveletTree *l = NULL, *r = NULL, *p = NULL;
+    WaveletTree *l = NULL, *r = NULL;
     CompressedBitvector *bitvector = NULL;
-    unsigned bitvector_size = 0;
-    WaveletTree(unsigned *from, unsigned *to, string cod, WaveletTree *parent);
+    uint lo, hi;
+    uint bitvector_size = 0;
+    WaveletTree(uint *from, uint *to, uint lo, uint hi);
     ~WaveletTree();
-    int access(int i);
-    int rank(unsigned c, int i);
-    int select(unsigned c, int i);
+    uint access(uint i, uint lo, uint hi);
+    uint rank(uint c, uint i, uint lo, uint hi);
+    uint select(uint c, uint i, uint lo, uint hi);
     void printBitvector();
-    unsigned long size();
+    ulong size();
+};
+
+class WaveletTreeInterface {
+public:
+    uint lo, hi;
+    WaveletTree *waveletTree;
+
+    WaveletTreeInterface(uint *from, uint *to);
+    uint access(uint i);
+    uint rank(uint c, uint i);
+    uint select(uint c, uint i);
 };
 
 #endif

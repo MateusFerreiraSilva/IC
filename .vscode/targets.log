@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Sep  2 18:34:22 2021
+# Make data base, printed on Tue Sep  7 22:20:30 2021
 
 # Variables
 
@@ -71,7 +71,7 @@ LC_CTYPE = pt_BR.UTF-8
 # environment
 CLUTTER_IM_MODULE = xim
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-df4252a6-c89a-44d2-ac77-76127f112154.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-21178534-eac3-474e-9488-fdb86d376325.sock
 # environment
 LC_NAME = pt_BR.UTF-8
 # environment
@@ -85,7 +85,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/2416,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/2416
+SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/4786,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/4786
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -103,7 +103,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 28077
+GIO_LAUNCHED_DESKTOP_FILE_PID = 6175
 # automatic
 %F = $(notdir $%)
 # environment
@@ -117,7 +117,7 @@ PWD = /home/mateus/Projects/IC
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 2502
+SSH_AGENT_PID = 4878
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -127,7 +127,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProce
 # environment
 HOME = /home/mateus
 # environment
-VSCODE_CODE_CACHE_PATH = /home/mateus/.config/Code/CachedData/3866c3553be8b268c8a7f8c0482c0c0177aa8bfa
+VSCODE_CODE_CACHE_PATH = /home/mateus/.config/Code/CachedData/e7d7e9a9348e6a8cc8c03f877d39cb72e5dfb1ff
 # environment
 LOGNAME = mateus
 # environment
@@ -149,6 +149,7 @@ LC_TIME = pt_BR.UTF-8
 # default
 MAKE = $(MAKE_COMMAND)
 # default
+ 
 MAKECMDGOALS := all
 # environment
 QT_IM_MODULE = ibus
@@ -179,7 +180,7 @@ MAKE_COMMAND := make
 # environment
 LANGUAGE = en
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-88ba4d03-1.59.1-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-88ba4d03-1.60.0-main.sock
 # makefile
 MAKEFLAGS = pqrR
 # environment
@@ -206,8 +207,6 @@ TEXTDOMAINDIR = /usr/share/locale/
 MAKEFILES := 
 # environment
 LC_NUMERIC = pt_BR.UTF-8
-# environment
-VSCODE_BROWSER_CODE_LOADING = bypassHeatCheck
 # automatic
 <F = $(notdir $<)
 # environment
@@ -239,9 +238,9 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 28077
+VSCODE_PID = 6175
 # variable set hash-table stats:
-# Load=115/1024=11%, Rehash=0, Collisions=22/143=15%
+# Load=114/1024=11%, Rehash=0, Collisions=22/142=15%
 
 # Pattern-specific Variable Values
 
@@ -289,7 +288,6 @@ all: core tests
 #  File has been updated.
 #  Needs to be updated (-q is set).
 # variable set hash-table stats:
- 
 # Load=0/32=0%, Rehash=0, Collisions=0/3=0%
 
 build-tests: tests
@@ -423,6 +421,7 @@ main.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+ 
 #  recipe to execute (from 'Makefile', line 24):
 	g++ -c -g ./src/main.cpp
 	mv main.o ./resources
@@ -441,6 +440,6 @@ main.o:
 # strcache performance: lookups = 69 / hit rate = 50%
 # hash-table stats:
 # Load=34/8192=0%, Rehash=0, Collisions=1/69=1%
-# Finished Make data base on Thu Sep  2 18:34:22 2021
+# Finished Make data base on Tue Sep  7 22:20:30 2021
 
  
