@@ -5,6 +5,7 @@ using namespace std;
 #ifndef COMBINATION
 #define COMBINATION
 
-unsigned **precompComb(unsigned **Comb, unsigned x);
+uint **precompComb(uint **Comb, uint x);
+void freeComb(uint **Comb, uint x);
 
 #endif

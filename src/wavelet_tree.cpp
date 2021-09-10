@@ -14,8 +14,8 @@ WaveletTree::WaveletTree(uint *from, uint *to, uint lo, uint hi)
     uint seqSize = to - from;
 
     this->bitvector_size = seqSize;
-    // TODO substituir por bitset
-    vector<bool> dummy_bitvector(bitvector_size); // dummy bitvector
+    // TODO substituir por bitset                                
+    vector<bool> dummy_bitvector(bitvector_size, 0); // dummy bitvector
     unsigned mid = get_mid(lo, hi);
     // TODO substituir por funcao estatica
     auto lessThanMid = [mid](unsigned x)
@@ -24,8 +24,12 @@ WaveletTree::WaveletTree(uint *from, uint *to, uint lo, uint hi)
     int idx = 0;
     for (auto it = from; it != to; it++)
         dummy_bitvector[idx++] = !lessThanMid(*it);
+
     this->bitvector = new CompressedBitvector(
-        WaveletTree::BITVECTOR_BLOCK_SIZE, dummy_bitvector.size(), dummy_bitvector); // the real bitvector
+        WaveletTree::BITVECTOR_BLOCK_SIZE,
+        ceil(seqSize / (float) WaveletTree::BITVECTOR_BLOCK_SIZE),
+        dummy_bitvector
+    ); // the real bitvector
 
     auto pivot = stable_partition(from, to, lessThanMid);
 
@@ -44,7 +48,7 @@ WaveletTree::~WaveletTree()
 uint WaveletTree::access(uint i, uint lo, uint hi)
 {
     if (i > bitvector_size || i <= 0)
-        return -1;
+        return 0;
 
     WaveletTree *wt = this;
     CompressedBitvector *bitvector;
@@ -55,15 +59,15 @@ uint WaveletTree::access(uint i, uint lo, uint hi)
         bitvector = wt->bitvector;
         mid = get_mid(lo, hi);
         bit = bitvector->access(i);
-        if (bit == 1)
+        if(bit == 0)
         {
-            wt = wt->r;
-            i = bitvector->rank1(i);
-            lo = mid + 1;
-        } else {
             wt = wt->l;
             i = bitvector->rank0(i);
             hi = mid;
+        } else {
+            wt = wt->r;
+            i = bitvector->rank1(i);
+            lo = mid + 1;
         }
     }
 
@@ -109,32 +113,19 @@ uint WaveletTree::rank(uint c, uint i, uint lo, uint hi)
 */
 uint WaveletTree::select(uint c, uint i, uint lo, uint hi)
 {
-    if (i <= 0 || i > bitvector_size)
-        return 0;
+    if(lo == hi) return i;
 
-    WaveletTree *wt = this;
-    CompressedBitvector *bitvector = wt->bitvector;
-    uint mid;
-    while (lo < hi)
-    {
-        mid = get_mid(lo, hi);
-        if (c <= mid)
-        {
-            wt = wt->l;
-            i = wt->bitvector->select0(i);
-            hi = mid;
-        }
-        else
-        {
-            wt = wt->r;
-            i = wt->bitvector->select1(i);
-            lo = mid + 1;
-        }
+    uint mid = get_mid(lo, hi);
+    if(c <= mid) {
+        return this->bitvector->select0(
+            this->l->select(c, i, lo, mid)
+        );
+    } else {
+        return this->bitvector->select1(
+            this->l->select(c, i, mid + 1, hi)
+        );
     }
 
-    if(c <= mid)
-        return bitvector->select0(i);
-    return bitvector->select1(i);
 }
 
 // ################## Interface ##################

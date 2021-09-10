@@ -12,8 +12,9 @@ SamplePointers::SamplePointers(int n, int k, int max)
     this->n = n;
     this->k = k;
     this->l = calcL(max);
-    B = (unsigned *)calloc(l * n / w, sizeof(unsigned));
-    P = (unsigned *)malloc(ceil(n / (float)k) * sizeof(unsigned));
+    this->B_SIZE = l * n / w;
+    this->B = (unsigned *) calloc(B_SIZE, sizeof(unsigned));
+    this->P = (unsigned *) malloc(ceil(n / (float)k) * sizeof(unsigned));
     this->sz = (l * n / w + ceil(n / (float)k)) * sizeof(unsigned);
 }
 
@@ -67,7 +68,7 @@ string SamplePointers::getGammaCode()
 int SamplePointers::findPos(int pos)
 {
     int N = 0, currPos = 0;
-    for (int i = 0; i < 32 * sizeof(B) / sizeof(unsigned); i++)
+    for (int i = 0; i < 32 * B_SIZE; i++)
     {
         if (B[i / 32] & (1 << (31 - (i % 32))))
         {
@@ -113,7 +114,7 @@ unsigned SamplePointers::gammaDecode(int i)
 
     int N = 0;
     int currPos = idx * k;
-    for (int j = P[idx]; j < 32 * sizeof(B) / sizeof(unsigned); j++)
+    for (int j = P[idx]; j < 32 * B_SIZE; j++)
     {
         if (B[j / 32] & (1 << (31 - (j % 32))))
         {

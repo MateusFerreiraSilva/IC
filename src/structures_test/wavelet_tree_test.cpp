@@ -65,24 +65,24 @@ void wavelet_tree_test()
     // testes precisam corrigidos
     // os testes utilizam arrSize e arrCopy, nao faz sentido para o rank
 
-    // printf("\n----TEST RANK----\n\n");
-    // calc_rank_test(arr, arrSize);
-    // OK = 0;
-    // for (auto it : s)
-    // {
-    //     c = 0;
-    //     for (int i = 0; i < arrSize; i++) {
-    //         uint x = wt.rank(it, i + 1);
-    //         printf("rank(%u, %u): %u\n", it, i + 1, x);
-    //         if (x == rank_test[it][i + 1])
-    //             c++;
-    //     }
-    //     if (c == arrSize) {
-    //         printf("rank_test(%u) OK\n", it);
-    //         OK++;
-    //     }
-    // }
-    // OK_TEST(OK, arrSize);
+    printf("\n----TEST RANK----\n\n");
+    calc_rank_test(arr, arrSize);
+    OK = 0;
+    for (auto it : s)
+    {
+        c = 0;
+        for (int i = 0; i < arrSize; i++) {
+            uint x = wt.rank(it, i + 1);
+            printf("rank(%u, %u): %u\n", it, i + 1, x);
+            if (x == rank_test[it][i + 1])
+                c++;
+        }
+        if (c == arrSize) {
+            printf("rank_test(%u) OK\n", it);
+            OK++;
+        }
+    }
+    OK_TEST(OK, arrSize);
 
     printf("----TEST SELECT----\n\n");
     // calc_select_test(arr, arrSize);
@@ -106,8 +106,8 @@ void wavelet_tree_test()
 
     while (1)
     {
-        int c, x;
-        scanf("%d%d", &c, &x);
+        uint c, x;
+        scanf("%u%u", &c, &x);
         printf("%u\n", wt.select(c, x));
     }
 

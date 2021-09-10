@@ -9,6 +9,7 @@ class Bitarray
 private:
     const unsigned w = 32; // amount of bits in a unsigned
     unsigned *W;
+    unsigned W_SIZE;
     unsigned n; // number of elements
     unsigned l; // max size of bits that a element will have
     long unsigned sz = 0;

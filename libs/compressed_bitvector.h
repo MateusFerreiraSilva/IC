@@ -20,8 +20,8 @@ private:
     unsigned ones, zeros; // number of 1's or 0's
     long unsigned sz = 0;
 
-    pair<unsigned, unsigned> encode(Bitarray &B, int i);
-    unsigned decode(int i);
+    pair<uint, uint> encode(Bitarray &B, uint i);
+    uint decode(uint i);
     void precompR();
 
 public:

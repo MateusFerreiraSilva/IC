@@ -9,7 +9,7 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
 {
     this->block_size = block_size; // block size in bits
     this->length = length;
-    this->block_num = ceil(length * (float) block_size); // number of bits in the bitvector
+    this->block_num = length * block_size; // number of bits in the bitvector
 
     // TODO testes nos construtores
     // try { if(length > block_num * block_size) error }
@@ -34,27 +34,24 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
  * length = quantity of elements
 */
 CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long length, vector<bool> &bitvector) : CompressedBitvector(block_size,length)
-{
+{ 
     // first we need to convert all the bitvector in a array int with size of block_size bits
-    unsigned *B = (unsigned*) calloc(length, sizeof(unsigned));
-    if(B) {
-        int j = 0, x = block_size - 1;
-        for(int i = 1; i <= bitvector.size(); i++, x--) {
-            if(bitvector[i-1])
-                B[j] |= 1 << x;
-            if (i % block_size == 0)
-            {
-                j++;
-                x = block_size; // x will be decremented in the end of the loop, so x = block_size - 1
-            }
+
+    uint *BLOCKS = (uint*) calloc(length, sizeof(uint));
+    if(BLOCKS) {
+        uint block_idx, bit_number;
+        for(int i = 0; i < bitvector.size(); i++) {
+            if(i % block_size == 0) {
+                bit_number =  block_size - 1;
+                block_idx = i / block_size;
+            } else bit_number--;
+            
+            if (bitvector[i])
+                BLOCKS[block_idx] |= 1 << bit_number;
         }
 
-        compress(Bitarray(block_size, length, B));
-        free(B);
-        vector<bool> aux(bitvector.size(), 0);
-        for (int i = 0; i < bitvector.size(); i++)
-            aux[i] = access(i + 1);
-        assert(aux.size() == bitvector.size());
+        compress(Bitarray(block_size, length, BLOCKS));
+        free(BLOCKS);
     }
 }
 
@@ -62,62 +59,65 @@ CompressedBitvector::~CompressedBitvector()
 {
     delete C;
     delete O;
-    free(Comb);
+    freeComb(Comb, block_size);
     free(R);
     free(P);
 }
 
-pair<unsigned, unsigned> CompressedBitvector::encode(Bitarray &B, int i)
+pair<uint, uint> CompressedBitvector::encode(Bitarray &B, uint i)
 {
-    unsigned B1 = B.read(i);
-    unsigned c = 0;
-    for (int j = 1; j <= block_size; j++)
+    uint BLOCK = B.read(i);
+    uint c = 0;
+    uint b = block_size;
+
+    while (b > 0)
     {
-        if (B1 & (1 << (block_size - j)))
+        if (BLOCK & (1 << (b - 1)))
         {
             c++;
             ones++;
-            
         } else {
             zeros++;
         }
+        b--;
     }
 
-    unsigned o = 0;
-    unsigned c1 = c;
-    int j = 1;
-    while (c1 > 0 && c1 <= block_size - j)
+    uint o = 0;
+    uint c1 = c;
+    b = block_size;
+
+    while (c1 > 0)
     {
-        if (B1 & (1 << (block_size - j)))
+        if (BLOCK & (1 << (b - 1)))
         {
-            o += Comb[block_size - j][c1];
+            o += Comb[b - 1][c1]; // Comb[b][c1] OK
             c1--;
         }
-        j++;
+        b--;
     }
 
     return make_pair(c, o);
 }
 
-unsigned CompressedBitvector::decode(int i)
+uint CompressedBitvector::decode(uint i)
 {
-    int c = C->read(i);
-    int o = O->gammaDecode(i);
+    uint c = C->read(i);
+    uint o = O->gammaDecode(i); // quando access(1) o valor esperado para esse O eh 2 e nao 0
+    uint b = block_size;
 
-    int B1 = 0;
-    int j = 1;
-    while (c > 0)
+    uint BLOCK = 0;
+    while (c > 0) // b = 0, c = 0, o = 0, Comb[b][c]
     {
-        if (o >= Comb[block_size - j][c])
+        if (o >= Comb[b - 1][c])
         {
-            B1 |= (1 << (block_size - j)); // bitset
-            o -= Comb[block_size - j][c];
+            BLOCK |= (1 << (b - 1));
+            o -= Comb[b - 1][c];
             c--;
         }
-        j++;
+        b--;
     }
 
-    return B1;
+    return BLOCK;
 }
 
 void CompressedBitvector::precompR()
@@ -139,8 +139,8 @@ void CompressedBitvector::precompR()
 
 void CompressedBitvector::compress(Bitarray B)
 {
-    unsigned *C = (unsigned *)malloc(length * sizeof(unsigned));
-    unsigned *O = (unsigned *)malloc(length * sizeof(unsigned));
+    unsigned *C = (unsigned *) malloc(length * sizeof(unsigned));
+    unsigned *O = (unsigned *) malloc(length * sizeof(unsigned));
 
     if (C == NULL || O == NULL)
     {
@@ -167,7 +167,7 @@ void CompressedBitvector::compress(Bitarray B)
 
 bool CompressedBitvector::access(uint i)
 {
-    if(i == 0 || i > length) return -1;
+    if(i == 0 || i > block_num) return 0;
 
     i--;
     uint block = decode(i / block_size);
@@ -176,7 +176,7 @@ bool CompressedBitvector::access(uint i)
 
 uint CompressedBitvector::rank1(uint i)
 {
-    if (i == 0 || i > length * block_size) return 0;
+    if (i == 0 || i > block_num) return 0;
 
     unsigned is = ceil(i / (float)(block_size * k));
     if(i % (block_size * k) == 0) return R[is]; // allready know rank
@@ -198,7 +198,7 @@ uint CompressedBitvector::rank1(uint i)
 
 uint CompressedBitvector::rank0(uint i)
 {
-    if (i == 0 || i > length * block_size) return 0;
+    if (i == 0 || i > block_num) return 0;
     return i - rank1(i);
 }
 
@@ -235,7 +235,7 @@ unsigned CompressedBitvector::rank1_binary_search(unsigned lo_idx, unsigned hi_i
 
 unsigned CompressedBitvector::select1(unsigned i)
 {
-    if (i > ones) return -1;
+    if (i > ones) return 0;
 
     unsigned idx = rank1_binary_search(0, SUPER_BLOCK_NUM - 1, i);
     unsigned c, r = R[idx];
@@ -248,11 +248,14 @@ unsigned CompressedBitvector::select1(unsigned i)
         idx += block_size;
     }
 
+    // erro, select(5, 1), x = 1, deveria ser x = 2
     unsigned x = decode(idx / block_size);
-    for (int j = 0; j < block_size; j++) {
+    unsigned b = block_size;
+    while (b > 0) {
         idx++;
-        if(x & (1 << (block_size - 1) - j)) r++;
+        if(x & (1 << (b - 1))) r++;
         if (r == i) break;
+        b--;
     }
 
     return idx;
@@ -295,32 +298,23 @@ unsigned CompressedBitvector::select0(unsigned i)
     while (true)
     {
         c = block_size - C->read(idx / block_size); // walk in C blocks
-        if (r + c >= i)
-            break;
+        if (r + c >= i) break;
         r += c;
         idx += block_size;
     }
 
     unsigned x = decode(idx / block_size);
-    for (int j = 0; j < block_size; j++)
+    unsigned b = block_size;
+    while (b > 0)
     {
         idx++;
-        if (!(x & (1 << (block_size - 1) - j)))
-            r++;
-        if (r == i)
-            break;
+        if (!(x & (1 << (b - 1)))) r++;
+        if (r == i) break;
+        b--;
     }
 
     return idx;
 }
-
-// unsigned CompressedBitvector::select0(unsigned i)
-// {
-//     if (i > zeros) return -1;
-
-//     for (int j = 1; j <= length; j++)
-//         if(rank0(j) == i) return j;
-// }
 
 void CompressedBitvector::print()
 {

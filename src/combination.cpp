@@ -3,9 +3,9 @@
 
 using namespace std;
 
-unsigned *memo;
+uint *memo;
 
-unsigned fat(unsigned x)
+uint fat(uint x)
 {
     if (x == 1 || x == 0)
         return 1;
@@ -14,30 +14,43 @@ unsigned fat(unsigned x)
     return memo[x] = x * fat(x - 1);
 }
 
-unsigned comb(unsigned a, unsigned b)
+uint comb(uint a, uint b)
 {
     if (a < b)
         return 0;
-    else if (a == b)
+    else if (a == b || b == 0)
         return 1;
     return fat(a) / (fat(a - b) * fat(b));
 }
 
-unsigned **precompComb(unsigned **Comb, unsigned x)
+void freeComb(uint **Comb, uint x) {
+    if(Comb != NULL) {
+        for (int i = 0; i <= x; i++)
+            if(Comb[i] != NULL) free(Comb[i]);
+        free(Comb);
+    }
+}
+
+uint **precompComb(uint **Comb, uint x)
 {
     try {
-        Comb = (unsigned **)malloc((x + 1) * sizeof(unsigned *));
+        Comb = (uint **) malloc((x + 1) * sizeof(uint *));
         if(Comb == NULL) throw;
-        for (int i = 0; i <= x; i++)
-            Comb[i] = (unsigned *)malloc((x + 1) * sizeof(unsigned));
 
-        memo = (unsigned *)malloc((x + 1) * sizeof(unsigned));
+        for (int i = 0; i <= x; i++) {
+            Comb[i] = (uint *) malloc((x + 1) * sizeof(uint));
+            if(Comb[i] == NULL) throw;
+        }
+
+        memo = (uint *) calloc((x + 1), sizeof(uint));
         if (memo == NULL) throw;
-        memset(memo, 0, sizeof(memo));
+
         for (int i = x; i >= 0; i--)
             for (int j = x; j >= 0; j--)
                 Comb[i][j] = comb(i, j);
+
         free(memo);
+
     } catch (...) {
         printf("Malloc error on precompComb\n");
         return NULL;

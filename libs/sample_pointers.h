@@ -14,6 +14,7 @@ private:
     int n; // number of elements
     int k; // arbitrary number
     int l; // max size of bits that a element will have
+    int B_SIZE;
     long unsigned sz = 0;
     string gammaCode;
 

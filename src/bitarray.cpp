@@ -5,11 +5,12 @@ using namespace std;
 // mudar parametros para aceitar int ou unsigned
 Bitarray::Bitarray(int l, int n)
 {
-    this->l = (unsigned)l;
-    this->n = (unsigned)n;
+    this->l = (unsigned) l;
+    this->n = (unsigned) n;
     // W = (unsigned *)malloc(l * n / w * sizeof(unsigned));
-    this->sz = ceil(l * n / (float)w) * sizeof(unsigned);
-    W = (unsigned *)malloc(sz);
+    this->W_SIZE = ceil(l * n / (float)w);
+    this->sz = W_SIZE * sizeof(unsigned);
+    W = (unsigned*) malloc(sz);
     if (W == NULL)
     {
         printf("malloc error\n");
@@ -103,7 +104,7 @@ int Bitarray::bitsPrint()
 
 void Bitarray::printW()
 {
-    int size = sizeof(W) / sizeof(unsigned);
+    int size = W_SIZE;
     for (int i = 0; i < size; i++)
         printf(" %u", W[i]);
 
