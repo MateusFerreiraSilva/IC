@@ -12,6 +12,7 @@ using namespace std;
 
 int main()
 {
-    compressed_bitvector_test();
-    wavelet_tree_test();
+    sample_pointers_test();
+    // compressed_bitvector_test();
+    // wavelet_tree_test();
 }

@@ -4,29 +4,46 @@ using namespace std;
 #ifndef SAMPLE_POINTERS
 #define SAMPLE_POINTERS
 
-int calcL(int x);
+typedef unsigned long long ull;
+
+#define BITS 32
 
 class SamplePointers
 {
 private:
-    const int w = 32; // amount of bits in a unsigned
-    unsigned *B, *P;
-    int n; // number of elements
-    int k; // arbitrary number
-    int l; // max size of bits that a element will have
-    int B_SIZE;
-    long unsigned sz = 0;
-    string gammaCode;
+    uint *B; // where the bits sequences are stored
+    uint *P; // array of pointer to fast travel B array
+    uint n; // number of elements
+    uint k; // arbitrary number
+    uint B_SIZE;
+    uint P_SIZE;
+    uint rear; // position of the last bit
+    ulong sz;
 
 public:
-    SamplePointers(int n, int k, int max);
-    SamplePointers(int n, int k, int max, unsigned *B);
+    SamplePointers(uint n, uint k);
+    SamplePointers(uint n, uint k, uint *arr);
     ~SamplePointers();
+
+    void bitset(uint i, bool val);
+    bool bitread(uint i);
+
+    /*
+        > given a value return it encoded in gamma
+        > can make gamma codes with the max of 64 bits of length    
+    */
+    pair<uint, ull> toGamma(uint val); 
+
+
+    void write(uint val);
+
+    void expand(uint extra_size);
+
     static string gammaEncode(int x);
     void toGamma(unsigned *arr);
     string getGammaCode();
     int findPos(int pos);
-    void compress(unsigned *arr);
+    void compress(uint *arr);
     unsigned gammaDecode(int i);
     long unsigned size();
 };

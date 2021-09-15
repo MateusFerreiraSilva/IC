@@ -50,6 +50,15 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
                 BLOCKS[block_idx] |= 1 << bit_number;
         }
 
+        printf("BLOCKS: [ ");
+        for (int i = 0; i < length; i++)
+        {
+            printf("%d", BLOCKS[i]);
+            if (i != length - 1)
+                printf(", ");
+        }
+        printf("]\n");
+
         compress(Bitarray(block_size, length, BLOCKS));
         free(BLOCKS);
     }
@@ -158,7 +167,16 @@ void CompressedBitvector::compress(Bitarray B)
     }
 
     this->C = new Bitarray(block_size, length, C);
-    this->O = new SamplePointers(length, k, maxO, O);
+    this->O = new SamplePointers(length, k, O);
+
+    // printf("O: [ ");
+    // for (int i = 0; i < length; i++)
+    // {
+    //     printf("%d", O[i]);
+    //     if (i != length - 1) printf(", ");
+    // }
+    // printf("]\n");
+    
     this->sz = this->sz + this->C->size() + this->O->size();
     free(C);
     free(O);
