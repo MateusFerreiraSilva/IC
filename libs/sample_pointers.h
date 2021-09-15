@@ -33,9 +33,10 @@ public:
         > can make gamma codes with the max of 64 bits of length    
     */
     pair<uint, ull> toGamma(uint val); 
+    uint gammaDecode(uint bit_start_position);
 
-
-    void write(uint val);
+    void write(uint i, uint val);
+    uint read(uint i);
 
     void expand(uint extra_size);
 
