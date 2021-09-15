@@ -50,14 +50,14 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
                 BLOCKS[block_idx] |= 1 << bit_number;
         }
 
-        printf("BLOCKS: [ ");
-        for (int i = 0; i < length; i++)
-        {
-            printf("%d", BLOCKS[i]);
-            if (i != length - 1)
-                printf(", ");
-        }
-        printf("]\n");
+        // printf("BLOCKS: [ ");
+        // for (int i = 0; i < length; i++)
+        // {
+        //     printf("%d", BLOCKS[i]);
+        //     if (i != length - 1)
+        //         printf(", ");
+        // }
+        // printf("]\n");
 
         compress(Bitarray(block_size, length, BLOCKS));
         free(BLOCKS);
@@ -111,7 +111,7 @@ pair<uint, uint> CompressedBitvector::encode(Bitarray &B, uint i)
 uint CompressedBitvector::decode(uint i)
 {
     uint c = C->read(i);
-    uint o = O->gammaDecode(i); // quando access(1) o valor esperado para esse O eh 2 e nao 0
+    uint o = O->read(i); // quando access(1) o valor esperado para esse O eh 2 e nao 0
     uint b = block_size;
 
     uint BLOCK = 0;
@@ -163,7 +163,6 @@ void CompressedBitvector::compress(Bitarray B)
         pair<unsigned, unsigned> aux = encode(B, i);
         C[i] = aux.first;
         O[i] = aux.second;
-        maxO = max(maxO, O[i]);
     }
 
     this->C = new Bitarray(block_size, length, C);

@@ -9,12 +9,13 @@ uint get_mid(uint lo, uint hi)
 
 WaveletTree::WaveletTree(uint *from, uint *to, uint lo, uint hi)
 {
-    if (lo >= hi) return;
+    if (lo >= hi)
+        return;
 
     uint seqSize = to - from;
 
     this->bitvector_size = seqSize;
-    // TODO substituir por bitset                                
+    // TODO substituir por bitset
     vector<bool> dummy_bitvector(bitvector_size, 0); // dummy bitvector
     unsigned mid = get_mid(lo, hi);
     // TODO substituir por funcao estatica
@@ -27,7 +28,7 @@ WaveletTree::WaveletTree(uint *from, uint *to, uint lo, uint hi)
 
     this->bitvector = new CompressedBitvector(
         WaveletTree::BITVECTOR_BLOCK_SIZE,
-        ceil(seqSize / (float) WaveletTree::BITVECTOR_BLOCK_SIZE),
+        (seqSize / WaveletTree::BITVECTOR_BLOCK_SIZE) + 1,
         dummy_bitvector
     ); // the real bitvector
 
@@ -59,12 +60,14 @@ uint WaveletTree::access(uint i, uint lo, uint hi)
         bitvector = wt->bitvector;
         mid = get_mid(lo, hi);
         bit = bitvector->access(i);
-        if(bit == 0)
+        if (bit == 0)
         {
             wt = wt->l;
             i = bitvector->rank0(i);
             hi = mid;
-        } else {
+        }
+        else
+        {
             wt = wt->r;
             i = bitvector->rank1(i);
             lo = mid + 1;
@@ -113,26 +116,29 @@ uint WaveletTree::rank(uint c, uint i, uint lo, uint hi)
 */
 uint WaveletTree::select(uint c, uint i, uint lo, uint hi)
 {
-    if(lo == hi) return i;
+    if (lo == hi)
+        return i;
 
     uint mid = get_mid(lo, hi);
-    if(c <= mid) {
+    if (c <= mid)
+    {
         return this->bitvector->select0(
-            this->l->select(c, i, lo, mid)
-        );
-    } else {
-        return this->bitvector->select1(
-            this->l->select(c, i, mid + 1, hi)
-        );
+            this->l->select(c, i, lo, mid));
     }
-
+    else
+    {
+        return this->bitvector->select1(
+                   this->r->select(c, i, mid + 1, hi));
+    }
 }
 
 // ################## Interface ##################
 
-WaveletTreeInterface::WaveletTreeInterface(uint *from, uint *to) {
+WaveletTreeInterface::WaveletTreeInterface(uint *from, uint *to)
+{
     uint seqSize = to - from;
-    if(seqSize > 0) {
+    if (seqSize > 0)
+    {
         uint lo, hi;
         lo = hi = from[0];
         for (int i = 1; i < seqSize; i++)
@@ -146,7 +152,8 @@ WaveletTreeInterface::WaveletTreeInterface(uint *from, uint *to) {
     }
 }
 
-uint WaveletTreeInterface::access(uint i) {
+uint WaveletTreeInterface::access(uint i)
+{
     return this->waveletTree->access(i, this->lo, this->hi);
 }
 
