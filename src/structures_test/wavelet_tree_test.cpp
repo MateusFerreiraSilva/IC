@@ -42,8 +42,10 @@ void calc_select_test(unsigned arr[], unsigned arrSize)
 
 void wavelet_tree_test()
 {
-    unsigned arr[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
-    unsigned arrCopy[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
+    // unsigned arr[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
+    // unsigned arrCopy[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
+    unsigned arr[] = {2, 1, 4, 1, 3, 7, 1, 5, 2, 10, 1, 2, 7};
+    unsigned arrCopy[] = {2, 1, 4, 1, 3, 7, 1, 5, 2, 10, 1, 2, 7};
     // unsigned arr[] = {4, 4, 5};
     // unsigned arrCopy[] = {4, 4, 5};
     int arrSize = sizeof(arr) / sizeof(unsigned);

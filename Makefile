@@ -20,11 +20,15 @@ wavelet_tree.o:
 	g++ -c -g ./src/wavelet_tree.cpp
 	mv wavelet_tree.o ./resources
 
+csa.o:
+	g++ -c -g ./src/csa.cpp
+	mv csa.o ./resources
+
 main.o:
 	g++ -c -g ./src/main.cpp
 	mv main.o ./resources
 
-core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o main.o
+core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o csa.o main.o
 
 ### END CORE ###
 
@@ -42,7 +46,11 @@ wavelet_tree_test.o:
 	g++ -c -g ./src/structures_test/wavelet_tree_test.cpp
 	mv wavelet_tree_test.o ./resources
 
-tests: sample_pointers_test.o wavelet_tree_test.o compressed_bitvector_test.o
+csa_test.o:
+	g++ -c -g ./src/structures_test/csa_test.cpp
+	mv csa_test.o ./resources
+
+tests: sample_pointers_test.o compressed_bitvector_test.o wavelet_tree_test.o csa_test.o 
 
 ### END TESTS ###
 

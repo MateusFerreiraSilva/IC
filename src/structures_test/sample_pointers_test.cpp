@@ -1,4 +1,4 @@
-#include "../../libs/structures_test/sample_pointers.h"
+#include "../../libs/structures_test/sample_pointers_test.h"
 
 #define SAMPLE_POINTES_SIZE 10
 

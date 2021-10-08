@@ -4,6 +4,7 @@
 #include "../libs/sample_pointers.h"
 #include "../libs/compressed_bitvector.h"
 #include "../libs/wavelet_tree.h"
+#include "../libs/csa.h"
 #include "../libs/tests.h"
 
 using namespace std;
@@ -13,6 +14,7 @@ using namespace std;
 int main()
 {
     // sample_pointers_test();
-    compressed_bitvector_test();
-    wavelet_tree_test();
+    // compressed_bitvector_test();
+    // wavelet_tree_test();
+    csa_test();
 }
