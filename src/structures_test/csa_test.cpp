@@ -8,7 +8,7 @@ uint* string_to_uint_seq(string str) {
             throw;
 
         for (int i = 0; i < str.size(); i++)
-            seq[i] = str[i] - '0' >=  0 ? str[i] - '0' : 0;
+            seq[i] = 1 + (str[i] - '0' > 0 ? str[i] - '0' : 0);
    } catch (...) {
        printf("Error parsing string to uint sequence\n");
        return NULL;
@@ -18,11 +18,16 @@ uint* string_to_uint_seq(string str) {
 }
 
 void csa_test() {
+    uint *aux = NULL;
     string seq = "bananaban$", pattern;
-    CompactSuffixArray csa(seq.size(), string_to_uint_seq(seq));
+    aux = string_to_uint_seq(seq);
+    CompactSuffixArray csa(seq.size(), aux);
+    free(aux);
 
     while (cin >> pattern) {
-        int ans = csa.find(string_to_uint_seq(pattern)); 
+        aux = string_to_uint_seq(pattern);
+        int ans = csa.find(aux);
+        free(aux);
     }
 
 }

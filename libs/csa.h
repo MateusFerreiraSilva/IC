@@ -8,13 +8,14 @@ using namespace std;
 
 class CompactSuffixArray {
 public:
-    uint* sequence;
     uint sequence_size;
-    uint* suffix_array;
+    WaveletTreeInterface *sequence;
+    uint *suffix_array;
 
     CompactSuffixArray(uint sequence_size, uint *sequence);
     void sort_suffix_array();
-    int find(uint *pattern);
+    uint *get_suffix(uint idx);
+     int find(uint *pattern);
 };
 
 #endif
