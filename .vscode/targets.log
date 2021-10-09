@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Oct  8 17:14:34 2021
+# Make data base, printed on Fri Oct  8 20:36:26 2021
 
 # Variables
 
@@ -71,7 +71,7 @@ LC_CTYPE = pt_BR.UTF-8
 # environment
 CLUTTER_IM_MODULE = xim
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-9360aeef-b440-49d3-aa4a-d483c6068e3f.sock
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-6649d963-a509-47d2-9e0b-b70adc0b739d.sock
 # environment
 LC_NAME = pt_BR.UTF-8
 # environment
@@ -85,7 +85,7 @@ GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/6760,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/6760
+SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/4145,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/4145
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
@@ -103,7 +103,7 @@ XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 28746
+GIO_LAUNCHED_DESKTOP_FILE_PID = 4981
 # automatic
 %F = $(notdir $%)
 # environment
@@ -117,7 +117,7 @@ PWD = /home/mateus/Projects/IC
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 6849
+SSH_AGENT_PID = 4231
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -237,7 +237,7 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 28746
+VSCODE_PID = 4981
 # variable set hash-table stats:
 # Load=114/1024=11%, Rehash=0, Collisions=22/142=15%
 
@@ -368,14 +368,12 @@ bitarray.o:
 # * := 
 # automatic
 # + := 
- 
 # automatic
 # | := 
 # automatic
 # < := 
 # automatic
 # ^ := 
- 
 # automatic
 # ? := 
 # variable set hash-table stats:
@@ -461,10 +459,11 @@ main.o:
 
 # strcache buffers: 1 (0) / strings = 38 / storage = 371 B / avg = 9 B
 # current buf: size = 8162 B / used = 371 B / count = 38 / avg = 9 B
+ 
 
 # strcache performance: lookups = 79 / hit rate = 51%
 # hash-table stats:
 # Load=38/8192=0%, Rehash=0, Collisions=1/79=1%
-# Finished Make data base on Fri Oct  8 17:14:34 2021
+# Finished Make data base on Fri Oct  8 20:36:26 2021
 
  
