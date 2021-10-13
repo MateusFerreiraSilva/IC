@@ -2,6 +2,8 @@
 #include "../libs/csa.h"
 using namespace std;
 
+#define END numeric_limits<uint>::max()
+
 CompactSuffixArray::CompactSuffixArray(uint sequence_size, uint *sequence) {
     try {
         this->sequence_size = sequence_size; 
@@ -23,45 +25,55 @@ CompactSuffixArray::~CompactSuffixArray() {
     free(suffix_array);
 }
 
-bool compare_suffixes(pair<vector<uint>, uint> a, pair<vector<uint>, uint> b) {
-    if (a.first.size() > b.first.size()) swap(a, b);
-    for (int i = 0; i < a.first.size(); i++)
+bool compare_suffixes(Suffix a, Suffix b) {
+    if (a.suff.size() > b.suff.size()) swap(a, b);
+    for (int i = 0; i < a.suff.size(); i++)
     {
-        if (a.first[i] < b.first[i]) return true;
-        else if (a.first[i] > b.first[i]) return false;
+        if (a.suff[i] < b.suff[i]) return true;
+        else if (a.suff[i] > b.suff[i]) return false;
     }
     return true;
 }
 
+vector<uint> build_psi(vector<Suffix> suffixes) {
+    vector<uint> psi(suffixes.size());
+    for (int i = 0; i < suffixes.size(); i++)
+    {
+        if (suffixes[i].idx == suffixes.size() - 1)
+        {
+            psi[i] = END;
+            continue;
+        }
+
+        for (int j = 0; j < suffixes.size(); j++)
+        {
+            if (suffixes[j].idx == suffixes[i].idx + 1)
+            {
+                psi[i] = j;
+                break;
+            }
+        }
+    }
+    return psi;
+}
+
 void CompactSuffixArray::sort_suffix_array()
 {
-    vector<pair<vector<uint>, uint>> suffixes(sequence_size);
+    vector<Suffix> suffixes(sequence_size);
     for (int i = 0; i < sequence_size; i++) {
         for (int j = i; j < sequence_size; j++)
-            suffixes[i].first.push_back(sequence->access(j + 1)); 
-        suffixes[i].second = i;
+            suffixes[i].suff.push_back(sequence->access(j + 1)); 
+        suffixes[i].idx = i;
     }
         
     sort(suffixes.begin(), suffixes.end(), compare_suffixes);
 
-    printf("Sequence:\n");
-    for (int i = 0; i < sequence_size; i++)
-        printf("%c", sequence->access(i) == 1 ? '$' : sequence->access(i + 1) - 1 + '0');
-    puts("\n");
-    
+    vector<uint> psi = build_psi(suffixes);
 
-    printf("Sorted Suffix Array:\n");
-    for (int i = 0; i < suffixes.size(); i++)
-    {
-        printf("[%d] ", i);
-        for (int j = 0; j < suffixes[i].first.size(); j++)
-            printf("%c", suffixes[i].first[j] == 1 ? '$' : suffixes[i].first[j] - 1 + '0');
-        puts("");
-    }
-    puts("");
+    print_suffix_array_info(suffixes, psi);
 
     for (int i = 0; i < sequence_size; i++)
-        suffix_array[i] = suffixes[i].second;
+        suffix_array[i] = suffixes[i].idx;
 }
 
 uint *CompactSuffixArray::get_suffix(uint idx)
@@ -99,7 +111,7 @@ int is_prefix(uint *a, uint a_size, uint *b, uint b_size)
 }
 
 int CompactSuffixArray::find(uint *pattern, uint pattern_size) {
-    uint lo = 0, hi = sequence_size, mid;
+    uint lo = 0, hi = sequence_size - 1, mid;
     while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
         int aux = is_prefix(
@@ -113,4 +125,25 @@ int CompactSuffixArray::find(uint *pattern, uint pattern_size) {
     }
 
     return -1;
+}
+
+void CompactSuffixArray::print_suffix_array_info(vector<Suffix> suffixes, vector<uint> psi) {
+    printf("Sequence:\n");
+    for (int i = 0; i < sequence_size; i++)
+        printf("%c", sequence->access(i + 1) - 1 == 0 ? '$' : sequence->access(i + 1) - 1 + '0');
+    puts("\n");
+
+    printf("Sorted Suffix Array:\n");
+    for (int i = 0; i < suffixes.size(); i++)
+    {
+        printf("[%d] ", i);
+        for (int j = 0; j < suffixes[i].suff.size(); j++)
+            printf("%c", suffixes[i].suff[j] == 1 ? '$' : suffixes[i].suff[j] - 1 + '0');
+        puts("");
+    }
+    puts("");
+
+    printf("Psi:\n");
+    for (int i = 0; i < psi.size(); i++)
+        printf("%d%c", psi[i], i != psi.size() - 1 ? ' ' : '\n');
 }
