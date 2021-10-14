@@ -41,7 +41,7 @@ vector<uint> build_psi(vector<Suffix> suffixes) {
     {
         if (suffixes[i].idx == suffixes.size() - 1)
         {
-            psi[i] = END;
+            psi[i] = END; // maybe be best not store END in psi
             continue;
         }
 
@@ -72,8 +72,18 @@ void CompactSuffixArray::sort_suffix_array()
 
     print_suffix_array_info(suffixes, psi);
 
+    this->psi = new CompactPsi(psi);
+
     for (int i = 0; i < sequence_size; i++)
         suffix_array[i] = suffixes[i].idx;
+
+    // testes
+    uint x;
+    // for (int i = 0; i < sequence_size; i++)
+    //     x = get_psi(i);
+    for (int i = 0; i < sequence_size; i++)
+        get_sa(i);
+   
 }
 
 uint *CompactSuffixArray::get_suffix(uint idx)
@@ -146,4 +156,91 @@ void CompactSuffixArray::print_suffix_array_info(vector<Suffix> suffixes, vector
     printf("Psi:\n");
     for (int i = 0; i < psi.size(); i++)
         printf("%d%c", psi[i], i != psi.size() - 1 ? ' ' : '\n');
+}
+
+/*
+PSI tem várias sequencias crescentes
+precisamos armazenar as posições de inicio de cada sequencia
+
+Psi(x):
+    seq = posicoes_subsequencia.find(x) -> retorna a sequencia a qual a posicao x esta contida
+    seq.ef_get(x)
+
+    ef_get(k):
+        return this.bitvector.select1(k) - k
+*/
+
+uint CompactSuffixArray::get_sa(uint x)
+{
+    uint hops = 0;
+    uint psi_x = get_psi(x);
+    while (psi_x != END)  {
+        hops++;
+        x = psi_x;
+        psi_x = get_psi(x);
+    }
+    return sequence_size - hops - 1;
+}
+
+uint CompactSuffixArray::get_psi(uint x) {
+    if (x == 0) return END;
+
+    /*TODO binary search subsequences_idx*/
+    uint seq_idx = 0;
+    for (int i = 0; i < psi->subsequences_qtt; i++) { // get the sequence of the element x
+        if (x >= psi->subsequences_idx[i])
+            seq_idx = i;
+        else break;
+    }
+
+    const uint offset = seq_idx > 0 ? psi->subsequences_idx[seq_idx] - 1 : 0;
+    x -= offset;
+    return psi->subsequences[seq_idx]->select1(x) - x;
+}
+
+CompactPsi::CompactPsi(vector<uint> dummy_psi) {
+   try {
+        vector<uint> positions; // store the positon of the start of each increasing subsequence
+        // position 0 will allways have the END caracter
+
+        if (dummy_psi.size() >= 2) positions.push_back(1);
+
+        for (int i = 2; i < dummy_psi.size(); i++)
+            if (dummy_psi[i] < dummy_psi[i - 1])
+                positions.push_back(i);
+
+        subsequences_qtt = positions.size();
+        subsequences_idx = (uint*) malloc(subsequences_qtt * sizeof(uint));
+        if (subsequences_idx == NULL) throw;
+
+        for (int i = 0; i < subsequences_qtt; i++)
+            subsequences_idx[i] = positions[i];
+    
+        subsequences = (CompressedBitvector**) malloc(subsequences_qtt * sizeof(CompressedBitvector));
+        if (subsequences == NULL) throw;
+
+        for (int i = 0; i < subsequences_qtt; i++)
+        {
+            const uint seq_start = subsequences_idx[i];
+            const uint seq_end = i + 1 < subsequences_qtt ? subsequences_idx[i + 1] : dummy_psi.size();
+            uint max_n = 0;
+            for (int j = seq_start; j < seq_end; j++) max_n = max(max_n, dummy_psi[j]);
+            max_n += 1;
+            vector<bool> elias_fano(max_n + max_n / 2, false);
+            for (int idx = 0, j = seq_start; idx < seq_end - seq_start; idx++, j++) {
+                const uint val = dummy_psi[j];
+                elias_fano[idx + val] = 1;
+            }
+
+            subsequences[i] = new CompressedBitvector(BITVECTOR_BLOCK_SIZE, max_n + max_n / 2, elias_fano);
+        }
+
+   } catch (...) {
+       printf("Error creating PSI\n");
+   }
+}
+
+CompactPsi::~CompactPsi() {
+    if (subsequences_idx != NULL) free(subsequences);
+    if (subsequences != NULL) delete[] subsequences;
 }
