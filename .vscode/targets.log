@@ -6,7 +6,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Oct 14 19:23:46 2021
+# Make data base, printed on Wed Nov  3 23:37:44 2021
 
 # Variables
 
@@ -26,8 +26,6 @@ DESKTOP_SESSION = ubuntu
 XDG_SESSION_TYPE = x11
 # environment
 VSCODE_LOG_NATIVE = false
-# environment
-NVM_INC = /home/mateus/.nvm/versions/node/v14.4.0/include/node
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # environment
@@ -46,8 +44,6 @@ CURDIR := /home/mateus/Projects/IC
 SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
-# environment
-_ = /usr/share/code/code
 # environment
 XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
 # makefile (from 'Makefile', line 1)
@@ -75,35 +71,25 @@ LC_CTYPE = pt_BR.UTF-8
 # environment
 CLUTTER_IM_MODULE = xim
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-a8f80378-187e-426b-a7a3-bff88e73b962.sock
-# environment
-GIT_USER = MateusFerreiraSilva
+VSCODE_IPC_HOOK_EXTHOST = /run/user/1000/vscode-ipc-e78e8d48-e9e1-41e3-b35e-2691ef442a64.sock
 # environment
 LC_NAME = pt_BR.UTF-8
-# environment
-USER_EMAIL = ferreiramateus201306@gmail.com
 # environment
 VSCODE_CWD = /home/mateus
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/mateus/.nvm/versions/node/v14.4.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/mateus/Development/flutter/bin:/home/mateus/.nvm/versions/node/v14.4.0/bin/:/opt/apache-maven-3.8.1/bin:/opt/apache-maven-3.8.1/bin:/home/mateus/.local/bin:/opt/apache-maven-3.8.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:.
+PATH = /opt/apache-maven-3.8.1/bin:/home/mateus/.local/bin:/opt/apache-maven-3.8.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 # environment
 GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
 # environment
 GJS_DEBUG_OUTPUT = stderr
 # environment
-LSCOLORS = Gxfxcxdxbxegedabagacad
-# environment
-SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/4324,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/4324
+SESSION_MANAGER = local/mateus-Aspire-E1-572:@/tmp/.ICE-unix/6882,unix/mateus-Aspire-E1-572:/tmp/.ICE-unix/6882
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
 TEXTDOMAIN = im-config
-# environment
-NVM_BIN = /home/mateus/.nvm/versions/node/v14.4.0/bin
-# environment
-BREAKPAD_DUMP_LOCATION = /home/mateus/.config/Code/exthost Crash Reports
 # environment
 XDG_MENU_PREFIX = gnome-
 # environment
@@ -113,13 +99,11 @@ VSCODE_CRASH_REPORTER_START_OPTIONS = {"companyName":"Microsoft","productName":"
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
 # environment
-LS_COLORS = 
-# environment
 XDG_SESSION_DESKTOP = ubuntu
 # environment
 SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
 # environment
-GIO_LAUNCHED_DESKTOP_FILE_PID = 8761
+GIO_LAUNCHED_DESKTOP_FILE_PID = 15263
 # automatic
 %F = $(notdir $%)
 # environment
@@ -133,7 +117,7 @@ PWD = /home/mateus/Projects/IC
 # environment
 XDG_SEAT = seat0
 # environment
-SSH_AGENT_PID = 4428
+SSH_AGENT_PID = 6968
 # environment
 ORIGINAL_XDG_CURRENT_DESKTOP = ubuntu:GNOME
 # environment
@@ -143,17 +127,13 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/services/extensions/node/extensionHostProce
 # environment
 HOME = /home/mateus
 # environment
-VSCODE_CODE_CACHE_PATH = /home/mateus/.config/Code/CachedData/ee8c7def80afc00dd6e593ef12f37756d8f504ea
+VSCODE_CODE_CACHE_PATH = /home/mateus/.config/Code/CachedData/6cba118ac49a1b88332f312a8f67186f7f3c1643
 # environment
 LOGNAME = mateus
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
-# environment
-NVM_CD_FLAGS = -q
 # automatic
 +F = $(notdir $+)
-# environment
-ZSH = /home/mateus/.oh-my-zsh
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # default
@@ -164,8 +144,6 @@ GNOME_DESKTOP_SESSION_ID = this-is-deprecated
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
 XDG_VTNR = 2
-# environment
-GIT_TOKEN = 6ad50d5252f3d093ef28820ba2be42c78636b8a1
 # environment
 LC_TIME = pt_BR.UTF-8
 # default
@@ -188,16 +166,12 @@ LC_MONETARY = pt_BR.UTF-8
 .DEFAULT_GOAL := bitarray.o
 # environment
 XDG_CURRENT_DESKTOP = Unity
-# environment
-LESS = -R
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
 # environment
 LC_TELEPHONE = pt_BR.UTF-8
 # default
 MAKE_COMMAND := make
-# environment
-OLDPWD = /home/mateus
 # default
 .VARIABLES := 
 # automatic
@@ -205,7 +179,7 @@ OLDPWD = /home/mateus
 # environment
 LANGUAGE = en
 # environment
-VSCODE_IPC_HOOK = /run/user/1000/vscode-88ba4d03-1.61.0-main.sock
+VSCODE_IPC_HOOK = /run/user/1000/vscode-88ba4d03-1.61.2-main.sock
 # makefile
 MAKEFLAGS = pqrR
 # environment
@@ -213,7 +187,7 @@ MFLAGS = -pqrR
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-NVM_DIR = /home/mateus/.nvm
+BREAKPAD_DUMP_LOCATION = /home/mateus/.config/Code/exthost Crash Reports
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # environment
@@ -239,8 +213,6 @@ ELECTRON_RUN_AS_NODE = 1
 # environment
 LC_MEASUREMENT = pt_BR.UTF-8
 # environment
-PAGER = less
-# environment
 LC_ALL = C
 # environment
 QT4_IM_MODULE = xim
@@ -265,9 +237,9 @@ LC_ADDRESS = pt_BR.UTF-8
 # environment
 LANG = C
 # environment
-VSCODE_PID = 8761
+VSCODE_PID = 15263
 # variable set hash-table stats:
-# Load=128/1024=12%, Rehash=0, Collisions=23/156=15%
+# Load=114/1024=11%, Rehash=0, Collisions=22/142=15%
 
 # Pattern-specific Variable Values
 
@@ -287,7 +259,6 @@ VSCODE_PID = 8761
 
 sample_pointers.o:
 #  Implicit rule search has not been done.
- 
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 8):
@@ -318,6 +289,7 @@ all: core tests
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/3=0%
 
+ 
 csa.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -491,6 +463,6 @@ main.o:
 # strcache performance: lookups = 79 / hit rate = 51%
 # hash-table stats:
 # Load=38/8192=0%, Rehash=0, Collisions=1/79=1%
-# Finished Make data base on Thu Oct 14 19:23:47 2021
+# Finished Make data base on Wed Nov  3 23:37:44 2021
 
  

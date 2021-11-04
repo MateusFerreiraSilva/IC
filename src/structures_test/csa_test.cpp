@@ -46,12 +46,21 @@ void csa_test() {
         pattern.push_back('$');
         aux = string_to_uint_seq(pattern);
         for (int i = 0; i < pattern.size(); i++) aux[i] -= 1;
-        int ans = csa.find(aux, pattern.size());
-        free(aux);
 
-        if (ans >= 0) printf("Pattern find at position %d\n", ans);
-        else printf("Pattern not found\n");
+        // int ans = csa.get_sa(csa.findOne(aux, pattern.size()));
+        // if (ans >= 0) printf("Pattern find at position %d\n", ans);
+        // else printf("Pattern not found\n");
+        // puts("");
+
+        vector<uint> ans = csa.findAll(aux, pattern.size());
+        if (!ans.empty()) {
+            printf("Pattern find at positions:");
+            for (int i = 0; i < ans.size(); i++)
+                printf(" %u%c", ans[i], i != ans.size() - 1 ? ',' : '\n');
+        } else
+            printf("Pattern not found\n");
         puts("");
+        free(aux);
     }
 
 }

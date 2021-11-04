@@ -8,22 +8,22 @@ CompactSuffixArray::CompactSuffixArray(uint sequence_size, uint *sequence) {
     try {
         this->sequence_size = sequence_size; 
         this->sequence = new WaveletTreeInterface(sequence, sequence +  sequence_size);
-        this->suffix_array = (uint *)malloc(sequence_size * sizeof(uint));
+        uint *suffix_array = (uint *)malloc(sequence_size * sizeof(uint));
 
         if (sequence_size <= 0 || sequence == NULL || suffix_array == NULL) throw;
 
         for (int i = 0; i < sequence_size; i++)
             suffix_array[i] =  i;
-        
-        sort_suffix_array();
+
+        sort_suffix_array(suffix_array);
+
+        free(suffix_array);
     } catch (...) {
         printf("Error on CSA creation\n");
     }
 }
 
-CompactSuffixArray::~CompactSuffixArray() {
-    free(suffix_array);
-}
+CompactSuffixArray::~CompactSuffixArray() {}
 
 bool compare_suffixes(Suffix a, Suffix b) {
     if (a.suff.size() > b.suff.size()) swap(a, b);
@@ -57,7 +57,7 @@ vector<uint> build_psi(vector<Suffix> suffixes) {
     return psi;
 }
 
-void CompactSuffixArray::sort_suffix_array()
+void CompactSuffixArray::sort_suffix_array(uint *suffix_array)
 {
     vector<Suffix> suffixes(sequence_size);
     for (int i = 0; i < sequence_size; i++) {
@@ -74,15 +74,12 @@ void CompactSuffixArray::sort_suffix_array()
 
     this->psi = new CompactPsi(psi);
 
-    for (int i = 0; i < sequence_size; i++)
-        suffix_array[i] = suffixes[i].idx;
-
     // testes
     uint x;
     // for (int i = 0; i < sequence_size; i++)
     //     x = get_psi(i);
     for (int i = 0; i < sequence_size; i++)
-        get_sa(i);
+        printf("%d%c", get_sa(i), i != sequence_size - 1 ? ' ' : '\n');
    
 }
 
@@ -106,35 +103,81 @@ uint *CompactSuffixArray::get_suffix(uint idx)
 /*
     verify i a is a prefix of b
     return -1 if a is less than B, 1 if a is greather than b or 0 if a is a prefix of b
-*/
-int is_prefix(uint *a, uint a_size, uint *b, uint b_size)
-{
-    uint min_size = min(a_size, b_size);
 
-    for (int i = 0; i < min_size; i++)
+    the $ ensures comparation even if pattern_size is greater than text_size
+*/
+int is_prefix(uint *pattern, uint pattern_size, uint *text, uint text_size)
+{
+    for (int i = 0; i < pattern_size - 1; i++)
     {
-        if (a[i] < b[i]) return -1;
-        else if (a[i] > b[i]) return 1;
+        if (pattern[i] < text[i])
+            return -1;
+        else if (pattern[i] > text[i])
+            return 1;
     }
 
     return 0;
 }
 
-int CompactSuffixArray::find(uint *pattern, uint pattern_size) {
+/*
+    return the SA idx where the pattern was found first
+*/
+int CompactSuffixArray::findOne(uint *pattern, uint pattern_size) {
     uint lo = 0, hi = sequence_size - 1, mid;
     while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
+        uint sa = get_sa(mid);
         int aux = is_prefix(
-            pattern, pattern_size, get_suffix(suffix_array[mid]),
-            sequence_size - suffix_array[mid]
+            pattern, pattern_size, get_suffix(sa),
+            sequence_size - sa
         );
 
-        if (aux == 0) return suffix_array[mid];
+        if (aux == 0) return mid;
         else if (aux < 0) hi = mid - 1;
         else lo = mid + 1; 
     }
 
     return -1;
+}
+
+/*
+    walk up and down in the SA checking the pattern
+
+    return sorted array with all the positions where the pattern was found
+*/
+vector<uint> CompactSuffixArray::findAll(uint *pattern, uint pattern_size) {
+    int start = findOne(pattern, pattern_size);
+    if (start == -1) return vector<uint>();
+
+    priority_queue<int> pq;
+
+    // go up
+    for (int i = start; i >= 0; i--)
+    {
+        int sa = get_sa(i);
+        if (is_prefix(pattern, pattern_size, get_suffix(sa), sequence_size - sa) == 0)
+            pq.push(-sa);
+        else break;
+    }
+    
+    // go down
+    for (int i = start + 1; i < sequence_size; i++)
+    {
+        int sa = get_sa(i);
+        if (is_prefix(pattern, pattern_size, get_suffix(sa), sequence_size - sa) == 0)
+            pq.push(-sa);
+        else break;
+    }
+
+    vector<uint> positions(pq.size());
+    int idx = 0;
+    while (!pq.empty())
+    {
+        positions[idx++] = -pq.top();
+        pq.pop();
+    }
+
+    return positions;
 }
 
 void CompactSuffixArray::print_suffix_array_info(vector<Suffix> suffixes, vector<uint> psi) {
@@ -216,7 +259,7 @@ CompactPsi::CompactPsi(vector<uint> dummy_psi) {
         for (int i = 0; i < subsequences_qtt; i++)
             subsequences_idx[i] = positions[i];
     
-        subsequences = (CompressedBitvector**) malloc(subsequences_qtt * sizeof(CompressedBitvector));
+        subsequences = (CompressedBitvector**) malloc(subsequences_qtt * sizeof(CompressedBitvector*));
         if (subsequences == NULL) throw;
 
         for (int i = 0; i < subsequences_qtt; i++)
@@ -241,6 +284,6 @@ CompactPsi::CompactPsi(vector<uint> dummy_psi) {
 }
 
 CompactPsi::~CompactPsi() {
-    if (subsequences_idx != NULL) free(subsequences);
+    if (subsequences_idx != NULL) free(subsequences_idx);
     if (subsequences != NULL) delete[] subsequences;
 }
