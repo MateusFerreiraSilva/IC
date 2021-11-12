@@ -26,7 +26,7 @@ uint comb(uint a, uint b)
 void freeComb(uint **Comb, uint x) {
     if(Comb != NULL) {
         for (int i = 0; i <= x; i++)
-            if(Comb[i] != NULL) free(Comb[i]);
+            free(Comb[i]);
         free(Comb);
     }
 }

@@ -3,7 +3,7 @@
 uint* string_to_uint_seq(string str) {
     uint *seq = NULL;
     try {
-        seq = (uint *)malloc(str.size() * sizeof(uint));
+        seq = (uint*) malloc(str.size() * sizeof(uint));
         if (seq == NULL)
             throw;
 
@@ -47,12 +47,12 @@ void csa_test() {
         aux = string_to_uint_seq(pattern);
         for (int i = 0; i < pattern.size(); i++) aux[i] -= 1;
 
-        // int ans = csa.get_sa(csa.findOne(aux, pattern.size()));
+        // int ans = csa.get_sa(csa.SA_binary_search(aux, pattern.size()));
         // if (ans >= 0) printf("Pattern find at position %d\n", ans);
         // else printf("Pattern not found\n");
         // puts("");
 
-        vector<uint> ans = csa.findAll(aux, pattern.size());
+        vector<uint> ans = csa.find(aux, pattern.size());
         if (!ans.empty()) {
             printf("Pattern find at positions:");
             for (int i = 0; i < ans.size(); i++)

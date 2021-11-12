@@ -23,7 +23,10 @@ CompactSuffixArray::CompactSuffixArray(uint sequence_size, uint *sequence) {
     }
 }
 
-CompactSuffixArray::~CompactSuffixArray() {}
+CompactSuffixArray::~CompactSuffixArray() {
+    delete sequence;
+    delete psi;
+}
 
 bool compare_suffixes(Suffix a, Suffix b) {
     if (a.suff.size() > b.suff.size()) swap(a, b);
@@ -72,7 +75,9 @@ void CompactSuffixArray::sort_suffix_array(uint *suffix_array)
 
     print_suffix_array_info(suffixes, psi);
 
-    this->psi = new CompactPsi(psi);
+    uint *dummy_psi = (uint*) malloc(psi.size() * sizeof(uint));
+    this->psi = new CompactPsi(dummy_psi, psi.size());
+    free(dummy_psi);
 
     // testes
     uint x;
@@ -122,7 +127,7 @@ int is_prefix(uint *pattern, uint pattern_size, uint *text, uint text_size)
 /*
     return the SA idx where the pattern was found first
 */
-int CompactSuffixArray::findOne(uint *pattern, uint pattern_size) {
+int CompactSuffixArray::SA_binary_search(uint *pattern, uint pattern_size) {
     uint lo = 0, hi = sequence_size - 1, mid;
     while (lo <= hi) {
         mid = lo + (hi - lo) / 2;
@@ -145,8 +150,8 @@ int CompactSuffixArray::findOne(uint *pattern, uint pattern_size) {
 
     return sorted array with all the positions where the pattern was found
 */
-vector<uint> CompactSuffixArray::findAll(uint *pattern, uint pattern_size) {
-    int start = findOne(pattern, pattern_size);
+vector<uint> CompactSuffixArray::find(uint *pattern, uint pattern_size) {
+    int start = SA_binary_search(pattern, pattern_size);
     if (start == -1) return vector<uint>();
 
     priority_queue<int> pq;
@@ -238,17 +243,20 @@ uint CompactSuffixArray::get_psi(uint x) {
 
     const uint offset = seq_idx > 0 ? psi->subsequences_idx[seq_idx] - 1 : 0;
     x -= offset;
-    return psi->subsequences[seq_idx]->select1(x) - x;
+    const PsiSubsequence *subseq = psi->subsequences[seq_idx];
+    const uint quotient = subseq->quotients->select1(x) - x;
+    const uint remainder = subseq->remainders->read(x);
+    return quotient * subseq->avg_space_between + remainder;
 }
 
-CompactPsi::CompactPsi(vector<uint> dummy_psi) {
+CompactPsi::CompactPsi(uint *dummy_psi, uint dummy_psi_size) {
    try {
         vector<uint> positions; // store the positon of the start of each increasing subsequence
         // position 0 will allways have the END caracter
 
-        if (dummy_psi.size() >= 2) positions.push_back(1);
+        if (dummy_psi_size >= 2) positions.push_back(1);
 
-        for (int i = 2; i < dummy_psi.size(); i++)
+        for (int i = 2; i < dummy_psi_size; i++)
             if (dummy_psi[i] < dummy_psi[i - 1])
                 positions.push_back(i);
 
@@ -259,31 +267,56 @@ CompactPsi::CompactPsi(vector<uint> dummy_psi) {
         for (int i = 0; i < subsequences_qtt; i++)
             subsequences_idx[i] = positions[i];
     
-        subsequences = (CompressedBitvector**) malloc(subsequences_qtt * sizeof(CompressedBitvector*));
+        subsequences = (PsiSubsequence**) malloc(subsequences_qtt * sizeof(PsiSubsequence*));
         if (subsequences == NULL) throw;
 
         for (int i = 0; i < subsequences_qtt; i++)
         {
             const uint seq_start = subsequences_idx[i];
-            const uint seq_end = i + 1 < subsequences_qtt ? subsequences_idx[i + 1] : dummy_psi.size();
-            uint max_n = 0;
-            for (int j = seq_start; j < seq_end; j++) max_n = max(max_n, dummy_psi[j]);
-            max_n += 1;
-            vector<bool> elias_fano(max_n + max_n / 2, false);
+            const uint seq_end = i + 1 < subsequences_qtt ? subsequences_idx[i + 1] : dummy_psi_size;
+            const uint seq_size = seq_end - seq_start + 1;
+            subsequences[i] = new PsiSubsequence(seq_size);
+
+            uint *remainders_aux = (uint*) malloc(seq_size * sizeof(uint));
+            if (remainders_aux == NULL) throw;
+            uint max_number = 0, max_bit_num = 0;
+            for (int j = seq_start; j < seq_end; j++) {
+                max_number = max(max_number, dummy_psi[j] / subsequences[i]->avg_space_between);
+                remainders_aux[j] = dummy_psi[j] % subsequences[i]->avg_space_between;
+                max_bit_num = max(max_bit_num, (uint) ceil(log2(remainders_aux[j])));
+            }
+
+            max_number += 1;
+            vector<bool> elias_fano(max_number + max_number / 2, false);
             for (int idx = 0, j = seq_start; idx < seq_end - seq_start; idx++, j++) {
-                const uint val = dummy_psi[j];
+                const uint val = dummy_psi[j] / subsequences[i]->avg_space_between;
                 elias_fano[idx + val] = 1;
             }
 
-            subsequences[i] = new CompressedBitvector(BITVECTOR_BLOCK_SIZE, max_n + max_n / 2, elias_fano);
+            subsequences[i]->quotients = new CompressedBitvector(PsiSubsequence::BITVECTOR_BLOCK_SIZE, max_number + max_number / 2, elias_fano);
+            subsequences[i]->remainders = new Bitarray(max_bit_num, seq_size, remainders_aux);
+            
+            free(remainders_aux);
         }
-
    } catch (...) {
        printf("Error creating PSI\n");
    }
 }
 
 CompactPsi::~CompactPsi() {
-    if (subsequences_idx != NULL) free(subsequences_idx);
-    if (subsequences != NULL) delete[] subsequences;
+    free(subsequences_idx);
+    if (subsequences) {
+        for (int i = 0; i < subsequences_qtt; i++)
+            delete subsequences[i];
+        free(subsequences);        
+    }
+}
+
+PsiSubsequence::PsiSubsequence(uint seq_size) {
+    avg_space_between = ALPHABET_SIZE / seq_size;
+}
+
+PsiSubsequence ::~PsiSubsequence() {
+    delete quotients;
+    delete remainders;
 }
