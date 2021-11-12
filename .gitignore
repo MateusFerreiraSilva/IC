@@ -1,5 +1,7 @@
 docs/*
 resources/*
+*.o
 a.out
 output
 input
+prog

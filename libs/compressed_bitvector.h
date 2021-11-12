@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "../libs/compressed_array.h"
+#include "../libs/bitarray.h"
 #include "../libs/sample_pointers.h"
 using namespace std;
 
@@ -8,34 +8,34 @@ using namespace std;
 
 #define k 4
 
-class CompressedBitVector
+class CompressedBitvector
 {
 private:
-    int block_size, block_num;
+    unsigned block_size, block_num;
     unsigned long length;
-    CompArray *C;
+    Bitarray *C;
     SamplePointers *O;
-    int **K;
-    int *R;
-    int *P;
-    CompArray *S1, *S0; // select arrays
-    int m1; // number of 1's
-    int m0; // number of 0's
+    unsigned **Comb; // represents variable K
+    unsigned SUPER_BLOCK_SIZE, SUPER_BLOCK_NUM, *R, *P;
+    unsigned ones, zeros; // number of 1's or 0's
     long unsigned sz = 0;
 
-    pair<unsigned, unsigned> encode(CompArray &B, int i);
-    unsigned decode(int i);
+    pair<uint, uint> encode(Bitarray &B, uint i);
+    uint decode(uint i);
     void precompR();
 
 public:
-    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length);
-    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, unsigned *B);
-    CompressedBitVector(unsigned block_size, unsigned block_num, unsigned long length, vector<bool> &bitvector);
-    ~CompressedBitVector();
-    void compress(CompArray B);
+    CompressedBitvector(unsigned block_size, unsigned long length);
+    CompressedBitvector(unsigned block_size, unsigned long length, unsigned *B);
+    CompressedBitvector(unsigned block_size, unsigned long length, vector<bool> &bitvector);
+    ~CompressedBitvector();
+    void compress(Bitarray B);
     bool access(unsigned i);
     unsigned rank1(unsigned i);
     unsigned rank0(unsigned i);
+    unsigned caclMidIdx(unsigned lo_idx, unsigned hi_idx);
+    unsigned rank1_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
+    unsigned rank0_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
     unsigned select1(unsigned i);
     unsigned select0(unsigned i);
     void print();
