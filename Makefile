@@ -28,7 +28,11 @@ main.o:
 	g++ -c -g ./src/main.cpp
 	mv main.o ./resources
 
-core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o csa.o main.o
+malloc_count.o:
+	gcc -c -g ./src/malloc_count.c
+	mv malloc_count.o ./resources
+
+core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_tree.o csa.o main.o malloc_count.o
 
 ### END CORE ###
 
@@ -54,7 +58,21 @@ tests: sample_pointers_test.o compressed_bitvector_test.o wavelet_tree_test.o cs
 
 ### END TESTS ###
 
-all: core tests
+### UNCOMPRESSED ###
+
+adj_list_temporal_graph.o:
+	g++ -c -g ./src/uncompressed_structures/adjListTemporalGraph.cpp
+	mv adjListTemporalGraph.o ./resources
+
+edge_log.o:
+	g++ -c -g ./src/uncompressed_structures/edgeLog.cpp
+	mv edgeLog.o ./resources
+
+uncompressed_structures: adj_list_temporal_graph.o edge_log.o
+
+### END UNCOMPRESSED ###
+
+all: core uncompressed_structures tests
 
 build-main: main
 	g++ -o prog ./resources/*.o
@@ -63,7 +81,7 @@ build-tests: tests
 	g++ -o prog ./resources/*.o
 
 build: all
-	g++ -o prog ./resources/*.o
+	g++ -o prog ./resources/*.o -ldl
 
 run: build
 	./prog

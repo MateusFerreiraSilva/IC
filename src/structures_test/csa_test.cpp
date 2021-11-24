@@ -1,4 +1,5 @@
 #include "../../libs/structures_test/csa_test.h"
+#include "../../libs/malloc_count.h"
 
 uint* string_to_uint_seq(string str) {
     uint *seq = NULL;
@@ -30,8 +31,10 @@ void csa_test() {
     uint *aux = NULL;
     string seq = "bananaban$", pattern;
     aux = string_to_uint_seq(seq);
+    malloc_count_print_status();
     CompactSuffixArray csa(seq.size(), aux);
     free(aux);
+    malloc_count_print_status();
 
     // printf("Suffixes:\n");
     // for (int i = 0; i < seq.size(); i++) {
