@@ -12,6 +12,12 @@
         "regex": "cpp",
         "type_traits": "cpp",
         "valarray": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "array": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "utility": "cpp"
     }
 }

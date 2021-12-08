@@ -38,6 +38,7 @@ public:
     unsigned rank0_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
     unsigned select1(unsigned i);
     unsigned select0(unsigned i);
+    void print_blocks();
     void print();
     long unsigned size();
     long unsigned count();

@@ -1,5 +1,120 @@
 #include "../../libs/structures_test/compressed_bitvector_test.h"
 
+class BitvectorTest {
+    public:
+        vector<bool> bitvector;
+        
+        BitvectorTest(int n) {
+            bitvector.resize(n);
+            for (int i = 0; i < bitvector.size(); i++)
+                bitvector[i] = 0;            
+        }
+
+        uint access(uint i) {
+            if (i == 0 || i > bitvector.size()) return 0;
+            return bitvector[i - 1];
+        }
+
+        void fill(vector<uint> idxs) {
+            for (auto idx : idxs)
+                bitvector[idx - 1] = 1;
+        }
+
+        uint  rank1(uint i) {
+            if (i == 0 || i > bitvector.size()) return 0;
+            int sum = 0;
+            for (int j = 1; j <= i; j++)
+                sum += access(j);
+            return sum;
+        }
+        
+        uint  rank0(uint i) {
+            if (i == 0 || i > bitvector.size()) return 0;
+            return i - rank1(i);
+        }
+
+        uint ones() {
+            return rank1(bitvector.size());
+        }
+
+        uint zeros() {
+            return bitvector.size() - ones();
+        }
+
+
+        uint select1(uint i) {
+            if (i == 0 || i > ones()) return 0;
+            for (int j = 1; j <= bitvector.size(); j++)
+                if (rank1(j) == i) return j;    
+        }
+
+        uint select0(uint i) {
+            if (i == 0 || i > zeros()) return 0;
+            for (int j = 1; j <= bitvector.size(); j++)
+                if (rank0(j) == i) return j;    
+        }
+
+        void print() {
+            for (int i = 0; i < bitvector.size(); i++)
+                cout << bitvector[i];
+            cout << endl;
+        }
+};
+
+void test_access(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
+    for (int i = 1; i <= n; i++)
+        assert(bitvector_test->access(i) == bitvector->access(i));
+    cout << "access OK" << endl;
+}
+
+void test_rank1(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
+    for (int i = 1; i <= n; i++)
+        assert(bitvector_test->rank1(i) == bitvector->rank1(i));
+    cout << "rank1 OK" << endl;
+}
+
+void test_rank0(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
+    for (int i = 1; i <= n; i++)
+        assert(bitvector_test->rank0(i) == bitvector->rank0(i));
+    cout << "rank0 OK" << endl;
+}
+
+void test_select1(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
+    for (int i = 1; i <= bitvector_test->ones(); i++)
+        assert(bitvector_test->select1(i) == bitvector->select1(i));
+    cout << "select1 OK" << endl;
+}
+
+void test_select0(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
+    for (int i = 1; i <= bitvector_test->zeros(); i++)
+        assert(bitvector_test->select0(i) == bitvector->select0(i));
+    cout << "select0 OK" << endl;
+}
+
+void compressed_bitvector_test() {
+    int n = 32;
+    vector<uint> idxs = {2, 7, 9, 23, 24, 25, 31};
+    BitvectorTest *bitvector_test = new BitvectorTest(n);
+    bitvector_test->fill(idxs);
+    const uint block_size = 4;
+    const uint total_of_bits = bitvector_test->bitvector.size() / block_size + 1;
+    CompressedBitvector *bitvector = new CompressedBitvector(block_size, total_of_bits, bitvector_test->bitvector);
+
+    bitvector_test->print();
+    bitvector->print();
+
+    test_access(bitvector_test, bitvector, n);
+    test_rank1(bitvector_test, bitvector, n);
+    test_rank0(bitvector_test, bitvector, n);
+    test_select1(bitvector_test, bitvector, n);
+    test_select0(bitvector_test, bitvector, n);
+
+    delete bitvector_test;
+    delete bitvector;
+
+}
+
+
 // void compressed_bitvector_test() {
 //     int n = 10, b = 4;
 //     unsigned arr[10] = {8, 2, 0, 6, 0, 10, 0, 11, 8, 1};
@@ -97,15 +212,16 @@ void compressed_bitvector_mem_test() {
     srand(time(NULL));
 
     const uint n = 10000 * 5;
-    vector<bool>* bs = new vector<bool>(n);
+    // vector<bool>* bs = new vector<bool>(n);
+    BitvectorTest *bitvector_test = new BitvectorTest(n);
     for (int i = 0; i < n; i++)
-        bs->at(i) = (rand() % 100 + 1) <= 50;
+        bitvector_test->bitvector.at(i) = (rand() % 100 + 1) <= 50;
     // cout << "Uncompact:\n";
-    // malloc_count_print_status();
+    malloc_count_print_status();
     const uint block_size = 32;
-    const uint block_num = bs->size() / block_size + 1;
-    CompressedBitvector bitvector(block_size, block_num, *bs);
-    delete bs;
+    const uint block_num = bitvector_test->bitvector.size() / block_size + 1;
+    CompressedBitvector bitvector(block_size, block_num, bitvector_test->bitvector);
+    delete bitvector_test;
     // cout << "Compact:\n";
-    // malloc_count_print_status();
+    malloc_count_print_status();
 }

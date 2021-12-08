@@ -12,9 +12,6 @@ CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long leng
     this->length = length;
     this->block_num = length * block_size; // number of bits in the bitvector
 
-    // TODO testes nos construtores
-    // try { if(length > block_num * block_size) error }
-
     this->Comb = precompComb(Comb, block_size); // represents variable K
     this->SUPER_BLOCK_SIZE = block_size * k;
     this->SUPER_BLOCK_NUM = (block_num / SUPER_BLOCK_SIZE + 1);
@@ -335,12 +332,19 @@ unsigned CompressedBitvector::select0(unsigned i)
     return idx;
 }
 
-void CompressedBitvector::print()
+void CompressedBitvector::print_blocks()
 {
     for (int i = 0; i < length; i++)
     {
         printf("%u ", decode(i));
     }
+    puts("");
+}
+
+void CompressedBitvector::print()
+{
+    for (int i = 1; i <= block_num; i++)
+        cout << access(i);
     puts("");
 }
 
