@@ -7,5 +7,6 @@
 #define WAVELET_TREE_TEST
 
 void wavelet_tree_test();
+void wavelet_tree_mem_test();
 
 #endif

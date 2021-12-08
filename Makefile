@@ -1,3 +1,11 @@
+# CCXX=g++
+# CXXFLAGS=-g
+# LDFLAGS=-ldl
+# RM=rm -f
+# C_SOURCE=$(wildcard *.c)
+# CPP_SOURCE=$(wildcard ./src/*.cpp)
+# OBJ=$(CPP_SOURCE:.c=.o)
+
 ### CORE ###
 
 bitarray.o:
@@ -38,6 +46,10 @@ core: bitarray.o sample_pointers.o combination.o compressed_bitvector.o wavelet_
 
 ### TESTS ###
 
+bitarray_test.o:
+	g++ -c -g ./src/structures_test/bitarray_test.cpp
+	mv bitarray_test.o ./resources
+
 sample_pointers_test.o:
 	g++ -c -g ./src/structures_test/sample_pointers_test.cpp
 	mv sample_pointers_test.o ./resources
@@ -46,7 +58,7 @@ compressed_bitvector_test.o:
 	g++ -c -g ./src/structures_test/compressed_bitvector_test.cpp
 	mv compressed_bitvector_test.o ./resources
 
-wavelet_tree_test.o:
+# wavelet_tree_test.o:
 	g++ -c -g ./src/structures_test/wavelet_tree_test.cpp
 	mv wavelet_tree_test.o ./resources
 
@@ -54,7 +66,7 @@ csa_test.o:
 	g++ -c -g ./src/structures_test/csa_test.cpp
 	mv csa_test.o ./resources
 
-tests: sample_pointers_test.o compressed_bitvector_test.o wavelet_tree_test.o csa_test.o 
+tests: bitarray_test.o sample_pointers_test.o compressed_bitvector_test.o wavelet_tree_test.o csa_test.o 
 
 ### END TESTS ###
 

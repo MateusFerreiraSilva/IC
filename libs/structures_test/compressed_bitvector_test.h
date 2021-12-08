@@ -7,5 +7,6 @@
 #define COMPRESSED_BITVECTOR_TEST
 
 void compressed_bitvector_test();
+void compressed_bitvector_mem_test();
 
 #endif

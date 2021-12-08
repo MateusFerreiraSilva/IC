@@ -91,23 +91,21 @@
     //     printf("OK\n");
 // }
 
-void compressed_bitvector_test() {
+void compressed_bitvector_mem_test() {
     // cout << "Compact Bitvector\n";
 
     srand(time(NULL));
 
-    malloc_count_print_status();
-    const uint n = 1000000000;
+    const uint n = 10000 * 5;
     vector<bool>* bs = new vector<bool>(n);
     for (int i = 0; i < n; i++)
         bs->at(i) = (rand() % 100 + 1) <= 50;
     // cout << "Uncompact:\n";
-    malloc_count_print_status();
-    const uint block_size = 4;
+    // malloc_count_print_status();
+    const uint block_size = 32;
     const uint block_num = bs->size() / block_size + 1;
     CompressedBitvector bitvector(block_size, block_num, *bs);
-    malloc_count_print_status();
     delete bs;
     // cout << "Compact:\n";
-    malloc_count_print_status();
+    // malloc_count_print_status();
 }

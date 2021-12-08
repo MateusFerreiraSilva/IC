@@ -6,5 +6,6 @@
 #define SAMPLE_POINTERS_TEST
 
 void sample_pointers_test();
+void sample_pointers_mem_test();
 
 #endif

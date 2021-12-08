@@ -3,6 +3,7 @@
 #include "../libs/sample_pointers.h"
 #include "../libs/compressed_bitvector.h"
 #include "../libs/combination.h"
+#include "../libs/memprofile.h"
 using namespace std;
 
 CompressedBitvector::CompressedBitvector(unsigned block_size, unsigned long length)
@@ -166,6 +167,7 @@ void CompressedBitvector::compress(Bitarray B)
     }
 
     this->C = new Bitarray(block_size, length, C);
+    
     this->O = new SamplePointers(length, k, O);
 
     // printf("O: [ ");
