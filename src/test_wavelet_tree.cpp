@@ -1,4 +1,4 @@
-#include "../../libs/structures_test/wavelet_tree_test.h"
+#include "../libs/test_wavelet_tree.h"
 
 #define sz 9
 

@@ -50,7 +50,7 @@ unsigned Bitarray::bitsread(int j0, int j)
 
 unsigned Bitarray::read(int i)
 {
-    bitsread(i * l, i * l + l - 1);
+    return bitsread(i * l, i * l + l - 1);
 }
 
 void Bitarray::bitset(int j)
@@ -82,10 +82,9 @@ void Bitarray::write(int i, unsigned x)
     bitswrite(i * l, i * l + l - 1, x);
 }
 
-int Bitarray::bitsPrint()
-{
-    int total_of_bits = l *n;
-    int aux = 0;
+void Bitarray::bitsPrint() {
+    uint total_of_bits = l * n;
+    uint aux = 0;
     for (int i = 0; i < total_of_bits; i++)
     {
         for (int j = 0; j < 32; j++)

@@ -1,4 +1,4 @@
-#include "../../libs/structures_test/compressed_bitvector_test.h"
+#include "../libs/test_compressed_bitvector.h"
 
 class BitvectorTest {
     public:
@@ -62,14 +62,18 @@ class BitvectorTest {
 };
 
 void test_access(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= n; i++) {
+        // cout << i << endl;
         assert(bitvector_test->access(i) == bitvector->access(i));
+    }
     cout << "access OK" << endl;
 }
 
 void test_rank1(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= n; i++) {
+        // cout << i << endl;
         assert(bitvector_test->rank1(i) == bitvector->rank1(i));
+    }
     cout << "rank1 OK" << endl;
 }
 
@@ -92,16 +96,18 @@ void test_select0(BitvectorTest *bitvector_test, CompressedBitvector *bitvector,
 }
 
 void compressed_bitvector_test() {
-    int n = 32;
-    vector<uint> idxs = {2, 7, 9, 23, 24, 25, 31};
+    int n = 168;
+    vector<uint> idxs = {2, 7, 9, 23, 24, 25, 31, 43, 61, 62, 64, 65, 90, 91, 118, 168};
     BitvectorTest *bitvector_test = new BitvectorTest(n);
     bitvector_test->fill(idxs);
-    const uint block_size = 4;
-    const uint total_of_bits = bitvector_test->bitvector.size() / block_size + 1;
-    CompressedBitvector *bitvector = new CompressedBitvector(block_size, total_of_bits, bitvector_test->bitvector);
+    const uint block_size = 2;
+    const uint total_of_blocks = bitvector_test->bitvector.size() / block_size + 1;
+    CompressedBitvector *bitvector = new CompressedBitvector(block_size, total_of_blocks, bitvector_test->bitvector);
 
     bitvector_test->print();
     bitvector->print();
+
+    cout << bitvector_test->rank1(28) << endl; // corretor compressed bitvector respondendo de forma
 
     test_access(bitvector_test, bitvector, n);
     test_rank1(bitvector_test, bitvector, n);

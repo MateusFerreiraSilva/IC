@@ -1,4 +1,4 @@
-#include "../csa.h"
+#include "csa.h"
 
 #ifndef CSA_TEST
 #define CSA_TEST

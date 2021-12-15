@@ -245,8 +245,8 @@ unsigned CompressedBitvector::rank1_binary_search(unsigned lo_idx, unsigned hi_i
         return rank1_binary_search(lo_idx, mid_idx - 1, rank);
     else if (rank > R[mid_idx])
         return rank1_binary_search(mid_idx + 1, hi_idx, rank);
-    else if (rank == R[mid_idx])
-        return mid_idx - 1;
+    // else if (rank == R[mid_idx])
+    return mid_idx - 1;
 }
 
 unsigned CompressedBitvector::select1(unsigned i)
@@ -298,8 +298,8 @@ unsigned CompressedBitvector::rank0_binary_search(unsigned lo_idx, unsigned hi_i
         return rank0_binary_search(lo_idx, mid_idx - 1, rank);
     else if (rank > offset - R[mid_idx])
         return rank0_binary_search(mid_idx + 1, hi_idx, rank);
-    else if (rank == offset - R[mid_idx])
-        return mid_idx - 1;
+    // else if (rank == offset - R[mid_idx])
+    return mid_idx - 1;
 }
 
 unsigned CompressedBitvector::select0(unsigned i)

@@ -27,7 +27,7 @@ public:
     void bitclear(int j);
     void bitswrite(int j0, int j, unsigned x);
     void write(int i, unsigned x);
-    int bitsPrint();
+    void bitsPrint();
     void printW();
     long unsigned size();
     long unsigned length();

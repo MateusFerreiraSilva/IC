@@ -133,8 +133,8 @@ void SamplePointers::compress(uint *arr) {
         write(i, arr[i]);
 }
 
-string SamplePointers::gammaEncode(int x)
-{
+// string SamplePointers::gammaEncode(int x)
+// {
     // int N = 0;
     // while ((1 << (N + 1)) <= x)
     //     N++;
@@ -155,7 +155,7 @@ string SamplePointers::gammaEncode(int x)
     // }
 
     // return str;
-}
+// }
 
 // void SamplePointers::toGamma(unsigned *arr)
 // {
@@ -204,8 +204,8 @@ string SamplePointers::gammaEncode(int x)
 //     }
 // }
 
-unsigned SamplePointers::gammaDecode(int i)
-{
+// unsigned SamplePointers::gammaDecode(int i)
+// {
     // int aux = numeric_limits<int>::max(), idx;
     // for (int j = 0; j < ceil(n / (float)k); j++)
     // {
@@ -240,7 +240,7 @@ unsigned SamplePointers::gammaDecode(int i)
     //     else
     //         N++;
     // }
-}
+// }
 
 unsigned long SamplePointers::size()
 {

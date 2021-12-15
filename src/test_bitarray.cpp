@@ -1,4 +1,4 @@
-#include "../../libs/structures_test/bitarray_test.h"
+#include "../libs/test_bitarray.h"
 
 void bitarray_test() {
 

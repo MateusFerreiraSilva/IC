@@ -1,5 +1,5 @@
-#include "../../libs/structures_test/csa_test.h"
-#include "../../libs/malloc_count.h"
+#include "../libs/test_csa.h"
+#include "../libs/malloc_count.h"
 
 uint* string_to_uint_seq(string str) {
     uint *seq = NULL;
