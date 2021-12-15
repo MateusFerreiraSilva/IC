@@ -2,14 +2,14 @@
 
 #define sz 9
 
-unsigned rank_test[10][10], select_test[10][10];
+uint rank_test[10][10], select_test[10][10];
 set<int> s;
 
 void OK_TEST(int OK, int size) {
     if (OK == size) printf("OK\n");
 }
 
-void calc_rank_test(unsigned arr[], unsigned arrSize) {
+void calc_rank_test(uint arr[], uint arrSize) {
     for(auto it : s) {
         rank_test[it][0] = arr[0] == it;
         for(int i = 1; i < arrSize; i++)
@@ -22,7 +22,7 @@ void calc_rank_test(unsigned arr[], unsigned arrSize) {
 
 }
 
-void calc_select_test(unsigned arr[], unsigned arrSize)
+void calc_select_test(uint arr[], uint arrSize)
 {
     memset(select_test, 0, sizeof(select_test));
     for (auto it : s)
@@ -42,13 +42,13 @@ void calc_select_test(unsigned arr[], unsigned arrSize)
 
 void wavelet_tree_test()
 {
-    // unsigned arr[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
-    // unsigned arrCopy[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
-    unsigned arr[] = {2, 1, 4, 1, 3, 7, 1, 5, 2, 10, 1, 2, 7};
-    unsigned arrCopy[] = {2, 1, 4, 1, 3, 7, 1, 5, 2, 10, 1, 2, 7};
-    // unsigned arr[] = {4, 4, 5};
-    // unsigned arrCopy[] = {4, 4, 5};
-    int arrSize = sizeof(arr) / sizeof(unsigned);
+    // uint arr[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
+    // uint arrCopy[] = {2, 1, 4, 1, 3, 4, 1, 5, 2, 1};
+    uint arr[] = {2, 1, 4, 1, 3, 7, 1, 5, 2, 10, 1, 2, 7};
+    uint arrCopy[] = {2, 1, 4, 1, 3, 7, 1, 5, 2, 10, 1, 2, 7};
+    // uint arr[] = {4, 4, 5};
+    // uint arrCopy[] = {4, 4, 5};
+    int arrSize = sizeof(arr) / sizeof(uint);
     WaveletTreeInterface wt(arrCopy, arrCopy + arrSize);
 
     int c = 0, OK;
@@ -57,7 +57,7 @@ void wavelet_tree_test()
     printf("----TEST ACCESS----\n\n");
     OK = 0;
     for (int i = 1; i <= arrSize; i++) {
-        unsigned x = wt.access(i);
+        uint x = wt.access(i);
         printf("%u%c", x, i == arrSize ? '\n': ' ');
         if(x == arr[i - 1]) {
             OK++;
@@ -122,7 +122,7 @@ void wavelet_tree_test()
 
 // int main()
 // {
-//     unsigned arr[N] = {8, 2, 0, 6, 0, 10, 0, 11, 8, 1};
+//     uint arr[N] = {8, 2, 0, 6, 0, 10, 0, 11, 8, 1};
 //     CompressedBitvector bitvector(4, N, arr);
     
 //     for (int i = 0; i < N * 4; i++) {

@@ -3,3 +3,5 @@ resources/*
 *.o
 a.out
 prog
+.vscode
+objects

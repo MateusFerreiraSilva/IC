@@ -11,7 +11,7 @@ void bitarray_test() {
 
     string str = "../../input/bitarray.txt";
     file.open(str);
-    for (int i = 0; i < n; i++)
+    for (uint i = 0; i < n; i++)
         file >> arr[i];
     file.close();
     // cout << "Uncompact:\n";

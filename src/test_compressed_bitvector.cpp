@@ -6,7 +6,7 @@ class BitvectorTest {
         
         BitvectorTest(int n) {
             bitvector.resize(n);
-            for (int i = 0; i < bitvector.size(); i++)
+            for (ulong i = 0; i < bitvector.size(); i++)
                 bitvector[i] = 0;            
         }
 
@@ -22,8 +22,8 @@ class BitvectorTest {
 
         uint  rank1(uint i) {
             if (i == 0 || i > bitvector.size()) return 0;
-            int sum = 0;
-            for (int j = 1; j <= i; j++)
+            uint sum = 0;
+            for (uint j = 1; j <= i; j++)
                 sum += access(j);
             return sum;
         }
@@ -44,18 +44,20 @@ class BitvectorTest {
 
         uint select1(uint i) {
             if (i == 0 || i > ones()) return 0;
-            for (int j = 1; j <= bitvector.size(); j++)
-                if (rank1(j) == i) return j;    
+            for (ulong j = 1; j <= bitvector.size(); j++)
+                if (rank1(j) == i) return j;
+            return 0; // default value 
         }
 
         uint select0(uint i) {
             if (i == 0 || i > zeros()) return 0;
-            for (int j = 1; j <= bitvector.size(); j++)
-                if (rank0(j) == i) return j;    
+            for (ulong j = 1; j <= bitvector.size(); j++)
+                if (rank0(j) == i) return j;
+            return 0; // default value
         }
 
         void print() {
-            for (int i = 0; i < bitvector.size(); i++)
+            for (ulong i = 0; i < bitvector.size(); i++)
                 cout << bitvector[i];
             cout << endl;
         }
@@ -84,13 +86,13 @@ void test_rank0(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, i
 }
 
 void test_select1(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
-    for (int i = 1; i <= bitvector_test->ones(); i++)
+    for (uint i = 1; i <= bitvector_test->ones(); i++)
         assert(bitvector_test->select1(i) == bitvector->select1(i));
     cout << "select1 OK" << endl;
 }
 
 void test_select0(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
-    for (int i = 1; i <= bitvector_test->zeros(); i++)
+    for (uint i = 1; i <= bitvector_test->zeros(); i++)
         assert(bitvector_test->select0(i) == bitvector->select0(i));
     cout << "select0 OK" << endl;
 }
@@ -123,17 +125,17 @@ void compressed_bitvector_test() {
 
 // void compressed_bitvector_test() {
 //     int n = 10, b = 4;
-//     unsigned arr[10] = {8, 2, 0, 6, 0, 10, 0, 11, 8, 1};
+//     uint arr[10] = {8, 2, 0, 6, 0, 10, 0, 11, 8, 1};
 //     CompressedBitvector cb(4, 10, arr);
 
 //     // ################# ONES #####################
 
-//     unsigned rank_test[10 * 4] = {0};
+//     uint rank_test[10 * 4] = {0};
 //     int c = 0;
 //     for(int i = 0; i < n; i++) {
 //         for (int j = 0; j < b; j++)
 //         {
-//             unsigned idx = i * b + j;
+//             uint idx = i * b + j;
 //             if (idx > 0) rank_test[idx] = rank_test[idx - 1];
 //             rank_test[idx] += arr[i] & (1 << (b - 1) - j) ? 1 : 0; 
 //             printf("rank[%d] = %d, rank_teste[%d] =  %d\n", idx, cb.rank1(idx + 1), idx, rank_test[idx]);
@@ -169,13 +171,13 @@ void compressed_bitvector_test() {
 
     // ################# ZERO #####################
 
-    // unsigned rank_test[10 * 4] = {0};
+    // uint rank_test[10 * 4] = {0};
     // int c = 0;
     // for (int i = 0; i < n; i++)
     // {
     //     for (int j = 0; j < b; j++)
     //     {
-    //         unsigned idx = i * b + j;
+    //         uint idx = i * b + j;
     //         if (idx > 0)
     //             rank_test[idx] = rank_test[idx - 1];
     //         rank_test[idx] += arr[i] & (1 << (b - 1) - j) ? 0 : 1;
@@ -220,7 +222,7 @@ void compressed_bitvector_mem_test() {
     const uint n = 10000 * 5;
     // vector<bool>* bs = new vector<bool>(n);
     BitvectorTest *bitvector_test = new BitvectorTest(n);
-    for (int i = 0; i < n; i++)
+    for (uint i = 0; i < n; i++)
         bitvector_test->bitvector.at(i) = (rand() % 100 + 1) <= 50;
     // cout << "Uncompact:\n";
     malloc_count_print_status();

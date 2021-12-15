@@ -2,22 +2,22 @@
 #include "../libs/bitarray.h"
 using namespace std;
 
-// mudar parametros para aceitar int ou unsigned
+// mudar parametros para aceitar int ou uint
 Bitarray::Bitarray(int l, int n)
 {
-    this->l = (unsigned) l;
-    this->n = (unsigned) n;
-    // W = (unsigned *)malloc(l * n / w * sizeof(unsigned));
+    this->l = (uint) l;
+    this->n = (uint) n;
+    // W = (uint *)malloc(l * n / w * sizeof(uint));
     this->W_SIZE = ceil(l * n / (float)w);
-    this->sz = W_SIZE * sizeof(unsigned);
-    W = (unsigned*) malloc(sz);
+    this->sz = W_SIZE * sizeof(uint);
+    W = (uint*) malloc(sz);
     if (W == NULL)
     {
         printf("malloc error\n");
     }
 }
 
-Bitarray::Bitarray(int l, int n, unsigned *arr) : Bitarray::Bitarray(l, n)
+Bitarray::Bitarray(int l, int n, uint *arr) : Bitarray::Bitarray(l, n)
 {
     compress(arr);
 }
@@ -27,9 +27,9 @@ Bitarray::~Bitarray()
     free(W);
 }
 
-void Bitarray::compress(unsigned *arr)
+void Bitarray::compress(uint *arr)
 {
-    for (int i = 0; i < n; i++)
+    for (uint i = 0; i < n; i++)
         this->write(i, arr[i]);
 }
 
@@ -38,7 +38,7 @@ bool Bitarray::bitread(int j)
     return (W[j / w] >> (j % w)) & 1;
 }
 
-unsigned Bitarray::bitsread(int j0, int j)
+uint Bitarray::bitsread(int j0, int j)
 {
 
     if (j0 / w == j / w)
@@ -48,7 +48,7 @@ unsigned Bitarray::bitsread(int j0, int j)
            (W[j / w] & ((1 << ((j + 1) % w)) - 1)) << (w - (j0 % w));
 }
 
-unsigned Bitarray::read(int i)
+uint Bitarray::read(int i)
 {
     return bitsread(i * l, i * l + l - 1);
 }
@@ -63,7 +63,7 @@ void Bitarray::bitclear(int j)
     W[j / w] &= ~(1 << (j % w));
 }
 
-void Bitarray::bitswrite(int j0, int j, unsigned x)
+void Bitarray::bitswrite(int j0, int j, uint x)
 {
     if (j0 / w == j / w)
     {
@@ -77,7 +77,7 @@ void Bitarray::bitswrite(int j0, int j, unsigned x)
     }
 }
 
-void Bitarray::write(int i, unsigned x)
+void Bitarray::write(int i, uint x)
 {
     bitswrite(i * l, i * l + l - 1, x);
 }
@@ -85,7 +85,7 @@ void Bitarray::write(int i, unsigned x)
 void Bitarray::bitsPrint() {
     uint total_of_bits = l * n;
     uint aux = 0;
-    for (int i = 0; i < total_of_bits; i++)
+    for (uint i = 0; i < total_of_bits; i++)
     {
         for (int j = 0; j < 32; j++)
         {
@@ -110,13 +110,13 @@ void Bitarray::printW()
     puts("");
 }
 
-long unsigned Bitarray::size()
+ulong Bitarray::size()
 {
     return this->sz;
-    // TODO, valor errado o certo seria sz * sizeof unsigned
+    // TODO, valor errado o certo seria sz * sizeof ulong
 }
 
-long unsigned Bitarray::length()
+ulong Bitarray::length()
 {
     return n;
 }

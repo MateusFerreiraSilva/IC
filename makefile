@@ -8,8 +8,7 @@ H_SOURCE=$(wildcard ./libs/*.h)
 
 OBJ=$(subst .cpp,.o,$(subst src,objects,$(CPP_SOURCE)))
 
-# CPP_FLAGS=-c -g -Wall
-CPP_FLAGS=-c -g
+CPP_FLAGS=-c -g -Wall
 
 LDLIBS=-ldl
 
@@ -19,12 +18,12 @@ all: objFolder $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
 	@ echo 'Building binary using G++ linker: $@'
-	$(CC) $^ -o $@ -ldl
+	$(CC) $^ -o $@ $(LDLIBS)
 	@ echo 'Finished building binary: $@'
 	@ echo ' '
 
 # testar se funciona sem .h
-./objects/%.o: ./src/%.cpp ./libs/%.h malloc_count
+./objects/%.o: ./src/%.cpp ./libs/%.h
 	@ echo 'Building target using G++ compiler: $<'
 	$(CC) $< $(CPP_FLAGS) -o $@
 	@ echo ' '
@@ -41,3 +40,5 @@ objFolder:
 clean:
 	@ $(RM) ./objects/*.o $(PROJ_NAME) *~
 	@ rmdir objects
+
+.PHONY: all clean

@@ -99,7 +99,7 @@ void SamplePointers::write(uint i, uint val) {
         expand((((rear + gammaCodeSize) / BITS) - B_SIZE) + 1); // expand by the difference plus one
 
     uint offset = gammaCodeSize - 1;
-    for (int j = 0; j < gammaCodeSize; j++, offset--)
+    for (uint j = 0; j < gammaCodeSize; j++, offset--)
         bitset(rear + j, gammaCode & (1 << offset));
 
     if (i % k == 0)
@@ -157,7 +157,7 @@ void SamplePointers::compress(uint *arr) {
     // return str;
 // }
 
-// void SamplePointers::toGamma(unsigned *arr)
+// void SamplePointers::toGamma(uint *arr)
 // {
 //     gammaCode = "";
 //     for (int i = 0; i < n; i++)
@@ -187,7 +187,7 @@ void SamplePointers::compress(uint *arr) {
 //     }
 // }
 
-// void SamplePointers::compress(unsigned *arr)
+// void SamplePointers::compress(uint *arr)
 // {
 //     toGamma(arr);
 //     for (int i = 0; i < gammaCode.size(); i++)
@@ -204,7 +204,7 @@ void SamplePointers::compress(uint *arr) {
 //     }
 // }
 
-// unsigned SamplePointers::gammaDecode(int i)
+// uint SamplePointers::gammaDecode(int i)
 // {
     // int aux = numeric_limits<int>::max(), idx;
     // for (int j = 0; j < ceil(n / (float)k); j++)
@@ -224,7 +224,7 @@ void SamplePointers::compress(uint *arr) {
     //     {
     //         if (currPos == i)
     //         {
-    //             unsigned ans;
+    //             uint ans;
     //             ans = 1 << N;
     //             for (int k = N - 1, l = j + 1; k >= 0; k--, l++)
     //                 if (B[l / 32] & (1 << (31 - (l % 32))))
@@ -242,7 +242,7 @@ void SamplePointers::compress(uint *arr) {
     // }
 // }
 
-unsigned long SamplePointers::size()
+ulong SamplePointers::size()
 {
     return this->sz;
 }

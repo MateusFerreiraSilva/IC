@@ -17,9 +17,9 @@ WaveletTree::WaveletTree(uint *from, uint *to, uint lo, uint hi)
     this->bitvector_size = seqSize;
     // TODO substituir por bitset
     vector<bool> dummy_bitvector(bitvector_size, 0); // dummy bitvector
-    unsigned mid = get_mid(lo, hi);
+    uint mid = get_mid(lo, hi);
     // TODO substituir por funcao estatica
-    auto lessThanMid = [mid](unsigned x)
+    auto lessThanMid = [mid](uint x)
     { return x <= mid; };
 
     int idx = 0;

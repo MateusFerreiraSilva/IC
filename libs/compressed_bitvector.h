@@ -11,37 +11,37 @@ using namespace std;
 class CompressedBitvector
 {
 private:
-    unsigned block_size, block_num;
-    unsigned long length;
+    uint block_size, block_num;
+    ulong length;
     Bitarray *C;
     SamplePointers *O;
-    unsigned **Comb; // represents variable K
-    unsigned SUPER_BLOCK_SIZE, SUPER_BLOCK_NUM, *R, *P;
-    unsigned ones, zeros; // number of 1's or 0's
-    long unsigned sz = 0;
+    uint **Comb; // represents variable K
+    uint SUPER_BLOCK_SIZE, SUPER_BLOCK_NUM, *R, *P;
+    uint ones, zeros; // number of 1's or 0's
+    ulong sz = 0;
 
     pair<uint, uint> encode(Bitarray &B, uint i);
     uint decode(uint i);
     void precompR();
 
 public:
-    CompressedBitvector(unsigned block_size, unsigned long length);
-    CompressedBitvector(unsigned block_size, unsigned long length, unsigned *B);
-    CompressedBitvector(unsigned block_size, unsigned long length, vector<bool> &bitvector);
+    CompressedBitvector(uint block_size, ulong length);
+    CompressedBitvector(uint block_size, ulong length, uint *B);
+    CompressedBitvector(uint block_size, ulong length, vector<bool> &bitvector);
     ~CompressedBitvector();
     void compress(Bitarray B);
-    bool access(unsigned i);
-    unsigned rank1(unsigned i);
-    unsigned rank0(unsigned i);
-    unsigned caclMidIdx(unsigned lo_idx, unsigned hi_idx);
-    unsigned rank1_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
-    unsigned rank0_binary_search(unsigned lo_idx, unsigned hi_idx, unsigned rank);
-    unsigned select1(unsigned i);
-    unsigned select0(unsigned i);
+    bool access(uint i);
+    uint rank1(uint i);
+    uint rank0(uint i);
+    uint caclMidIdx(uint lo_idx, uint hi_idx);
+    uint rank1_binary_search(uint lo_idx, uint hi_idx, uint rank);
+    uint rank0_binary_search(uint lo_idx, uint hi_idx, uint rank);
+    uint select1(uint i);
+    uint select0(uint i);
     void print_blocks();
     void print();
-    long unsigned size();
-    long unsigned count();
+    ulong size();
+    ulong count();
 };
 
 #endif

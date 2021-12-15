@@ -12,7 +12,7 @@ CompactSuffixArray::CompactSuffixArray(uint sequence_size, uint *sequence) {
 
         if (sequence_size <= 0 || sequence == NULL || suffix_array == NULL) throw;
 
-        for (int i = 0; i < sequence_size; i++)
+        for (uint i = 0; i < sequence_size; i++)
             suffix_array[i] =  i;
 
         sort_suffix_array(suffix_array);
@@ -27,7 +27,7 @@ CompactSuffixArray::~CompactSuffixArray() {}
 
 bool compare_suffixes(Suffix a, Suffix b) {
     if (a.suff.size() > b.suff.size()) swap(a, b);
-    for (int i = 0; i < a.suff.size(); i++)
+    for (uint i = 0; i < a.suff.size(); i++)
     {
         if (a.suff[i] < b.suff[i]) return true;
         else if (a.suff[i] > b.suff[i]) return false;
@@ -37,7 +37,7 @@ bool compare_suffixes(Suffix a, Suffix b) {
 
 vector<uint> build_psi(vector<Suffix> suffixes) {
     vector<uint> psi(suffixes.size());
-    for (int i = 0; i < suffixes.size(); i++)
+    for (uint i = 0; i < suffixes.size(); i++)
     {
         if (suffixes[i].idx == suffixes.size() - 1)
         {
@@ -45,7 +45,7 @@ vector<uint> build_psi(vector<Suffix> suffixes) {
             continue;
         }
 
-        for (int j = 0; j < suffixes.size(); j++)
+        for (uint j = 0; j < suffixes.size(); j++)
         {
             if (suffixes[j].idx == suffixes[i].idx + 1)
             {
@@ -60,8 +60,8 @@ vector<uint> build_psi(vector<Suffix> suffixes) {
 void CompactSuffixArray::sort_suffix_array(uint *suffix_array)
 {
     vector<Suffix> suffixes(sequence_size);
-    for (int i = 0; i < sequence_size; i++) {
-        for (int j = i; j < sequence_size; j++)
+    for (uint i = 0; i < sequence_size; i++) {
+        for (uint j = i; j < sequence_size; j++)
             suffixes[i].suff.push_back(sequence->access(j + 1)); 
         suffixes[i].idx = i;
     }
@@ -75,10 +75,9 @@ void CompactSuffixArray::sort_suffix_array(uint *suffix_array)
     this->psi = new CompactPsi(psi);
 
     // testes
-    uint x;
     // for (int i = 0; i < sequence_size; i++)
     //     x = get_psi(i);
-    for (int i = 0; i < sequence_size; i++)
+    for (uint i = 0; i < sequence_size; i++)
         printf("%d%c", get_sa(i), i != sequence_size - 1 ? ' ' : '\n');
    
 }
@@ -90,7 +89,7 @@ uint *CompactSuffixArray::get_suffix(uint idx)
         uint *suffix = (uint*) malloc(suffix_size * sizeof(uint));
         if (suffix == NULL) throw;
 
-        for (int i = idx, j = 0; i < sequence_size; i++, j++)
+        for (uint i = idx, j = 0; i < sequence_size; i++, j++)
             suffix[j] = sequence->access(i + 1) - 1;
         
         return suffix;
@@ -108,7 +107,7 @@ uint *CompactSuffixArray::get_suffix(uint idx)
 */
 int is_prefix(uint *pattern, uint pattern_size, uint *text, uint text_size)
 {
-    for (int i = 0; i < pattern_size - 1; i++)
+    for (uint i = 0; i < pattern_size - 1; i++)
     {
         if (pattern[i] < text[i])
             return -1;
@@ -161,7 +160,7 @@ vector<uint> CompactSuffixArray::findAll(uint *pattern, uint pattern_size) {
     }
     
     // go down
-    for (int i = start + 1; i < sequence_size; i++)
+    for (uint i = start + 1; i < sequence_size; i++)
     {
         int sa = get_sa(i);
         if (is_prefix(pattern, pattern_size, get_suffix(sa), sequence_size - sa) == 0)
@@ -182,22 +181,22 @@ vector<uint> CompactSuffixArray::findAll(uint *pattern, uint pattern_size) {
 
 void CompactSuffixArray::print_suffix_array_info(vector<Suffix> suffixes, vector<uint> psi) {
     printf("Sequence:\n");
-    for (int i = 0; i < sequence_size; i++)
+    for (uint i = 0; i < sequence_size; i++)
         printf("%c", sequence->access(i + 1) - 1 == 0 ? '$' : sequence->access(i + 1) - 1 + '0');
     puts("\n");
 
     printf("Sorted Suffix Array:\n");
-    for (int i = 0; i < suffixes.size(); i++)
+    for (uint i = 0; i < suffixes.size(); i++)
     {
         printf("[%d] ", i);
-        for (int j = 0; j < suffixes[i].suff.size(); j++)
+        for (uint j = 0; j < suffixes[i].suff.size(); j++)
             printf("%c", suffixes[i].suff[j] == 1 ? '$' : suffixes[i].suff[j] - 1 + '0');
         puts("");
     }
     puts("");
 
     printf("Psi:\n");
-    for (int i = 0; i < psi.size(); i++)
+    for (uint i = 0; i < psi.size(); i++)
         printf("%d%c", psi[i], i != psi.size() - 1 ? ' ' : '\n');
 }
 
@@ -230,7 +229,7 @@ uint CompactSuffixArray::get_psi(uint x) {
 
     /*TODO binary search subsequences_idx*/
     uint seq_idx = 0;
-    for (int i = 0; i < psi->subsequences_qtt; i++) { // get the sequence of the element x
+    for (uint i = 0; i < psi->subsequences_qtt; i++) { // get the sequence of the element x
         if (x >= psi->subsequences_idx[i])
             seq_idx = i;
         else break;
@@ -248,7 +247,7 @@ CompactPsi::CompactPsi(vector<uint> dummy_psi) {
 
         if (dummy_psi.size() >= 2) positions.push_back(1);
 
-        for (int i = 2; i < dummy_psi.size(); i++)
+        for (uint i = 2; i < dummy_psi.size(); i++)
             if (dummy_psi[i] < dummy_psi[i - 1])
                 positions.push_back(i);
 
@@ -256,21 +255,21 @@ CompactPsi::CompactPsi(vector<uint> dummy_psi) {
         subsequences_idx = (uint*) malloc(subsequences_qtt * sizeof(uint));
         if (subsequences_idx == NULL) throw;
 
-        for (int i = 0; i < subsequences_qtt; i++)
+        for (uint i = 0; i < subsequences_qtt; i++)
             subsequences_idx[i] = positions[i];
     
         subsequences = (CompressedBitvector**) malloc(subsequences_qtt * sizeof(CompressedBitvector*));
         if (subsequences == NULL) throw;
 
-        for (int i = 0; i < subsequences_qtt; i++)
+        for (uint i = 0; i < subsequences_qtt; i++)
         {
             const uint seq_start = subsequences_idx[i];
             const uint seq_end = i + 1 < subsequences_qtt ? subsequences_idx[i + 1] : dummy_psi.size();
             uint max_n = 0;
-            for (int j = seq_start; j < seq_end; j++) max_n = max(max_n, dummy_psi[j]);
+            for (uint j = seq_start; j < seq_end; j++) max_n = max(max_n, dummy_psi[j]);
             max_n += 1;
             vector<bool> elias_fano(max_n + max_n / 2, false);
-            for (int idx = 0, j = seq_start; idx < seq_end - seq_start; idx++, j++) {
+            for (uint idx = 0, j = seq_start; idx < seq_end - seq_start; idx++, j++) {
                 const uint val = dummy_psi[j];
                 elias_fano[idx + val] = 1;
             }

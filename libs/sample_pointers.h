@@ -41,12 +41,12 @@ public:
     void expand(uint extra_size);
 
     static string gammaEncode(int x);
-    void toGamma(unsigned *arr);
+    void toGamma(uint *arr);
     string getGammaCode();
     int findPos(int pos);
     void compress(uint *arr);
-    unsigned gammaDecode(int i);
-    long unsigned size();
+    uint gammaDecode(int i);
+    ulong size();
 };
 
 #endif

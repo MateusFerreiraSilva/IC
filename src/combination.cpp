@@ -25,7 +25,7 @@ uint comb(uint a, uint b)
 
 void freeComb(uint **Comb, uint x) {
     if(Comb != NULL) {
-        for (int i = 0; i <= x; i++)
+        for (uint i = 0; i <= x; i++)
             if(Comb[i] != NULL) free(Comb[i]);
         free(Comb);
     }
@@ -37,7 +37,7 @@ uint **precompComb(uint **Comb, uint x)
         Comb = (uint **) malloc((x + 1) * sizeof(uint *));
         if(Comb == NULL) throw;
 
-        for (int i = 0; i <= x; i++) {
+        for (uint i = 0; i <= x; i++) {
             Comb[i] = (uint *) malloc((x + 1) * sizeof(uint));
             if(Comb[i] == NULL) throw;
         }

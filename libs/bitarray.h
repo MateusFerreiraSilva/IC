@@ -7,30 +7,30 @@ using namespace std;
 class Bitarray
 {
 private:
-    const unsigned w = 32; // amount of bits in a unsigned
-    unsigned *W;
-    unsigned W_SIZE;
-    unsigned n; // number of elements
-    unsigned l; // max size of bits that a element will have
-    long unsigned sz = 0;
+    const uint w = 32; // amount of bits in a uint
+    uint *W;
+    uint W_SIZE;
+    uint n; // number of elements
+    uint l; // max size of bits that a element will have
+    ulong sz = 0;
 
 public:
-    // mudar parametros para aceitar int ou unsigned
+    // mudar parametros para aceitar int ou uint
     Bitarray(int l, int n);
-    Bitarray(int l, int n, unsigned *arr);
+    Bitarray(int l, int n, uint *arr);
     ~Bitarray();
-    void compress(unsigned *arr);
+    void compress(uint *arr);
     bool bitread(int j);
-    unsigned bitsread(int j0, int j);
-    unsigned read(int i);
+    uint bitsread(int j0, int j);
+    uint read(int i);
     void bitset(int j);
     void bitclear(int j);
-    void bitswrite(int j0, int j, unsigned x);
-    void write(int i, unsigned x);
+    void bitswrite(int j0, int j, uint x);
+    void write(int i, uint x);
     void bitsPrint();
     void printW();
-    long unsigned size();
-    long unsigned length();
+    ulong size();
+    ulong length();
     // void printWbits()
     // {
     //     for (int i = 1; i <= l * n; i++)
