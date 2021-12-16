@@ -8,7 +8,7 @@ CompactSuffixArray::CompactSuffixArray(uint sequence_size, uint *sequence) {
     try {
         this->sequence_size = sequence_size; 
         this->sequence = new WaveletTreeInterface(sequence, sequence +  sequence_size);
-        uint *suffix_array = (uint *)malloc(sequence_size * sizeof(uint));
+        uint *suffix_array = (uint*) new uint[sequence_size];
 
         if (sequence_size <= 0 || sequence == NULL || suffix_array == NULL) throw;
 
@@ -17,7 +17,7 @@ CompactSuffixArray::CompactSuffixArray(uint sequence_size, uint *sequence) {
 
         sort_suffix_array(suffix_array);
 
-        free(suffix_array);
+        delete[] suffix_array;
     } catch (...) {
         printf("Error on CSA creation\n");
     }
@@ -85,18 +85,12 @@ void CompactSuffixArray::sort_suffix_array(uint *suffix_array)
 uint *CompactSuffixArray::get_suffix(uint idx)
 {
     uint suffix_size = sequence_size - idx;
-    try {
-        uint *suffix = (uint*) malloc(suffix_size * sizeof(uint));
-        if (suffix == NULL) throw;
+    uint *suffix = new uint[suffix_size];
 
-        for (uint i = idx, j = 0; i < sequence_size; i++, j++)
-            suffix[j] = sequence->access(i + 1) - 1;
-        
-        return suffix;
-    } catch (...) {
-        printf("Error getting suffix %d\n", idx);
-        return NULL;
-    }
+    for (uint i = idx, j = 0; i < sequence_size; i++, j++)
+        suffix[j] = sequence->access(i + 1) - 1;
+    
+    return suffix;
 }
 
 /*
@@ -252,13 +246,13 @@ CompactPsi::CompactPsi(vector<uint> dummy_psi) {
                 positions.push_back(i);
 
         subsequences_qtt = positions.size();
-        subsequences_idx = (uint*) malloc(subsequences_qtt * sizeof(uint));
+        subsequences_idx = (uint*) new uint[subsequences_qtt];
         if (subsequences_idx == NULL) throw;
 
         for (uint i = 0; i < subsequences_qtt; i++)
             subsequences_idx[i] = positions[i];
     
-        subsequences = (CompressedBitvector**) malloc(subsequences_qtt * sizeof(CompressedBitvector*));
+        subsequences = new CompressedBitvector*[subsequences_qtt];
         if (subsequences == NULL) throw;
 
         for (uint i = 0; i < subsequences_qtt; i++)
@@ -283,6 +277,6 @@ CompactPsi::CompactPsi(vector<uint> dummy_psi) {
 }
 
 CompactPsi::~CompactPsi() {
-    if (subsequences_idx != NULL) free(subsequences_idx);
+    if (subsequences_idx != NULL) delete[] subsequences_idx;
     if (subsequences != NULL) delete[] subsequences;
 }

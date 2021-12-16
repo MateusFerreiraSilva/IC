@@ -3,7 +3,7 @@
 #define sz 9
 
 uint rank_test[10][10], select_test[10][10];
-set<int> s;
+set<uint> s;
 
 void OK_TEST(int OK, int size) {
     if (OK == size) printf("OK\n");
@@ -12,11 +12,11 @@ void OK_TEST(int OK, int size) {
 void calc_rank_test(uint arr[], uint arrSize) {
     for(auto it : s) {
         rank_test[it][0] = arr[0] == it;
-        for(int i = 1; i < arrSize; i++)
+        for(uint i = 1; i < arrSize; i++)
             rank_test[it][i] = rank_test[it][i - 1] + (arr[i] == it);
 
         printf("rank_test %d: ", it);
-        for(int i = 0; i < arrSize; i++)
+        for(uint i = 0; i < arrSize; i++)
             printf("%d%c", rank_test[it][i], i == arrSize - 1 ? '\n' : ' ');
     }
 
@@ -28,12 +28,12 @@ void calc_select_test(uint arr[], uint arrSize)
     for (auto it : s)
     {
         int rank = 0;
-        for (int i = 1; i <= arrSize; i++)
+        for (uint i = 1; i <= arrSize; i++)
             if(arr[i] == it) select_test[it][++rank] = i;
         
 
         printf("select_test %d: ", it);
-        for(int i = 0; i < arrSize; i++)
+        for(uint i = 0; i < arrSize; i++)
             if (select_test[it][i])
                 printf("%d ", select_test[it][i]);
         puts("");

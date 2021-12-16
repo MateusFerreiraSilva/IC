@@ -15,8 +15,8 @@ CompressedBitvector::CompressedBitvector(uint block_size, ulong length)
     this->Comb = precompComb(Comb, block_size); // represents variable K
     this->SUPER_BLOCK_SIZE = block_size * k;
     this->SUPER_BLOCK_NUM = (block_num / SUPER_BLOCK_SIZE + 1);
-    this->R = (uint *)malloc(SUPER_BLOCK_NUM * sizeof(uint));
-    this->P = (uint *)malloc(SUPER_BLOCK_NUM * sizeof(uint));
+    this->R = (uint*) new uint[SUPER_BLOCK_NUM];
+    this->P = (uint*) new uint[SUPER_BLOCK_NUM];
     this->ones = 0;
     this->zeros = 0;
     this->sz = ((block_size + 1) * (block_size + 1) + SUPER_BLOCK_NUM * 2) * sizeof(int);
@@ -64,11 +64,11 @@ CompressedBitvector::CompressedBitvector(uint block_size, ulong length, vector<b
 
 CompressedBitvector::~CompressedBitvector()
 {
-    delete C;
-    delete O;
+    delete[] C;
+    delete[] O;
     freeComb(Comb, block_size);
-    free(R);
-    free(P);
+    delete[] R;
+    delete[] P;
 }
 
 pair<uint, uint> CompressedBitvector::encode(Bitarray &B, uint i)
@@ -132,7 +132,7 @@ void CompressedBitvector::precompR()
 
     uint r = 0, r_idx = 1;
     R[0] = r;
-    for (int i = 1; i <= length; i++)
+    for (ulong i = 1; i <= length; i++)
     {
         r += C->read(i - 1);
         if(i % block_size == 0)
@@ -146,8 +146,8 @@ void CompressedBitvector::precompR()
 
 void CompressedBitvector::compress(Bitarray B)
 {
-    uint *C = (uint *) malloc(length * sizeof(uint));
-    uint *O = (uint *) malloc(length * sizeof(uint));
+    uint *C = (uint*) new uint[length];
+    uint *O = (uint*) new uint[length];
 
     if (C == NULL || O == NULL)
     {
@@ -155,7 +155,7 @@ void CompressedBitvector::compress(Bitarray B)
         return;
     }
 
-    uint maxO = 0;
+    // uint maxO = 0;
     for (uint i = 0; i < length; i++)
     {
         pair<uint, uint> aux = encode(B, i);
@@ -176,8 +176,8 @@ void CompressedBitvector::compress(Bitarray B)
     // printf("]\n");
     
     this->sz = this->sz + this->C->size() + this->O->size();
-    free(C);
-    free(O);
+    delete C;
+    delete O;
     precompR();
 }
 
@@ -334,7 +334,7 @@ uint CompressedBitvector::select0(uint i)
 
 void CompressedBitvector::print_blocks()
 {
-    for (int i = 0; i < length; i++)
+    for (uint i = 0; i < length; i++)
     {
         printf("%u ", decode(i));
     }
@@ -343,7 +343,7 @@ void CompressedBitvector::print_blocks()
 
 void CompressedBitvector::print()
 {
-    for (int i = 1; i <= block_num; i++)
+    for (uint i = 1; i <= block_num; i++)
         cout << access(i);
     puts("");
 }

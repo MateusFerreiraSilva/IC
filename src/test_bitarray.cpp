@@ -1,5 +1,7 @@
 #include "../libs/test_bitarray.h"
 
+void bitarray_mem_test() {}
+
 void bitarray_test() {
 
     // cout << "Bitarray\n";
@@ -18,7 +20,7 @@ void bitarray_test() {
     malloc_count_print_status();
 
     Bitarray bitarray(l, n, arr);
-    delete arr;
+    delete[] arr;
     // cout << "Compact:\n";
     malloc_count_print_status();
     return;

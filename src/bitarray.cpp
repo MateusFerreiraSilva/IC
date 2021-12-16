@@ -7,14 +7,10 @@ Bitarray::Bitarray(int l, int n)
 {
     this->l = (uint) l;
     this->n = (uint) n;
-    // W = (uint *)malloc(l * n / w * sizeof(uint));
+    // W = (uint *) new uint[l * n / w];
     this->W_SIZE = ceil(l * n / (float)w);
     this->sz = W_SIZE * sizeof(uint);
-    W = (uint*) malloc(sz);
-    if (W == NULL)
-    {
-        printf("malloc error\n");
-    }
+    W = new uint[sz];
 }
 
 Bitarray::Bitarray(int l, int n, uint *arr) : Bitarray::Bitarray(l, n)
@@ -24,7 +20,7 @@ Bitarray::Bitarray(int l, int n, uint *arr) : Bitarray::Bitarray(l, n)
 
 Bitarray::~Bitarray()
 {
-    free(W);
+    delete[] W;
 }
 
 void Bitarray::compress(uint *arr)

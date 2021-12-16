@@ -141,7 +141,7 @@ WaveletTreeInterface::WaveletTreeInterface(uint *from, uint *to)
     {
         uint lo, hi;
         lo = hi = from[0];
-        for (int i = 1; i < seqSize; i++)
+        for (uint i = 1; i < seqSize; i++)
         {
             lo = min(lo, from[i]);
             hi = max(hi, from[i]);
