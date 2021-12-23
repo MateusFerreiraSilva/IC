@@ -11,8 +11,9 @@ using namespace std;
 class CompressedBitvector
 {
 private:
-    uint block_size, block_num;
-    ulong length;
+    uint block_size;
+    uint blocks_total;
+    ulong bits;
     Bitarray *C;
     SamplePointers *O;
     uint **Comb; // represents variable K
@@ -41,7 +42,6 @@ public:
     void print_blocks();
     void print();
     ulong size();
-    ulong count();
 };
 
 #endif

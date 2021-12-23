@@ -63,9 +63,13 @@ class BitvectorTest {
         }
 };
 
+void error_log_if(bool condition, uint idx, string test_name) {
+    if (!condition) cout << test_name << " failed at index " << idx << endl;
+}
+
 void test_access(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
     for (int i = 1; i <= n; i++) {
-        // cout << i << endl;
+        error_log_if(bitvector_test->access(i) == bitvector->access(i), i, "access");
         assert(bitvector_test->access(i) == bitvector->access(i));
     }
     cout << "access OK" << endl;
@@ -73,27 +77,33 @@ void test_access(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, 
 
 void test_rank1(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
     for (int i = 1; i <= n; i++) {
-        // cout << i << endl;
+        error_log_if(bitvector_test->rank1(i) == bitvector->rank1(i), i, "rank1");
         assert(bitvector_test->rank1(i) == bitvector->rank1(i));
     }
     cout << "rank1 OK" << endl;
 }
 
 void test_rank0(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
-    for (int i = 1; i <= n; i++)
+    for (int i = 1; i <= n; i++) {
+        error_log_if(bitvector_test->rank0(i) == bitvector->rank0(i), i, "rank0");
         assert(bitvector_test->rank0(i) == bitvector->rank0(i));
+    }
     cout << "rank0 OK" << endl;
 }
 
 void test_select1(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
-    for (uint i = 1; i <= bitvector_test->ones(); i++)
+    for (uint i = 1; i <= bitvector_test->ones(); i++) {
+        error_log_if(bitvector_test->select1(i) == bitvector->select1(i), i, "select1");
         assert(bitvector_test->select1(i) == bitvector->select1(i));
+    }
     cout << "select1 OK" << endl;
 }
 
 void test_select0(BitvectorTest *bitvector_test, CompressedBitvector *bitvector, int n) {
-    for (uint i = 1; i <= bitvector_test->zeros(); i++)
+    for (uint i = 1; i <= bitvector_test->zeros(); i++) {
+        error_log_if(bitvector_test->select0(i) == bitvector->select0(i), i, "select0");
         assert(bitvector_test->select0(i) == bitvector->select0(i));
+    }
     cout << "select0 OK" << endl;
 }
 
@@ -102,14 +112,14 @@ void compressed_bitvector_test() {
     vector<uint> idxs = {2, 7, 9, 23, 24, 25, 31, 43, 61, 62, 64, 65, 90, 91, 118, 168};
     BitvectorTest *bitvector_test = new BitvectorTest(n);
     bitvector_test->fill(idxs);
-    const uint block_size = 2;
+    const uint block_size = 2; // funciona para 4, dá erro com 2
     const uint total_of_blocks = bitvector_test->bitvector.size() / block_size + 1;
     CompressedBitvector *bitvector = new CompressedBitvector(block_size, total_of_blocks, bitvector_test->bitvector);
 
     bitvector_test->print();
     bitvector->print();
 
-    cout << bitvector_test->rank1(28) << endl; // corretor compressed bitvector respondendo de forma
+    // cout << bitvector_test->rank1(28) << endl; // corretor compressed bitvector respondendo de forma
 
     test_access(bitvector_test, bitvector, n);
     test_rank1(bitvector_test, bitvector, n);

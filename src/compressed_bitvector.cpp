@@ -6,15 +6,19 @@
 #include "../libs/memprofile.h"
 using namespace std;
 
-CompressedBitvector::CompressedBitvector(uint block_size, ulong length)
+// block_size = tamanho in bits do bloco
+// block_num = total de bits + alguns bits ganhados no arredondamento
+// length = total de blocos
+
+CompressedBitvector::CompressedBitvector(uint block_size, ulong blocks_total)
 {
     this->block_size = block_size; // block size in bits
-    this->length = length;
-    this->block_num = length * block_size; // number of bits in the bitvector
+    this->blocks_total = blocks_total;
+    this->bits = block_size * blocks_total;
 
     this->Comb = precompComb(Comb, block_size); // represents variable K
     this->SUPER_BLOCK_SIZE = block_size * k;
-    this->SUPER_BLOCK_NUM = (block_num / SUPER_BLOCK_SIZE + 1);
+    this->SUPER_BLOCK_NUM = (bits / SUPER_BLOCK_SIZE + 1);
     this->R = (uint*) new uint[SUPER_BLOCK_NUM];
     this->P = (uint*) new uint[SUPER_BLOCK_NUM];
     this->ones = 0;
@@ -47,15 +51,6 @@ CompressedBitvector::CompressedBitvector(uint block_size, ulong length, vector<b
             if (bitvector[i])
                 BLOCKS[block_idx] |= 1 << bit_number;
         }
-
-        // printf("BLOCKS: [ ");
-        // for (int i = 0; i < length; i++)
-        // {
-        //     printf("%d", BLOCKS[i]);
-        //     if (i != length - 1)
-        //         printf(", ");
-        // }
-        // printf("]\n");
 
         compress(Bitarray(block_size, length, BLOCKS));
         free(BLOCKS);
@@ -132,10 +127,10 @@ void CompressedBitvector::precompR()
 
     uint r = 0, r_idx = 1;
     R[0] = r;
-    for (ulong i = 1; i <= length; i++)
+    for (uint i = 1; i <= blocks_total; i++)
     {
         r += C->read(i - 1);
-        if(i % block_size == 0)
+        if(i % k == 0)
             R[r_idx++] = r;
     }
 
@@ -146,8 +141,8 @@ void CompressedBitvector::precompR()
 
 void CompressedBitvector::compress(Bitarray B)
 {
-    uint *C = (uint*) new uint[length];
-    uint *O = (uint*) new uint[length];
+    uint *C = (uint*) new uint[blocks_total];
+    uint *O = (uint*) new uint[blocks_total];
 
     if (C == NULL || O == NULL)
     {
@@ -156,16 +151,16 @@ void CompressedBitvector::compress(Bitarray B)
     }
 
     // uint maxO = 0;
-    for (uint i = 0; i < length; i++)
+    for (uint i = 0; i < blocks_total; i++)
     {
         pair<uint, uint> aux = encode(B, i);
         C[i] = aux.first;
         O[i] = aux.second;
     }
 
-    this->C = new Bitarray(block_size, length, C);
+    this->C = new Bitarray(block_size, blocks_total, C);
     
-    this->O = new SamplePointers(length, k, O);
+    this->O = new SamplePointers(blocks_total, k, O);
 
     // printf("O: [ ");
     // for (int i = 0; i < length; i++)
@@ -183,7 +178,7 @@ void CompressedBitvector::compress(Bitarray B)
 
 bool CompressedBitvector::access(uint i)
 {
-    if(i == 0 || i > block_num) return 0;
+    if(i == 0 || i > bits) return 0;
 
     i--;
     uint block = decode(i / block_size);
@@ -192,29 +187,29 @@ bool CompressedBitvector::access(uint i)
 
 uint CompressedBitvector::rank1(uint i)
 {
-    if (i == 0 || i > block_num) return 0;
+    if (i == 0 || i > bits) return 0;
 
-    uint is = ceil(i / (float)(block_size * k));
-    if(i % (block_size * k) == 0) return R[is]; // allready know rank
+    uint super_block_idx = ceil( i / (float) SUPER_BLOCK_SIZE);
+    if(i % SUPER_BLOCK_SIZE == 0) return R[super_block_idx]; // allready know rank
 
-    uint r = R[is - 1];
-    for (int t = (is - 1) * k; t < floor(i / (float)block_size); t++) // walk in blocks
+    uint r = R[super_block_idx - 1];
+    for (int t = (super_block_idx - 1) * k; t < floor(i / (float) block_size); t++) // walk in blocks
         r += C->read(t);
 
     uint aux = i % block_size;
     if(aux == 0) return r; // aux is in the end of block the block
     // else aux = number of bit to be readed for the next block
 
-    uint x = decode(ceil(i / (float)block_size) - 1);
+    uint x = decode(ceil(i / (float) block_size) - 1);
     uint b = 0;
-    for (uint j = 0; j < aux; j++)
-        b += x & (1 << (block_size - 1) - j) ? 1 : 0; // TODO check
+    for (uint j = 0, pos = block_size - 1; j < aux; j++, pos--)
+        b += x & (1 << pos) ? 1 : 0;
     return r + b;
 }
 
 uint CompressedBitvector::rank0(uint i)
 {
-    if (i == 0 || i > block_num) return 0;
+    if (i == 0 || i > bits) return 0;
     return i - rank1(i);
 }
 
@@ -334,7 +329,7 @@ uint CompressedBitvector::select0(uint i)
 
 void CompressedBitvector::print_blocks()
 {
-    for (uint i = 0; i < length; i++)
+    for (uint i = 0; i < blocks_total; i++)
     {
         printf("%u ", decode(i));
     }
@@ -343,17 +338,12 @@ void CompressedBitvector::print_blocks()
 
 void CompressedBitvector::print()
 {
-    for (uint i = 1; i <= block_num; i++)
+    for (uint i = 1; i <= bits; i++)
         cout << access(i);
-    puts("");
+    cout << endl;
 }
 
 ulong CompressedBitvector::size()
 {
     return this->sz + this->C->size() + this->O->size();
-}
-
-ulong CompressedBitvector::count() // return the number of elements
-{
-    return this->length;
 }
