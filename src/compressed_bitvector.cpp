@@ -16,7 +16,7 @@ CompressedBitvector::CompressedBitvector(uint block_size, ulong blocks_total)
     this->blocks_total = blocks_total;
     this->bits = block_size * blocks_total;
 
-    this->Comb = precompComb(Comb, block_size); // represents variable K
+    Comb = precompComb(block_size); // represents variable K
     this->SUPER_BLOCK_SIZE = block_size * k;
     this->SUPER_BLOCK_NUM = (bits / SUPER_BLOCK_SIZE + 1);
     this->R = (uint*) new uint[SUPER_BLOCK_NUM];
@@ -59,8 +59,8 @@ CompressedBitvector::CompressedBitvector(uint block_size, ulong length, vector<b
 
 CompressedBitvector::~CompressedBitvector()
 {
-    delete[] C;
-    delete[] O;
+    delete C;
+    delete O;
     freeComb(Comb, block_size);
     delete[] R;
     delete[] P;
@@ -92,7 +92,7 @@ pair<uint, uint> CompressedBitvector::encode(Bitarray &B, uint i)
     {
         if (BLOCK & (1 << (b - 1)))
         {
-            o += Comb[b - 1][c1]; // Comb[b][c1] OK
+            o += Comb[b - 1][c1];
             c1--;
         }
         b--;
@@ -144,12 +144,6 @@ void CompressedBitvector::compress(Bitarray B)
     uint *C = (uint*) new uint[blocks_total];
     uint *O = (uint*) new uint[blocks_total];
 
-    if (C == NULL || O == NULL)
-    {
-        printf("Memory allocation error\n");
-        return;
-    }
-
     // uint maxO = 0;
     for (uint i = 0; i < blocks_total; i++)
     {
@@ -159,20 +153,11 @@ void CompressedBitvector::compress(Bitarray B)
     }
 
     this->C = new Bitarray(block_size, blocks_total, C);
-    
     this->O = new SamplePointers(blocks_total, k, O);
-
-    // printf("O: [ ");
-    // for (int i = 0; i < length; i++)
-    // {
-    //     printf("%d", O[i]);
-    //     if (i != length - 1) printf(", ");
-    // }
-    // printf("]\n");
     
     this->sz = this->sz + this->C->size() + this->O->size();
-    delete C;
-    delete O;
+    delete[] C;
+    delete[] O;
     precompR();
 }
 
@@ -213,6 +198,13 @@ uint CompressedBitvector::rank0(uint i)
     return i - rank1(i);
 }
 
+uint CompressedBitvector::find_first_rank(uint idx) {
+    if (idx == 0 || idx > bits) return 0;
+
+    while (idx > 0 && R[idx] == R[idx - 1]) idx--;
+    return idx > 0 ? idx - 1 : idx;
+}
+
 /*
     return idx o mid position closer of a R stored value return allways the greather
 */
@@ -225,23 +217,18 @@ uint CompressedBitvector::rank1_binary_search(uint lo_idx, uint hi_idx, uint ran
 {
     if(lo_idx < 0 || hi_idx >= SUPER_BLOCK_NUM) return 0;
     
-
-    if (lo_idx >= hi_idx)
-    {
-        uint idx = min(lo_idx, hi_idx);
-        if (rank <= R[idx])
-            return idx ? idx - 1 : 0;
-        return idx;
+    if (lo_idx >= hi_idx) {
+        const uint idx = min(lo_idx, hi_idx);
+        return find_first_rank(idx);
     }
 
-    uint mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
+    const uint mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
 
     if (rank < R[mid_idx])
         return rank1_binary_search(lo_idx, mid_idx - 1, rank);
     else if (rank > R[mid_idx])
         return rank1_binary_search(mid_idx + 1, hi_idx, rank);
-    // else if (rank == R[mid_idx])
-    return mid_idx - 1;
+    return find_first_rank(mid_idx);
 }
 
 uint CompressedBitvector::select1(uint i)
@@ -260,7 +247,7 @@ uint CompressedBitvector::select1(uint i)
     }
 
     // erro, select(5, 1), x = 1, deveria ser x = 2
-    uint x = decode(idx / block_size);
+    const uint x = decode(idx / block_size);
     uint b = block_size;
     while (b > 0) {
         idx++;
@@ -279,22 +266,18 @@ uint CompressedBitvector::rank0_binary_search(uint lo_idx, uint hi_idx, uint ran
 
     if (lo_idx >= hi_idx)
     {
-        uint idx = min(lo_idx, hi_idx);
-        uint offset = idx * SUPER_BLOCK_SIZE;
-        if (rank <= offset - R[idx])
-            return idx ? idx - 1 : 0;
-        return idx;
+        const uint idx = min(lo_idx, hi_idx);
+        return find_first_rank(idx);
     }
 
-    uint mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
-    uint offset = mid_idx * SUPER_BLOCK_SIZE;
+    const uint mid_idx = lo_idx + (hi_idx - lo_idx) / 2;
+    const uint offset = mid_idx * SUPER_BLOCK_SIZE;
 
     if (rank < offset - R[mid_idx])
         return rank0_binary_search(lo_idx, mid_idx - 1, rank);
     else if (rank > offset - R[mid_idx])
         return rank0_binary_search(mid_idx + 1, hi_idx, rank);
-    // else if (rank == offset - R[mid_idx])
-    return mid_idx - 1;
+    return find_first_rank(mid_idx);
 }
 
 uint CompressedBitvector::select0(uint i)
@@ -314,12 +297,12 @@ uint CompressedBitvector::select0(uint i)
         idx += block_size;
     }
 
-    uint x = decode(idx / block_size);
+    const uint x = decode(idx / block_size);
     uint b = block_size;
     while (b > 0)
     {
         idx++;
-        if (!(x & (1 << (b - 1)))) r++;
+        if (~x & (1 << (b - 1))) r++;
         if (r == i) break;
         b--;
     }

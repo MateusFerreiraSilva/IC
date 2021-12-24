@@ -112,7 +112,7 @@ void compressed_bitvector_test() {
     vector<uint> idxs = {2, 7, 9, 23, 24, 25, 31, 43, 61, 62, 64, 65, 90, 91, 118, 168};
     BitvectorTest *bitvector_test = new BitvectorTest(n);
     bitvector_test->fill(idxs);
-    const uint block_size = 2; // funciona para 4, dá erro com 2
+    const uint block_size = 9; // erro 20 in access
     const uint total_of_blocks = bitvector_test->bitvector.size() / block_size + 1;
     CompressedBitvector *bitvector = new CompressedBitvector(block_size, total_of_blocks, bitvector_test->bitvector);
 
@@ -129,7 +129,7 @@ void compressed_bitvector_test() {
 
     delete bitvector_test;
     delete bitvector;
-
+    idxs.clear();
 }
 
 
@@ -238,8 +238,9 @@ void compressed_bitvector_mem_test() {
     malloc_count_print_status();
     const uint block_size = 32;
     const uint block_num = bitvector_test->bitvector.size() / block_size + 1;
-    CompressedBitvector bitvector(block_size, block_num, bitvector_test->bitvector);
+    CompressedBitvector *bitvector = new CompressedBitvector(block_size, block_num, bitvector_test->bitvector);
     delete bitvector_test;
     // cout << "Compact:\n";
     malloc_count_print_status();
+    delete bitvector;
 }

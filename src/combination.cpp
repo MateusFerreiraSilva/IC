@@ -31,35 +31,21 @@ void freeComb(uint **Comb, uint x) {
     }
 }
 
-uint **precompComb(uint **Comb, uint x)
-{
-    try {
-        const uint size_aux = x + 1;
-        Comb = (uint **) new uint*[size_aux];
-        if(Comb == NULL) throw;
+uint** precompComb(uint x) {
+    const uint size_aux = x + 1;
+    uint **Comb = (uint **) new uint*[size_aux];
 
-        for (uint i = 0; i <= x; i++) {
-            Comb[i] = (uint *) new uint[size_aux];
-            if(Comb[i] == NULL) throw;
-        }
+    for (uint i = 0; i <= x; i++)
+        Comb[i] = (uint *) new uint[size_aux];
 
-        // memo = (uint *) calloc((x + 1), sizeof(uint));
-        memo = (uint*) new uint[size_aux];
-        memset(memo, 0, size_aux * sizeof(uint));
+    memo = (uint*) new uint[size_aux];
+    memset(memo, 0, size_aux * sizeof(uint));
 
-        if (memo == NULL) throw;
+    for (int i = x; i >= 0; i--)
+        for (int j = x; j >= 0; j--)
+            Comb[i][j] = comb(i, j);
 
-        for (int i = x; i >= 0; i--)
-            for (int j = x; j >= 0; j--)
-                Comb[i][j] = comb(i, j);
-
-        // free(memo);
-        delete[] memo;
-
-    } catch (...) {
-        printf("Malloc error on precompComb\n");
-        return NULL;
-    }
-
+    delete[] memo;
+    
     return Comb;
 }

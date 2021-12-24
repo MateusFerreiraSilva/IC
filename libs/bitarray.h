@@ -31,16 +31,6 @@ public:
     void printW();
     ulong size();
     ulong length();
-    // void printWbits()
-    // {
-    //     for (int i = 1; i <= l * n; i++)
-    //     {
-    //         printf("%d", bitread(i - 1));
-    //         if (i % l == 0)
-    //             printf(" ");
-    //     }
-    //     puts("");
-    // }
 };
 
 #endif

@@ -35,6 +35,7 @@ public:
     uint rank1(uint i);
     uint rank0(uint i);
     uint caclMidIdx(uint lo_idx, uint hi_idx);
+    uint find_first_rank(uint idx);
     uint rank1_binary_search(uint lo_idx, uint hi_idx, uint rank);
     uint rank0_binary_search(uint lo_idx, uint hi_idx, uint rank);
     uint select1(uint i);

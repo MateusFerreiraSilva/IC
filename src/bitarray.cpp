@@ -8,9 +8,9 @@ Bitarray::Bitarray(int l, int n)
     this->l = (uint) l;
     this->n = (uint) n;
     // W = (uint *) new uint[l * n / w];
-    this->W_SIZE = ceil(l * n / (float)w);
+    this->W_SIZE = ceil(l * n / (float) w);
+    this->W = (uint*) new uint[W_SIZE];
     this->sz = W_SIZE * sizeof(uint);
-    W = new uint[sz];
 }
 
 Bitarray::Bitarray(int l, int n, uint *arr) : Bitarray::Bitarray(l, n)
