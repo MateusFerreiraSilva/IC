@@ -2,18 +2,16 @@
 #include "../libs/bitarray.h"
 using namespace std;
 
-// mudar parametros para aceitar int ou uint
-Bitarray::Bitarray(int l, int n)
+Bitarray::Bitarray(uint l, uint n)
 {
-    this->l = (uint) l;
-    this->n = (uint) n;
-    // W = (uint *) new uint[l * n / w];
+    this->l = l;
+    this->n = n;
     this->W_SIZE = ceil(l * n / (float) w);
     this->W = (uint*) new uint[W_SIZE];
     this->sz = W_SIZE * sizeof(uint);
 }
 
-Bitarray::Bitarray(int l, int n, uint *arr) : Bitarray::Bitarray(l, n)
+Bitarray::Bitarray(uint l, uint n, uint *arr) : Bitarray::Bitarray(l, n)
 {
     compress(arr);
 }
@@ -29,12 +27,12 @@ void Bitarray::compress(uint *arr)
         this->write(i, arr[i]);
 }
 
-bool Bitarray::bitread(int j)
+bool Bitarray::bitread(uint j)
 {
     return (W[j / w] >> (j % w)) & 1;
 }
 
-uint Bitarray::bitsread(int j0, int j)
+uint Bitarray::bitsread(uint j0, uint j)
 {
 
     if (j0 / w == j / w)
@@ -44,22 +42,22 @@ uint Bitarray::bitsread(int j0, int j)
            (W[j / w] & ((1 << ((j + 1) % w)) - 1)) << (w - (j0 % w));
 }
 
-uint Bitarray::read(int i)
+uint Bitarray::read(uint i)
 {
     return bitsread(i * l, i * l + l - 1);
 }
 
-void Bitarray::bitset(int j)
+void Bitarray::bitset(uint j)
 {
     W[j / n] |= 1 << (j % w);
 }
 
-void Bitarray::bitclear(int j)
+void Bitarray::bitclear(uint j)
 {
     W[j / w] &= ~(1 << (j % w));
 }
 
-void Bitarray::bitswrite(int j0, int j, uint x)
+void Bitarray::bitswrite(uint j0, uint j, uint x)
 {
     if (j0 / w == j / w)
     {
@@ -73,7 +71,7 @@ void Bitarray::bitswrite(int j0, int j, uint x)
     }
 }
 
-void Bitarray::write(int i, uint x)
+void Bitarray::write(uint i, uint x)
 {
     bitswrite(i * l, i * l + l - 1, x);
 }

@@ -15,18 +15,17 @@ private:
     ulong sz = 0;
 
 public:
-    // mudar parametros para aceitar int ou uint
-    Bitarray(int l, int n);
-    Bitarray(int l, int n, uint *arr);
+    Bitarray(uint l, uint n);
+    Bitarray(uint l, uint n, uint *arr);
     ~Bitarray();
     void compress(uint *arr);
-    bool bitread(int j);
-    uint bitsread(int j0, int j);
-    uint read(int i);
-    void bitset(int j);
-    void bitclear(int j);
-    void bitswrite(int j0, int j, uint x);
-    void write(int i, uint x);
+    bool bitread(uint j);
+    uint bitsread(uint j0, uint j);
+    uint read(uint i);
+    void bitset(uint j);
+    void bitclear(uint j);
+    void bitswrite(uint j0, uint j, uint x);
+    void write(uint i, uint x);
     void bitsPrint();
     void printW();
     ulong size();

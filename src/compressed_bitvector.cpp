@@ -35,7 +35,7 @@ CompressedBitvector::CompressedBitvector(uint block_size, ulong length, uint *B)
  * block_size = size of the block
  * length = quantity of elements
 */
-CompressedBitvector::CompressedBitvector(uint block_size, ulong length, vector<bool> &bitvector) : CompressedBitvector(block_size,length)
+CompressedBitvector::CompressedBitvector(uint block_size, ulong length, vector<bool> &bitvector) : CompressedBitvector(block_size, length)
 { 
     // first we need to convert all the bitvector in a array int with size of block_size bits
 
@@ -74,11 +74,11 @@ pair<uint, uint> CompressedBitvector::encode(Bitarray &B, uint i)
 
     while (b > 0)
     {
-        if (BLOCK & (1 << (b - 1)))
+        if (BLOCK & (1 << (b - 1))) // if the bit is 1
         {
             c++;
             ones++;
-        } else {
+        } else { // if it's a 0
             zeros++;
         }
         b--;
@@ -104,7 +104,7 @@ pair<uint, uint> CompressedBitvector::encode(Bitarray &B, uint i)
 uint CompressedBitvector::decode(uint i)
 {
     uint c = C->read(i);
-    uint o = O->read(i); // quando access(1) o valor esperado para esse O eh 2 e nao 0
+    uint o = O->read(i);
     uint b = block_size;
 
     uint BLOCK = 0;
