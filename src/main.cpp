@@ -15,7 +15,7 @@ int main() {
     // bitarray_test();
     // sample_pointers_mem_test();
     // sample_pointers_test();
-    compressed_bitvector_test();
+    // compressed_bitvector_test();
     compressed_bitvector_mem_test();
     // wavelet_tree_mem_test();
     // csa_test();    

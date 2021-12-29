@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#include "../libs/constants.h"
+
 using namespace std;
 
 #ifndef SAMPLE_POINTERS
@@ -14,15 +16,14 @@ private:
     uint *B; // where the bits sequences are stored
     uint *P; // array of pointer to fast travel B array
     uint n; // number of elements
-    uint k; // arbitrary number
     uint B_SIZE;
     uint P_SIZE;
     uint rear; // position of the last bit
     ulong sz;
 
 public:
-    SamplePointers(uint n, uint k);
-    SamplePointers(uint n, uint k, uint *arr);
+    SamplePointers(uint n);
+    SamplePointers(uint n, uint *arr);
     ~SamplePointers();
 
     void bitset(uint i, bool val);

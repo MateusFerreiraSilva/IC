@@ -4,37 +4,30 @@
 #include "../libs/compressed_bitvector.h"
 #include "../libs/combination.h"
 #include "../libs/memprofile.h"
+#include "../libs/constants.h"
 using namespace std;
-
-// block_size = tamanho in bits do bloco
-// block_num = total de bits + alguns bits ganhados no arredondamento
-// length = total de blocos
 
 CompressedBitvector::CompressedBitvector(uint block_size, ulong blocks_total)
 {
     this->block_size = block_size; // block size in bits
     this->blocks_total = blocks_total;
     this->bits = block_size * blocks_total;
-
-    Comb = precompComb(block_size); // represents variable K
-    this->SUPER_BLOCK_SIZE = block_size * k;
+    this->Comb = Combination::precomp(block_size); // represents variable K
+    this->SUPER_BLOCK_SIZE = block_size * Constants::COMPRESSED_BITVECTOR_PARAM_K;
     this->SUPER_BLOCK_NUM = (bits / SUPER_BLOCK_SIZE + 1);
     this->R = (uint*) new uint[SUPER_BLOCK_NUM];
-    this->P = (uint*) new uint[SUPER_BLOCK_NUM];
     this->ones = 0;
     this->zeros = 0;
-    this->sz = ((block_size + 1) * (block_size + 1) + SUPER_BLOCK_NUM * 2) * sizeof(int);
+    this->sz = Combination::size(block_size) + ((SUPER_BLOCK_NUM * 2) * sizeof(uint));
 }
-
+/*
+    compress using a array B, the elements of B will be used as bit sequences
+*/
 CompressedBitvector::CompressedBitvector(uint block_size, ulong length, uint *B) : CompressedBitvector(block_size, length)
 {
     compress(Bitarray(block_size, length, B));
 }
 
-/*
- * block_size = size of the block
- * length = quantity of elements
-*/
 CompressedBitvector::CompressedBitvector(uint block_size, ulong length, vector<bool> &bitvector) : CompressedBitvector(block_size, length)
 { 
     // first we need to convert all the bitvector in a array int with size of block_size bits
@@ -61,9 +54,8 @@ CompressedBitvector::~CompressedBitvector()
 {
     delete C;
     delete O;
-    freeComb(Comb, block_size);
     delete[] R;
-    delete[] P;
+    Combination::free(Comb, block_size);
 }
 
 pair<uint, uint> CompressedBitvector::encode(Bitarray &B, uint i)
@@ -130,7 +122,7 @@ void CompressedBitvector::precompR()
     for (uint i = 1; i <= blocks_total; i++)
     {
         r += C->read(i - 1);
-        if(i % k == 0)
+        if(i % Constants::COMPRESSED_BITVECTOR_PARAM_K == 0)
             R[r_idx++] = r;
     }
 
@@ -144,20 +136,29 @@ void CompressedBitvector::compress(Bitarray B)
     uint *C = (uint*) new uint[blocks_total];
     uint *O = (uint*) new uint[blocks_total];
 
-    // uint maxO = 0;
-    for (uint i = 0; i < blocks_total; i++)
-    {
-        pair<uint, uint> aux = encode(B, i);
-        C[i] = aux.first;
-        O[i] = aux.second;
+    for (uint i = 0; i < blocks_total; i++) {
+        const pair<uint, uint> enconded_block = encode(B, i);
+        C[i] = enconded_block.first;
+        O[i] = enconded_block.second;
     }
 
-    this->C = new Bitarray(block_size, blocks_total, C);
-    this->O = new SamplePointers(blocks_total, k, O);
+    this->C = new Bitarray(log2(block_size), blocks_total, C);
+    delete[] C;
+    // malloc_count_print_status();
+
+    this->O = new SamplePointers(blocks_total, O);
+    delete[] O;
+    // delete this->C;
+    // malloc_count_print_status();
+
+
+
+    cout << "C size: " << this->C->size() << endl;
+    cout << "O size: " << this->O->size() << endl;
     
     this->sz = this->sz + this->C->size() + this->O->size();
-    delete[] C;
-    delete[] O;
+    // delete[] C;
+    // delete[] O;
     precompR();
 }
 
@@ -178,7 +179,7 @@ uint CompressedBitvector::rank1(uint i)
     if(i % SUPER_BLOCK_SIZE == 0) return R[super_block_idx]; // allready know rank
 
     uint r = R[super_block_idx - 1];
-    for (int t = (super_block_idx - 1) * k; t < floor(i / (float) block_size); t++) // walk in blocks
+    for (int t = (super_block_idx - 1) * Constants::COMPRESSED_BITVECTOR_PARAM_K; t < floor(i / (float) block_size); t++) // walk in blocks
         r += C->read(t);
 
     uint aux = i % block_size;
@@ -328,5 +329,5 @@ void CompressedBitvector::print()
 
 ulong CompressedBitvector::size()
 {
-    return this->sz + this->C->size() + this->O->size();
+    return this->sz;
 }

@@ -5,7 +5,11 @@ using namespace std;
 #ifndef COMBINATION
 #define COMBINATION
 
-uint** precompComb(uint x);
-void freeComb(uint **Comb, uint x);
+class Combination {
+    public:
+        static uint** precomp(uint x);
+        static void free(uint **Comb, uint x);
+        static uint size(uint x);
+};
 
 #endif

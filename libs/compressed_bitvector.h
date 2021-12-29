@@ -6,8 +6,6 @@ using namespace std;
 #ifndef COMPRESSED_BITVECTOR
 #define COMPRESSED_BITVECTOR
 
-#define k 4
-
 class CompressedBitvector
 {
 private:
@@ -17,7 +15,7 @@ private:
     Bitarray *C;
     SamplePointers *O;
     uint **Comb; // represents variable K
-    uint SUPER_BLOCK_SIZE, SUPER_BLOCK_NUM, *R, *P;
+    uint SUPER_BLOCK_SIZE, SUPER_BLOCK_NUM, *R;
     uint ones, zeros; // number of 1's or 0's
     ulong sz = 0;
 

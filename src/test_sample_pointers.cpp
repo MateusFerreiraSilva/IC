@@ -9,7 +9,6 @@ void sample_pointers_mem_test()
     // cout << "Sample pointers\n";
     ifstream file;
     const uint n = 10000 * 5;
-    const uint k = 4;
     uint* O = (uint*) new uint[n];
 
     string str = "../../input/sample_pointers.txt";
@@ -20,7 +19,7 @@ void sample_pointers_mem_test()
     // cout << "Uncompact:\n";
     malloc_count_print_status();
 
-    SamplePointers sp(n, k, O);
+    SamplePointers sp(n, O);
     delete[] O;
     // cout << "Compact:\n";
     malloc_count_print_status();

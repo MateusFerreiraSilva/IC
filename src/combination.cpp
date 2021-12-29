@@ -1,5 +1,7 @@
 #include <bits/stdc++.h>
 #include "../libs/combination.h"
+#include "../libs/memprofile.h"
+
 
 using namespace std;
 
@@ -23,7 +25,7 @@ uint comb(uint a, uint b)
     return fat(a) / (fat(a - b) * fat(b));
 }
 
-void freeComb(uint **Comb, uint x) {
+void Combination::free(uint **Comb, uint x) {
     if(Comb != NULL) {
         for (uint i = 0; i <= x; i++)
             if(Comb[i] != NULL) delete[] Comb[i];
@@ -31,7 +33,7 @@ void freeComb(uint **Comb, uint x) {
     }
 }
 
-uint** precompComb(uint x) {
+uint** Combination::precomp(uint x) {
     const uint size_aux = x + 1;
     uint **Comb = (uint **) new uint*[size_aux];
 
@@ -46,6 +48,14 @@ uint** precompComb(uint x) {
             Comb[i][j] = comb(i, j);
 
     delete[] memo;
+
+    cout << "comb: " << size(x) << endl;
+    // malloc_count_print_status();
     
     return Comb;
+}
+
+uint Combination::size(uint x) {
+    x++;
+    return x * x * sizeof(uint*) + x * sizeof(uint*);
 }
