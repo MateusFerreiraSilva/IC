@@ -8,7 +8,7 @@ SamplePointers::SamplePointers(uint n) {
         this->B = NULL;
         this->P = NULL;
         this->B_SIZE = 0;
-        this->P_SIZE = ceil(n / (float) Constants::SAMPLE_POINTERS_PARAM_K);
+        this->P_SIZE = 5;
         this->rear = 0;
         this->sz = 0;
 
@@ -102,7 +102,8 @@ void SamplePointers::write(uint i, uint val) {
         bitset(rear + j, gammaCode & (1 << offset));
 
     if (i % Constants::SAMPLE_POINTERS_PARAM_K == 0)
-        P[i / Constants::SAMPLE_POINTERS_PARAM_K] = rear;
+        if (i / Constants::SAMPLE_POINTERS_PARAM_K < P_SIZE)
+            P[i / Constants::SAMPLE_POINTERS_PARAM_K] = rear;
 
     rear += gammaCodeSize;
 }
